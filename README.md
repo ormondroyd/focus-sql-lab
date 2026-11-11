@@ -12,7 +12,8 @@ queries in the browser, so the server only serves static files: no database, no 
   join to see the spec's wording, the lab's join SQL and how well the keys match in the chosen data source. Click a
   column to see its definition and a profile of its values. Each dataset, column and join also shows its **history**:
   the pull requests that changed its definition file, newest first, with an excerpt of each one's description, the
-  issue it addressed, and how much discussion each had.
+  issue it addressed, and how much discussion each had. The 11 join-key columns also have a note on the debate behind
+  them, written by the lab from those threads and labelled as such.
 - **Data sources:** switch between the accepted 1.0 sample, two samples proposed in open FOCUS-Sample-Data pull
   requests (1.3 and 1.4), and the specification's 1.5 worked examples. The Data model shows which joins work in each.
 
@@ -46,6 +47,8 @@ Everything the lab made is labelled on the page:
 - **Data model:** the relationship names, key pairs and join SQL. The specification describes relationships only in
   prose, which the page quotes. The history's selection rules (which pull requests changed a file, and calling one that
   changed more than 15 files "spec-wide") are the lab's; its summaries are excerpts the lab cut, not text it wrote.
+- **Debate notes:** [site/column-notes.json](site/column-notes.json) holds notes on the 11 join-key columns, written
+  by Claude (an AI model) from the GitHub threads each note lists. They are the lab's reading of those discussions.
 
 ## Repository layout
 
@@ -59,6 +62,7 @@ tools/                        build scripts, plus practice.json (the practice qu
 site/
   index.html                  the page
   lab-setup.sql               what the lab adds to DuckDB so the spec's queries run as published
+  column-notes.json           the lab's notes on the debate behind each join-key column, with the threads each draws on
   practice-queries.json       the practice queries, with test results (built from tools/practice.json)
   focus/                      FOCUS-derived, rebuilt by the tools; not edited by hand
     data/*.parquet            sample data and the specification's worked examples

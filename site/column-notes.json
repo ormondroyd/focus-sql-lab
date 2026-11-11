@@ -1,0 +1,274 @@
+{
+ "about": "Written by Claude (an AI model) for this lab, from the GitHub issues and pull requests listed with each note. This is the lab's reading of those discussions, not FOCUS text: check a thread before quoting it. Covers the 11 columns the Data model draws as join keys.",
+ "written": "2026-11-11",
+ "columns": {
+  "ServiceProviderName": {
+   "sections": [
+    [
+     "Why it exists",
+     "Before FOCUS 1.3, two columns named the provider: ProviderName and PublisherName. Practitioners found them confusing, especially for marketplace purchases, where they needed to know who they were buying from and whom to contact about a dispute (#1055, raised in May 2025). A related request asked FOCUS to show which cloud a SaaS product runs on, such as Snowflake on AWS, Azure or Google Cloud (#1073)."
+    ],
+    [
+     "What was argued",
+     "The first draft renamed ProviderName to Service Provider (#1139). In TF-3 on 26 September 2025 the group chose deprecation instead: add ServiceProviderName and HostProviderName, and deprecate ProviderName and PublisherName, to balance clarity against disruption for people already using the old columns (#1055). It was FOCUS's first deprecation, so a maintainer asked the PR to explain how deprecation works before members voted (#1139). Reviewers also flagged that the word \"provider\" is used loosely all through the spec; that clean-up was split into a separate request."
+    ],
+    [
+     "Where it landed",
+     "ServiceProviderName and HostProviderName arrived in 1.3 (#1139, approved 16 October 2025). ProviderName and PublisherName were removed in 1.4 (#1888, #1955), and that work also wrote a general process for removing anything from the spec."
+    ],
+    [
+     "In this lab",
+     "The 1.0 sample has no ServiceProviderName, so the lab derives it from ProviderName, PublisherName and InvoiceIssuerName, following the spec's migration guidance. The proposed 1.3 and 1.4 samples carry it as published."
+    ]
+   ],
+   "threads": [
+    1055,
+    1073,
+    1139,
+    1888,
+    1955
+   ]
+  },
+  "SkuPriceId": {
+   "sections": [
+    [
+     "Why it exists",
+     "Added in November 2023 (#244) as an ID for the price of the SKU that incurred a charge, so a practitioner can look the price up in the provider's price list. Reviewers asked from the start that each SKU Price ID belong to a single SKU ID."
+    ],
+    [
+     "What was argued",
+     "The long argument was over what a SKU is at all. In January 2024 flanakin wrote that as a provider he didn't know what value to put in SkuId, and that guesses would make it meaningless across providers (#314). Task forces spent months sorting SKU properties into \"SKU\" and \"SKU price\" buckets. PR #676 (April 2025) settled on an ID for the stable, core properties of a price, excluding things that change or are negotiated, such as the amount, currency, effective dates and contract terms. cnharris10 objected to the rule that a SKU Price ID has exactly one parent SKU ID, using AWS RDS size-flexible reservations, where one commitment covers several SKUs. The current spec keeps the one-parent rule and explains commitment discount flexibility in an appendix example. A reviewer also noted that some providers keep contracted prices private, so the ID should lead to list prices (#676)."
+    ],
+    [
+     "Where it landed",
+     "An earlier change let a provider with no separate price ID reuse its SKU ID here (#530, 2024). The spec now requires the ID to stay the same across billing accounts and contracts. In 1.5 the SKU Price dataset, marked preview, lists prices by this ID."
+    ],
+    [
+     "In this lab",
+     "No source in the lab joins charges to SKU prices: the 1.0, 1.3 and 1.4 samples have no SKU Price data, and in the spec's worked examples the IDs come from separate scenarios."
+    ]
+   ],
+   "threads": [
+    244,
+    314,
+    530,
+    676
+   ]
+  },
+  "ContractApplied": {
+   "sections": [
+    [
+     "Why it exists",
+     "Feature request #976 (May 2025) said FOCUS handled reservations and savings plans but not negotiated contract commitments, such as spend drawdowns and build-ups, so practitioners couldn't track progress against something like an enterprise discount programme. It drew public support from a long list of organisations, including NASA, Autodesk, Atlassian, Google and Datadog."
+    ],
+    [
+     "What was argued",
+     "The design changed shape several times. It began as two flat Cost and Usage columns, Contract ID and Contract Applied Cost (#1327), and became a JSON array of elements on each charge (#1350). TF-1 had what its notes call a \"spirited\" debate about requiring every element's values even when they repeat other columns. marc-perreaut suggested declaring such columns as calculated in metadata instead; shawnalpay rejected that because multi-provider practitioners would then need a data-prep step for some providers but not others. An object keyed by commitment ID was also proposed, but arrays were kept as easier to unnest. Contract ID moved inside the array because one charge can count towards several contracts, and splitting rows would break build-up commitments. Several reviewers disliked the name ContractApplied; no alternative won. Whether commitment discounts belong in it too was deliberately left open for a later release."
+    ],
+    [
+     "Where it landed",
+     "It shipped in 1.3 (#1350, approved 25 September 2025). In 1.4 its prose rules were replaced by a formal JSON Schema (#2007), after a process dispute over bundling errata fixes into that change. #2017 replaced the rule that ResourceId must equal the commitment ID on every purchase: it now applies to the purchase of that commitment and to rows for its unused portion, matching how commitment discounts work. When a reviewer asked about credits, there were no rules for them."
+    ],
+    [
+     "In this lab",
+     "In the proposed 1.3 sample (PR #7) all 881 charges that carry ContractApplied find their commitment, joining through the array's elements. That PR's reviewers had to correct an earlier join on CommitmentDiscountId. In the proposed 1.4 sample (PR #5) no charge carries it."
+    ]
+   ],
+   "threads": [
+    976,
+    1334,
+    1350,
+    2007,
+    2016,
+    2017
+   ]
+  },
+  "ContractCommitmentId": {
+   "sections": [
+    [
+     "Why it exists",
+     "Created with the Contract Commitment dataset in #1350 (1.3) to identify one term of a contract, which shawnalpay described as a contract line item. It is a child of ContractId, and each Cost and Usage charge points at it from inside ContractApplied."
+    ],
+    [
+     "What was argued",
+     "UdamDewaraja asked what \"commitment\" adds: why not simply point at the contract governing the usage? The answer was that a contract holds several agreements, and this ID names one of them. rileyjenk thought \"line item\" too vague, so the definition became \"a single contract term\". ijurica asked to drop the word \"negotiated\", because commitments aren't always negotiated. A separate dataset was the plan from the start, but it had to wait for the spec to support more than one dataset (#1334)."
+    ],
+    [
+     "Where it landed",
+     "In 1.4, ResourceId must equal this ID on the purchase of that commitment and on rows for its unused portion (#2017). The earlier rule had required it on every purchase."
+    ],
+    [
+     "In this lab",
+     "The proposed 1.3 sample's 66 commitments are all used by its charges. The proposed 1.4 sample has 1,000 commitments, but no charge points at any of them."
+    ]
+   ],
+   "threads": [
+    976,
+    1334,
+    1350,
+    2017
+   ]
+  },
+  "ContractId": {
+   "sections": [
+    [
+     "Why it exists",
+     "The identifier of a whole contract between a provider and a customer, added for contract commitments in 1.3 (#1350). In the Contract Commitment dataset it groups a contract's terms. In 1.5 the SKU Price dataset also carries it, for prices agreed under a contract."
+    ],
+    [
+     "What was argued",
+     "It started as its own Cost and Usage column (#1327). shawnalpay floated making it mandatory and the commitment ID optional, as an easier first step for data generators (#976). In September 2025 it was moved inside ContractApplied instead, because one charge can count towards several contracts (#1350)."
+    ],
+    [
+     "In this lab",
+     "Only the spec's worked examples have both SKU prices and commitments, and their contract IDs don't match because they come from separate scenarios."
+    ]
+   ],
+   "threads": [
+    976,
+    1350
+   ]
+  },
+  "InvoiceIssuerName": {
+   "sections": [
+    [
+     "Why it exists",
+     "Named in 2023, when \"Invoicing Entity\" was renamed \"Invoice Issuer\" (#65): the entity that sends the invoice, which isn't always the provider of the service."
+    ],
+    [
+     "What was argued",
+     "The pressure came from SaaS and marketplaces. When a product is bought through a cloud marketplace, both the vendor and the marketplace can report the charge, so totals count it twice. #780 (April 2025) aimed to keep the billed cost on the invoice issuer's rows only. GrinsteadJ had warned that practitioners still need those costs for chargeback (#616). In 1.4 the marketplace-specific rules were replaced by a general rule for charges covered by other charges (#1966). When the provider columns were reworked in 1.3, InvoiceIssuerName was deliberately left unchanged (#1139)."
+    ],
+    [
+     "Where it landed",
+     "By 1.4 the column appears in four datasets with different wording. #2182 (April 2026) gave all four the same rule: it MUST represent the entity that issues invoices. ijurica proposed tying it to InvoiceId row by row as a follow-up; a reviewer noted invoice IDs can arrive late in the month."
+    ],
+    [
+     "In this lab",
+     "The proposed 1.4 sample's charges and invoices share issuer names, but their invoice IDs never match."
+    ]
+   ],
+   "threads": [
+    65,
+    616,
+    780,
+    1139,
+    2087,
+    2182,
+    1966
+   ]
+  },
+  "InvoiceId": {
+   "sections": [
+    [
+     "Why it exists",
+     "Work item #615 (October 2024) framed it through procure-to-pay's \"3-way match\": cloud invoices summarise charges and point at the cost export, so finance couldn't tie charges to the invoice that billed them. A practitioner quoted there needed costs grouped by billing account, invoice issuer and invoice ID so chargebacks add up to the invoices to the cent."
+    ],
+    [
+     "What was argued",
+     "Timing. Invoice IDs exist only after a billing period closes: AWS fills them in days after month end (narciso-cerezo), and udam-f2 pointed out that Google's BigQuery export can't go back and rewrite rows that have already arrived (#686). A separate table mapping invoice IDs to charges was considered, to avoid rewriting rows. It landed as a recommended column that stays null until a charge is invoiced (#686, 1.2). Rules for credits were drafted and then moved to supporting content (#828). In 1.3, #1082 asked that every cost on an invoice appear in FOCUS; a split between payable and non-payable charges was tried and dropped in favour of \"all costs that appear on an invoice\". flanakin objected to defining an invoice as holding all of a billing period's charges, because a period can be covered by several invoices, so the definition kept \"some or all\" (#1321)."
+    ],
+    [
+     "Where it landed",
+     "1.4 added the Invoice Detail dataset (#1900). InvoiceId was briefly made mandatory in Cost and Usage, then conditional on the invoice issuer supporting payable invoices (#2100)."
+    ],
+    [
+     "In this lab",
+     "In the proposed 1.4 sample, none of the 1,000 charges' invoice IDs match an Invoice Detail row. None of the public samples in this lab shows this join working."
+    ]
+   ],
+   "threads": [
+    615,
+    686,
+    828,
+    1082,
+    1321,
+    1900,
+    2100
+   ]
+  },
+  "InvoiceDetailId": {
+   "sections": [
+    [
+     "Why it exists",
+     "Feature request #1500 (October 2025) said finance teams spend hours matching cost data to invoices, because invoices work at a different grain from usage rows: a header with totals and status, and lines that don't match usage rows one for one. Invoice Detail ID names one line of an invoice, and Cost and Usage charges can point at it."
+    ],
+    [
+     "What was argued",
+     "TF-1 weighed one invoice table against separate header and detail tables, with accounting specialists joining the calls and input gathered from AWS, Google Cloud, OCI, Snowflake, MongoDB and others (#1500). The task force also asked what grain Billing Period should have. thecloudman pressed for an exchange-rate column; 1.4 shipped without one. rileyjenk raised marketplaces, where both the vendor and the marketplace produce invoice-like records but only one is payable (#1900)."
+    ],
+    [
+     "Where it landed",
+     "Invoice Detail arrived in 1.4 (#1900, approved 12 March 2026). In Cost and Usage, InvoiceDetailId is conditional on the invoice issuer supporting payable invoices (#2100)."
+    ]
+   ],
+   "threads": [
+    1500,
+    1785,
+    1900,
+    2100
+   ]
+  },
+  "PaymentCurrencyInvoiceDetailId": {
+   "sections": [
+    [
+     "Why it exists",
+     "Added with Invoice Detail in 1.4 (#1900). It links an invoice record to the record that holds its amount in the currency the customer pays in, when that differs from the billing currency."
+    ],
+    [
+     "What was argued",
+     "marc-perreaut asked whether original records should point at the aggregate record, or be null. The answer was a design choice: never null, and pointing at itself whenever the record already carries its own payment-currency amount. thecloudman argued that payment-currency amounts don't replace an explicit exchange rate, which finance needs each month; 1.4 has no exchange-rate column (#1900)."
+    ],
+    [
+     "In this lab",
+     "In the proposed 1.4 sample every record points at itself, which the spec allows when a record carries its own payment-currency amount."
+    ]
+   ],
+   "threads": [
+    1500,
+    1900
+   ]
+  },
+  "ReferenceInvoiceId": {
+   "sections": [
+    [
+     "Why it exists",
+     "Added with Invoice Detail in 1.4 (#1900) so that an invoice that adjusts another one, such as a credit note, names the invoice it adjusts. It supports correction handling."
+    ],
+    [
+     "What was argued",
+     "mike-finopsorg questioned making it never null. shawnalpay replied that it is easier for consumers if it is always populated. The rule became: the original invoice's ID when this invoice adjusts another, and its own ID otherwise (#1900)."
+    ],
+    [
+     "In this lab",
+     "The proposed 1.4 sample breaks that rule. All 1,000 of its values are made-up IDs (referenceinvoice-…) that match no invoice, not even the row's own."
+    ]
+   ],
+   "threads": [
+    1500,
+    1900
+   ]
+  },
+  "BillingPeriodStart": {
+   "sections": [
+    [
+     "Why it exists",
+     "One of the oldest Cost and Usage columns: the start of the billing period a charge belongs to."
+    ],
+    [
+     "What was argued",
+     "In 2024, #398 pinned down the bounds: the start is inclusive and the end exclusive. Reviewers asked for definitions and an example: a period that runs from the first of one month to the first of the next includes the first date but not the second. In 1.4 it became a key of the new Billing Period dataset and of Invoice Detail, and TF-1 debated what one Billing Period row should represent: one per invoice issuer, one per data generator or something else (#1500, #1900)."
+    ],
+    [
+     "In this lab",
+     "The proposed 1.4 sample's Billing Period file has 1,000 rows for just 4 periods, so joining charges to it repeats each charge many times."
+    ]
+   ],
+   "threads": [
+    398,
+    1500,
+    1900
+   ]
+  }
+ }
+}

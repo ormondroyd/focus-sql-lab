@@ -204,6 +204,8 @@
   .detail blockquote cite { display: block; font-style: normal; font-size: 11.5px; color: var(--muted); margin-top: 2px; }
   .detail ul.pr-issues { margin: 4px 0 0; font-size: 12.5px; }
   .detail details > summary { cursor: pointer; color: var(--accent); margin: 8px 0; }
+  .detail .note-box { border: 1px dashed var(--line); border-radius: 8px; padding: 4px 10px 8px; margin: 10px 0; }
+  .detail .note-box h5 { margin: 8px 0 2px; font-size: 12.5px; }
   .meter { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin: 4px 0 8px; max-width: 360px; }
   .meter span { display: block; height: 100%; background: var(--accent); }
   .detail table { font-size: 12px; min-width: 0; width: auto; }
@@ -1149,6 +1151,26 @@ async function fillHistory(path, token) {
       ? ` (${plural(f.unlinked, 'commit')} there name${f.unlinked === 1 ? 's' : ''} no pull request, so ${f.unlinked === 1 ? 'it isn\'t' : 'they aren\'t'} listed here)` : ''}</p>`;
 }
 
+// ---- Notes on the debate behind each key column, written by the lab (site/column-notes.json) ---------------
+let notesP = null;
+const loadNotes = () => (notesP ??= fetch('column-notes.json').then((r) => (r.ok ? r.json() : null)).catch(() => null));
+const ISSUE_URL = 'https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/';
+// "#1139" becomes a link to that FOCUS_Spec issue or pull request (GitHub redirects issue links to pull requests).
+// Single-digit numbers are left alone: the notes use "PR #5" and "PR #7" for FOCUS-Sample-Data pull requests.
+const linkRefs = (text) => escapeHtml(text).replace(/(?<!&)#(\d{2,5})\b/g, // (?<!&): skip escapes such as &#39;
+  (m, n) => `<a href="${ISSUE_URL}${n}" target="_blank" rel="noopener">#${n}</a>`);
+
+async function fillNote(colId, token) {
+  const notes = await loadNotes();
+  const box = $('col-note');
+  const n = notes && notes.columns[colId];
+  if (token !== detailToken || !box || !n) return;
+  box.innerHTML = `<h4>The debate behind it <span class="tag lab" title="${escapeHtml(notes.about)}">written by the lab</span></h4>
+    <div class="note-box"><p class="hint">${escapeHtml(notes.about)}</p>
+    ${n.sections.map(([h, p]) => `<h5>${escapeHtml(h)}</h5><p>${linkRefs(p)}</p>`).join('')}
+    <p class="hint">Threads read: ${n.threads.map((t) => `<a href="${ISSUE_URL}${t}" target="_blank" rel="noopener">#${t}</a>`).join(', ')}</p></div>`;
+}
+
 async function relDetail(r, el, token) {
   let spec = [];
   const srcDataset = model.datasets.find((d) => d.source === r.source);
@@ -1233,7 +1255,8 @@ async function colDetail(d, c, el, token) {
     <h4>In the loaded data</h4><div id="col-stats"><p class="hint">Profiling…</p></div>
     <div class="actions"><button class="primary" data-action="open" data-key="values">Query its values</button>
       <button class="linkish" data-table="${d.id}" style="margin-left:10px">About ${escapeHtml(d.name)}</button></div>
-    <p>${specLink(c.source)}</p>${HISTORY}`;
+    <p>${specLink(c.source)}</p><div id="col-note"></div>${HISTORY}`;
+  fillNote(c.id, token);
   fillHistory(c.source, token);
   const q = `"${c.id}"`;
   try {

@@ -9,6 +9,9 @@ Everything outside `site/focus/`:
 
 - `site/index.html`: the page (query editor, response explorer, data model view)
 - `site/lab-setup.sql`: what the lab adds to DuckDB so the specification's queries run as published
+- `site/column-notes.json`: notes on the debate behind the 11 join-key columns, written by Claude (an AI model) from
+  the FOCUS_Spec GitHub issues and pull requests each note lists. They paraphrase those discussions and name
+  participants by their GitHub usernames.
 - `tools/practice.json`: the practice queries, which are built into `site/practice-queries.json`
 - `tools/*.py`: the build scripts
 - `Dockerfile`, `nginx.conf`, `README.md`, `NOTICE.md`
