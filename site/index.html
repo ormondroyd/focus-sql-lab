@@ -1401,7 +1401,7 @@ async function colDetail(d, c, el, token) {
   // The operating model conditions that make this column required, with each one's definition from the spec.
   const conds = (model.conditions || []).filter((x) => c.conditions && c.conditions.includes(x.name));
   const condRow = conds.length ? `<dt>Required when</dt><dd>${conds.map((x) =>
-    `${escapeHtml(x.name)}<div class="hint">${escapeHtml(x.description)}</div>`).join('')}</dd>` : row('Required when', c.conditions);
+    `<a href="${SPEC_URL}${x.source}" target="_blank" rel="noopener">${escapeHtml(x.name)}</a><div class="hint">${escapeHtml(x.description)}</div>`).join('')}</dd>` : row('Required when', c.conditions);
   const av = c.allowed_values || [];
   const allowed = av.length > 1 ? `<h4>Allowed values</h4><table>${av.map((r, i) => `<tr>${r.map((cell) =>
     (i ? `<td>${escapeHtml(cell)}</td>` : `<th>${escapeHtml(cell)}</th>`)).join('')}</tr>`).join('')}</table>` : '';
