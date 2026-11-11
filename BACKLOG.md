@@ -27,14 +27,7 @@ One place that shows how FOCUS models AI token usage today, and where it stops.
   "tokens per watt" has nowhere to go; "cost per intelligence" needs outcome data that billing doesn't carry; public
   token data is limited to the spec's own examples.
 
-## 3. Customer evidence view
-
-Pull the product evidence out of the issues and threads: problem statements and what they cost practitioners, who asked
-for a change, how the working group found out (surveys, polls, user groups, provider outreach, finance specialists),
-use cases, and the trade-offs behind what was cut or deferred. A first keyword pass finds about 150 candidate
-statements; curate them into a browsable list linked to their threads.
-
-## 4. Licensing mapping experiment
+## 3. Licensing mapping experiment
 
 Generate synthetic software-licensing data (entitlements, subscription and support terms, part numbers, processor- or
 user-based metrics, sub-capacity usage), express it in FOCUS (for example part number as `SkuId`, licence metric as

@@ -12,6 +12,8 @@ Everything outside `site/focus/`:
 - `site/column-notes.json`: notes on the debate behind the 11 join-key columns, written by Claude (an AI model) from
   the FOCUS_Spec GitHub issues and pull requests each note lists. They paraphrase those discussions and name
   participants by their GitHub usernames.
+- `site/evidence.json`: evidence items curated by Claude (an AI model) from FOCUS_Spec issues and the conversation
+  summaries; quotes are verbatim from the issue named, and organisations are named only as the issues name them.
 - `site/object-summaries.json`: plain-language summaries of the specification's dataset, column, attribute, appendix, metadata and schema pages,
   written by Claude (an AI model) from each page at `working_draft` @ `e9cdcc7`. They paraphrase the specification.
 - `site/thread-summaries.json`: summaries of the conversation in the FOCUS_Spec issues and pull requests shown in the

@@ -135,7 +135,23 @@
     box-shadow: 0 0 0 1px var(--line); }
 
   /* Data model view */
-  #model { padding: 14px 16px 32px; }
+  #model, #evidence { padding: 14px 16px 32px; }
+  #evidence .ev-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 10px; }
+  #evidence .ev-head p { margin: 0 0 4px; color: var(--muted); font-size: 13px; max-width: 80ch; flex-basis: 100%; }
+  #evidence .ev-filters { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+  #evidence .ev-filters button { border: 1px solid var(--line); background: transparent; border-radius: 14px; padding: 3px 10px; font-size: 12.5px; }
+  #evidence .ev-filters button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  #evidence input[type=search] { max-width: 260px; }
+  #ev-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 10px; }
+  .ev-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
+  .ev-card p { margin: 6px 0; line-height: 1.5; }
+  .ev-card blockquote { margin: 6px 0; padding: 2px 0 2px 10px; border-left: 3px solid var(--line); font-style: italic; }
+  .ev-card blockquote cite { display: block; font-style: normal; font-size: 11.5px; color: var(--muted); }
+  .ev-card .ev-top { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; color: var(--muted); }
+  .ev-card .ev-meta { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+  .ev-card .linkish, .detail .ev-mini .linkish { border: 0; background: none; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font-size: 12px; }
+  .detail .ev-mini { border-top: 1px solid var(--line); padding: 6px 0; font-size: 12.5px; }
+  .detail .ev-mini .tag { margin-right: 6px; }
   .model-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
   .model-head p { margin: 0; color: var(--muted); font-size: 13px; max-width: 78ch; }
   .model-head label { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
@@ -250,6 +266,7 @@
   <nav class="apptabs" aria-label="Views">
     <button data-tab="query" aria-pressed="true">Query</button>
     <button data-tab="model" aria-pressed="false">Data model</button>
+    <button data-tab="evidence" aria-pressed="false">Evidence</button>
   </nav>
   <span id="status">Loading DuckDB…</span>
 </header>
@@ -343,6 +360,15 @@
     </div>
     <div class="detail" id="model-detail"><p class="hint">Select a relationship, a table or a column to see its definition from the spec and how it looks in the loaded data.</p></div>
   </div>
+</section>
+<section id="evidence" hidden>
+  <div class="ev-head">
+    <p>How the FOCUS working group found, checked and weighed what users need, drawn from its feature requests and the
+      conversations behind each change. Each item links to its threads on GitHub and to the parts of the model it concerns.</p>
+    <div class="ev-filters" id="ev-filters" role="group" aria-label="Kind of evidence"></div>
+    <input id="ev-search" type="search" placeholder="Search the evidence" aria-label="Search the evidence">
+  </div>
+  <div id="ev-list"><p class="hint">Loading…</p></div>
 </section>
 <footer>
   Data: <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data">FOCUS-Sample-Data</a> (the accepted 1.0 sample, and samples proposed in its open pull requests #5 and #7) and the worked examples and example queries in the
@@ -554,6 +580,7 @@ async function init() {
   setStatus(`Ready · ${total.toLocaleString()} rows in ${names.length} tables`, true);
   if (!saved) run();
   if (tab === 'model') renderModel();
+  if (tab === 'evidence') renderEvidence(); // again, now topic names are known
 }
 
 async function setDataset(key, why = '') {
@@ -916,7 +943,7 @@ const AREA = { CostAndUsage: 'cau', SkuPrice: 'sku', InvoiceDetail: 'inv', Contr
 const SHORT = { 'cau-sku': 'SKU Price ID', 'cau-cc': 'Commitment ID', 'cau-inv': 'Invoice ID',
   'cau-bp': 'Billing period', 'inv-bp': 'Billing period', 'sku-cc': 'Contract ID',
   'inv-pay': 'Payment record', 'inv-ref': 'Adjusted invoice' };
-let tab = store.get('tab') === 'model' ? 'model' : 'query';
+let tab = ['model', 'evidence'].includes(store.get('tab')) ? store.get('tab') : 'query';
 let modelBuilt = false, selection = null, detailToken = 0, detailSql = {};
 
 const dsById = (id) => model.datasets.find((d) => d.id === id);
@@ -941,7 +968,60 @@ function showTab(t) {
   document.querySelectorAll('.apptabs button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tab === t)));
   document.querySelector('.layout').hidden = t !== 'query';
   $('model').hidden = t !== 'model';
+  $('evidence').hidden = t !== 'evidence';
   if (t === 'model') renderModel();
+  if (t === 'evidence') renderEvidence();
+}
+
+// ---- Evidence: how the working group found and weighed user needs (site/evidence.json) --------------------
+const EV_KINDS = { pain: 'Pain point', demand: 'Who asked', discovery: 'How they found out', use_case: 'Use case', tradeoff: 'Trade-off' };
+let evidenceP = null, evKind = 'all';
+const loadEvidence = () => (evidenceP ??= fetch('evidence.json').then((r) => (r.ok ? r.json() : null)).catch(() => null));
+const GH_ISSUE = 'https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/';
+const objLabel = (key) => key.replace(/^(column|dataset|attribute|condition):/, '').replace(/^topic:/, '')
+  .replace(/^(.+)$/, (k) => (((model && model.topics) || []).find((t) => t.id === k) || {}).name || k);
+const objButton = (key) => `<button class="linkish" data-obj="${escapeHtml(key)}">${escapeHtml(objLabel(key))}</button>`;
+const threadLinks = (list) => list.map((n) => `<a href="${GH_ISSUE}${n}" target="_blank" rel="noopener">#${n}</a>`).join(' ');
+
+async function renderEvidence() {
+  const ev = await loadEvidence();
+  if (!ev) { $('ev-list').innerHTML = '<p class="hint">Could not load the evidence.</p>'; return; }
+  const q = $('ev-search').value.trim().toLowerCase();
+  const counts = { all: ev.items.length };
+  ev.items.forEach((i) => { counts[i.category] = (counts[i.category] || 0) + 1; });
+  $('ev-filters').innerHTML = [['all', 'All'], ...Object.entries(EV_KINDS)].map(([k, label]) =>
+    `<button data-kind="${k}" aria-pressed="${k === evKind}">${label} · ${counts[k] || 0}</button>`).join('');
+  const items = ev.items.filter((i) => (evKind === 'all' || i.category === evKind)
+    && (!q || [i.statement, i.quote, ...(i.who || []), ...(i.objects || []).map(objLabel)].join(' ').toLowerCase().includes(q)));
+  $('ev-list').innerHTML = items.map((i) => `<div class="ev-card">
+      <div class="ev-top"><span class="tag">${EV_KINDS[i.category]}</span><span>${escapeHtml(i.date || '')}</span></div>
+      <p>${linkRefs(i.statement)}</p>
+      ${i.quote ? `<blockquote>“${escapeHtml(i.quote)}”<cite>From ${escapeHtml(i.quote_from || 'the issue')}</cite></blockquote>` : ''}
+      <div class="ev-meta">${(i.who || []).length ? `Asked for or backed by: ${escapeHtml(i.who.join(', '))}<br>` : ''}Threads: ${threadLinks(i.threads || [])}${
+        (i.objects || []).length ? `<br>In the model: ${i.objects.map(objButton).join(', ')}` : ''}</div>
+    </div>`).join('') || '<p class="hint">Nothing matches.</p>';
+}
+
+// Open a part of the model from anywhere: "column:CostAndUsage.InvoiceId", "dataset:InvoiceDetail", "attribute:…", "condition:…", "topic:…"
+function openObject(key) {
+  const [kind, rest] = [key.slice(0, key.indexOf(':')), key.slice(key.indexOf(':') + 1)];
+  showTab('model');
+  if (kind === 'column') { const [ds, col] = rest.split('.'); select({ type: 'col', ds, col }, true); }
+  else if (kind === 'dataset') select({ type: 'table', ds: rest }, true);
+  else if (kind === 'attribute') select({ type: 'attr', id: ((model.attributes || []).find((a) => a.id === rest) || {}).anchor }, true);
+  else if (kind === 'condition') select({ type: 'cond', id: ((model.conditions || []).find((c) => c.id === rest) || {}).anchor }, true);
+  else if (kind === 'topic') select({ type: 'topic', id: rest }, true);
+  $('model-detail').scrollIntoView({ block: 'start' });
+}
+
+// In a dataset, column, attribute, condition or topic panel: the evidence items that concern it.
+async function fillEvidence(key, token) {
+  const ev = await loadEvidence();
+  const box = $('obj-evidence');
+  if (token !== detailToken || !box || !ev) return;
+  const items = ev.items.filter((i) => (i.objects || []).includes(key));
+  box.innerHTML = items.length ? `<h4>Evidence</h4>${items.map((i) => `<div class="ev-mini"><span class="tag">${EV_KINDS[i.category]}</span>${
+    linkRefs(i.statement)} <span class="hint">${escapeHtml(i.date || '')} · ${threadLinks(i.threads || [])}</span></div>`).join('')}` : '';
 }
 
 function colRow(ds, c, isKey) {
@@ -1372,7 +1452,8 @@ async function topicDetail(t, el, token) {
     ${t.pages.length ? `<h4>Pages</h4><ul>${t.pages.map((p) => `<li>${escapeHtml(p)}</li>`).join('')}</ul>` : ''}
     ${t.json ? `<h4>The schema, as published</h4><details><summary>Show the JSON schema</summary><pre class="schema">${escapeHtml(t.json)}</pre></details>` : ''}
     <h4>Referenced by</h4><div class="used-by">${refs || '<p class="hint">No dataset or column page links to it directly.</p>'}</div>
-    ${t.requirements.length ? REQS : ''}<p>${specLink(t.source)}</p>${HISTORY}`;
+    ${t.requirements.length ? REQS : ''}<p>${specLink(t.source)}</p><div id="obj-evidence"></div>${HISTORY}`;
+  fillEvidence(`topic:${t.id}`, token);
   fillSummary('topic:' + t.id, token);
   if (t.requirements.length) fillReqs(t, token);
   fillHistory('topic:' + t.id, token);
@@ -1386,7 +1467,8 @@ async function ruleDetail(a, badge, el, token) {
     <div id="obj-summary"></div>${specDef(a.description)}
     <dl><dt>Introduced</dt><dd>${escapeHtml(a.introduced || '–')}</dd></dl>
     <h4>${badge === 'condition' ? 'Columns and rules that depend on it' : 'Used by'}</h4><div class="used-by">${usedBy || `<p class="hint">${badge === 'condition' ? 'No column or dataset rule names it.' : 'Only other attributes refer to it.'}</p>`}</div>
-    ${REQS}<p>${specLink(a.source)}</p>${HISTORY}`;
+    ${REQS}<p>${specLink(a.source)}</p><div id="obj-evidence"></div>${HISTORY}`;
+  fillEvidence(`${badge === 'condition' ? 'condition' : 'attribute'}:${a.id}`, token);
   fillSummary(a.source, token);
   fillReqs(a, token);
   fillHistory(a.source, token);
@@ -1452,7 +1534,8 @@ async function tableDetail(d, el, token) {
     <h4>Relationships</h4>
     <ul>${rels.map((r) => `<li><button class="linkish" data-rel="${r.id}">${escapeHtml(r.name)}</button></li>`).join('')}</ul>
     <div class="actions"><button class="primary" data-action="open" data-key="summarize">Profile every column</button></div>
-    ${REQS}<p>${specLink(d.source)}</p>${HISTORY}`;
+    ${REQS}<p>${specLink(d.source)}</p><div id="obj-evidence"></div>${HISTORY}`;
+  fillEvidence(`dataset:${d.id}`, token);
   fillSummary(d.source, token);
   fillReqs(d, token);
   fillHistory(d.source, token);
@@ -1485,7 +1568,8 @@ async function colDetail(d, c, el, token) {
     <h4>In the loaded data</h4><div id="col-stats"><p class="hint">Profiling…</p></div>
     <div class="actions"><button class="primary" data-action="open" data-key="values">Query its values</button>
       <button class="linkish" data-table="${d.id}" style="margin-left:10px">About ${escapeHtml(d.name)}</button></div>
-    ${REQS}<p>${specLink(c.source)}</p><div id="col-note"></div>${HISTORY}`;
+    ${REQS}<p>${specLink(c.source)}</p><div id="col-note"></div><div id="obj-evidence"></div>${HISTORY}`;
+  fillEvidence(`column:${d.id}.${c.id}`, token);
   fillSummary(c.source, token);
   fillReqs(c, token);
   fillNote(c.id, token);
@@ -1517,6 +1601,9 @@ async function colDetail(d, c, el, token) {
 }
 
 document.querySelectorAll('.apptabs button').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
+$('ev-filters').addEventListener('click', (e) => { const b = e.target.closest('[data-kind]'); if (b) { evKind = b.dataset.kind; renderEvidence(); } });
+$('ev-search').addEventListener('input', () => renderEvidence());
+$('ev-list').addEventListener('click', (e) => { const b = e.target.closest('[data-obj]'); if (b) openObject(b.dataset.obj); });
 $('model-dataset').addEventListener('change', () => setDataset($('model-dataset').value));
 showTab(tab);
 

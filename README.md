@@ -53,6 +53,9 @@ Everything the lab made is labelled on the page:
   changed more than 15 files "spec-wide") are the lab's; its summaries are excerpts the lab cut, not text it wrote.
 - **Debate notes:** [site/column-notes.json](site/column-notes.json) holds notes on the 11 join-key columns, written
   by Claude (an AI model) from the GitHub threads each note lists. They are the lab's reading of those discussions.
+- **Evidence:** [site/evidence.json](site/evidence.json), shown in the Evidence tab: pain points, who asked, how the working
+  group found out, use cases and trade-offs, curated by Claude from the FOCUS_Spec issues and conversation summaries.
+  Quotes are verbatim.
 - **Plain-language summaries:** [site/object-summaries.json](site/object-summaries.json) summarises each dataset,
   column, attribute, appendix, metadata and schema page of the specification, written by Claude from that page.
 - **Conversation summaries:** [site/thread-summaries.json](site/thread-summaries.json) summarises the conversation in
