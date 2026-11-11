@@ -3,7 +3,7 @@
   "cau_sample": {
    "file": "cau_sample.parquet",
    "rows": 100000,
-   "bytes": 4941809,
+   "bytes": 4938633,
    "description": "Anonymised FOCUS 1.0 data (AWS, Microsoft, Oracle), 100,000 rows from FinOps Foundation FOCUS-Sample-Data, with FOCUS 1.5 column names added. 1.5-only columns are NULL.",
    "columns": [
     {
@@ -298,12 +298,44 @@
      "name": "x_Dataset",
      "type": "VARCHAR"
     }
-   ]
+   ],
+   "lab_columns": {
+    "x_SampleRowId": "The sample's own row ID column, Id, renamed by the lab. It isn't a FOCUS column.",
+    "ServiceProviderName": "Derived by the lab from ProviderName, PublisherName and InvoiceIssuerName, following the spec's version migration guidance. FOCUS 1.0 has no such column.",
+    "HostProviderName": "Derived by the lab from ProviderName, following the spec's version migration guidance. FOCUS 1.0 has no such column.",
+    "x_Dataset": "Added by the lab: names the source dataset.",
+    "AllocatedMethodDetails": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "AllocatedMethodId": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "AllocatedResourceId": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "AllocatedResourceName": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "AllocatedServiceName": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "AllocatedTags": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "BillingAccountType": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "CapacityReservationId": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "CapacityReservationStatus": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "CommitmentDiscountQuantity": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "CommitmentDiscountUnit": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "CommitmentProgramEligibilityDetails": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "ContractApplied": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "CredentialId": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "InvoiceDetailId": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "InvoiceId": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "PricingCurrency": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "PricingCurrencyContractedUnitPrice": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "PricingCurrencyEffectiveCost": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "PricingCurrencyListUnitPrice": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "PrincipalId": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "RequesterDetails": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "ServiceSubcategory": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "SkuMeter": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "SkuPriceDetails": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have.",
+    "SubAccountType": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have."
+   }
   },
   "cau_examples": {
    "file": "cau_examples.parquet",
    "rows": 493,
-   "bytes": 36964,
+   "bytes": 35948,
    "description": "FOCUS 1.5 worked-example Cost and Usage rows from the specification (AI tokens, prompt caching, commitments, SaaS). Each scenario is separate: filter by x_ExampleFile before summing.",
    "columns": [
     {
@@ -598,12 +630,25 @@
      "name": "SubAccountType",
      "type": "VARCHAR"
     }
-   ]
+   ],
+   "lab_columns": {
+    "x_ExampleFile": "Added by the lab: the worked-example file the row came from.",
+    "AllocatedMethodDetails": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "AllocatedMethodId": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "AllocatedResourceId": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "AllocatedResourceName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "AllocatedServiceName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "AllocatedTags": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "BillingAccountType": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "ContractApplied": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "InvoiceDetailId": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "SubAccountType": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include."
+   }
   },
   "ContractCommitment": {
    "file": "ContractCommitment.parquet",
    "rows": 9,
-   "bytes": 7721,
+   "bytes": 7610,
    "description": "FOCUS 1.5 Contract Commitment worked examples.",
    "columns": [
     {
@@ -730,12 +775,15 @@
      "name": "x_ExampleFile",
      "type": "VARCHAR"
     }
-   ]
+   ],
+   "lab_columns": {
+    "x_ExampleFile": "Added by the lab: the worked-example file the row came from."
+   }
   },
   "InvoiceDetail": {
    "file": "InvoiceDetail.parquet",
    "rows": 8,
-   "bytes": 5283,
+   "bytes": 5184,
    "description": "FOCUS 1.5 Invoice Detail worked examples.",
    "columns": [
     {
@@ -830,12 +878,15 @@
      "name": "x_ExampleFile",
      "type": "VARCHAR"
     }
-   ]
+   ],
+   "lab_columns": {
+    "x_ExampleFile": "Added by the lab: the worked-example file the row came from."
+   }
   },
   "SkuPrice": {
    "file": "SkuPrice.parquet",
    "rows": 62,
-   "bytes": 9465,
+   "bytes": 9219,
    "description": "FOCUS 1.5 SKU Price (preview) worked examples.",
    "columns": [
     {
@@ -934,12 +985,15 @@
      "name": "x_ExampleFile",
      "type": "VARCHAR"
     }
-   ]
+   ],
+   "lab_columns": {
+    "x_ExampleFile": "Added by the lab: the worked-example file the row came from."
+   }
   },
   "CorrectionExamples": {
    "file": "CorrectionExamples.parquet",
    "rows": 114,
-   "bytes": 14281,
+   "bytes": 13580,
    "description": "FOCUS correction-handling worked examples (original, delta, ledger, replacement files).",
    "columns": [
     {
@@ -1230,7 +1284,58 @@
      "name": "Tags",
      "type": "VARCHAR"
     }
-   ]
+   ],
+   "lab_columns": {
+    "x_ExampleFile": "Added by the lab: the worked-example file the row came from.",
+    "AllocatedMethodDetails": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "AllocatedMethodId": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "AllocatedResourceId": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "AllocatedResourceName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "AllocatedServiceName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "AllocatedTags": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "AvailabilityZone": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "BillingAccountId": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "BillingAccountName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "BillingAccountType": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "BillingCurrency": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "CapacityReservationId": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "CapacityReservationStatus": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "ChargeFrequency": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "CommitmentDiscountCategory": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "CommitmentDiscountId": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "CommitmentDiscountName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "CommitmentDiscountQuantity": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "CommitmentDiscountStatus": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "CommitmentDiscountType": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "CommitmentDiscountUnit": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "CommitmentProgramEligibilityDetails": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "ContractApplied": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "CredentialId": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "HostProviderName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "InvoiceDetailId": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "InvoiceIssuerName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "PricingCategory": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "PricingCurrency": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "PricingCurrencyContractedUnitPrice": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "PricingCurrencyEffectiveCost": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "PricingCurrencyListUnitPrice": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "PrincipalId": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "RegionId": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "RegionName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "RequesterDetails": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "ResourceName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "ResourceType": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "ServiceCategory": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "ServiceName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "ServiceProviderName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "ServiceSubcategory": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "SkuMeter": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "SkuPriceDetails": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "SubAccountId": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "SubAccountName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "SubAccountType": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
+    "Tags": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include."
+   }
   }
  }
 }

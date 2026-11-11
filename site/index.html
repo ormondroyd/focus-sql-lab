@@ -69,6 +69,33 @@
     padding: 6px 8px; margin-top: 6px; }
   .info .meta { color: var(--muted); font-size: 12px; margin-top: 6px; }
   .info a { color: var(--accent); }
+  .info .source { font-size: 12px; margin-top: 6px; }
+  .info .source b { color: var(--ok); }
+  .tag { display: inline-block; font-family: inherit; font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase;
+    border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; margin-left: 6px; color: var(--muted);
+    vertical-align: 1px; white-space: nowrap; }
+  .tag.lab { border-color: var(--warn-line); background: var(--warn-bg); color: var(--fg); }
+  .cols li.labcol span:first-child { text-decoration: underline dotted var(--warn-line); text-underline-offset: 3px; }
+  .inputs { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px;
+    margin-top: 8px; font-size: 12px; }
+  .inputs .head { color: var(--muted); margin-bottom: 6px; }
+  .inputs .row { display: grid; grid-template-columns: 2.4em minmax(0, 1fr) minmax(0, 15em) 7.5em; gap: 8px;
+    align-items: center; margin: 4px 0; }
+  .inputs .q { font-family: var(--mono); color: var(--muted); }
+  .inputs mark { background: var(--warn-bg); color: var(--fg); outline: 1px solid var(--warn-line); border-radius: 2px;
+    padding: 0 2px; }
+  .inputs code b { font-weight: 600; }
+  .inputs code { font-family: var(--mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .inputs input { font: inherit; font-family: var(--mono); color: inherit; width: 100%; padding: 4px 6px;
+    border: 1px solid var(--line); border-radius: 6px; background: var(--code-bg); }
+  .inputs select { padding: 4px 6px; }
+  @media (max-width: 640px) {
+    .inputs .row { grid-template-columns: 2.4em minmax(0, 1fr) 7.5em; }
+    .inputs code { grid-column: 2 / 4; }
+    .inputs input { grid-column: 2; }
+  }
+  pre.setup { font-family: var(--mono); font-size: 11px; white-space: pre-wrap; background: var(--code-bg);
+    border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; margin: 6px 0; color: var(--fg); }
   textarea#editor { width: 100%; min-height: 240px; resize: vertical; padding: 10px 12px;
     font-family: var(--mono); font-size: 13px; line-height: 1.5; tab-size: 2;
     border: 1px solid var(--line); border-radius: 8px; background: var(--code-bg); }
@@ -201,7 +228,7 @@
       <h2>Dataset</h2>
       <label class="field" for="dataset"><code>CostAndUsage</code> points to</label>
       <select id="dataset">
-        <option value="cau_sample">FOCUS sample data, 1.0 with 1.5 names (100,000 rows)</option>
+        <option value="cau_sample">FOCUS sample data, 1.0 with 1.5 columns added by the lab (100,000 rows)</option>
         <option value="cau_examples">Spec 1.5 worked examples (493 rows)</option>
       </select>
       <p class="hint" id="dataset-hint"></p>
@@ -215,12 +242,19 @@
       <details class="notes">
         <summary>Sources and cleaning</summary>
         <ul>
+          <li>Names tagged <span class="tag">FOCUS</span> are the specification's. Names tagged <span class="tag lab">lab</span>, and columns with a dotted underline, were made by this lab: hover over one to see why.</li>
           <li><b>cau_sample</b> is the FinOps Foundation's FOCUS-Sample-Data: anonymised FOCUS 1.0 data from AWS, Microsoft, Oracle and a little Google. Costs are anonymised: read the method, not the money.</li>
-          <li>To let 1.5 queries run on it, every 1.5 column was added. Columns 1.0 doesn't have are NULL. <code>ServiceProviderName</code> and <code>HostProviderName</code> were derived from <code>ProviderName</code>, <code>PublisherName</code> and <code>InvoiceIssuerName</code> using the spec's migration guidance. The removed 1.0 columns are kept so you can practise migrating queries.</li>
+          <li>It is not FOCUS 1.5 data. So that 1.5 queries can run on it, the lab added every 1.5 column it lacks, empty. It derived <code>ServiceProviderName</code> and <code>HostProviderName</code> from <code>ProviderName</code>, <code>PublisherName</code> and <code>InvoiceIssuerName</code> using the spec's migration guidance. The 1.0 columns that later versions removed are kept.</li>
           <li>The sample writes missing values as the text <code>NULL</code>. These were loaded as nulls.</li>
           <li><b>cau_examples</b> and the other tables come from the specification's worked-example CSVs. Each file is a separate scenario, so filter by <code>x_ExampleFile</code> before you add anything up. Some files used the text <code>null</code> or currency text such as <code>$10,000.00</code> in Decimal columns. These were cleaned on load.</li>
-          <li>The spec's example queries were converted from BigQuery SQL to DuckDB SQL with sqlglot. <code>?</code> placeholders were filled with values from the data.</li>
+          <li>Decimal columns are 64-bit floating point, one of the precisions the spec allows. Sums of charges and credits can leave tiny remainders instead of exactly zero.</li>
         </ul>
+      </details>
+      <details class="notes">
+        <summary>What the lab adds to DuckDB</summary>
+        <p>The specification's queries run exactly as published. These statements run first, to supply names and
+          functions the queries expect and DuckDB doesn't have (<a href="lab-setup.sql">lab-setup.sql</a>):</p>
+        <pre class="setup" id="lab-setup">Loading…</pre>
       </details>
     </section>
   </aside>
@@ -231,6 +265,7 @@
     </div>
     <div id="example-info" class="info" hidden></div>
     <textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="SQL editor"></textarea>
+    <div id="inputs" class="inputs" hidden></div>
     <div class="actions">
       <button id="run" class="primary" disabled>Run</button>
       <span class="kbd">⌘ / Ctrl + Enter</span>
@@ -252,7 +287,9 @@
 <section id="model" hidden>
   <div class="model-head">
     <p>The FOCUS 1.5 data model: five datasets and the joins the specification documents. Lines connect key columns,
-      and dashed lines are optional keys. Click a line, a table name or a column.</p>
+      and dashed lines are optional keys. Click a line, a table name or a column. Dataset and column definitions are
+      the specification's. The specification describes relationships only in prose, so the diagram's lines, the
+      relationship names and the join SQL are the lab's reading of it.</p>
     <label for="model-dataset">Cost and Usage rows from
       <select id="model-dataset">
         <option value="cau_sample">FOCUS sample data</option>
@@ -263,7 +300,7 @@
   <div class="erd" id="erd"><p class="hint">Loading the data model…</p></div>
   <div class="model-bottom">
     <div>
-      <h2 style="margin-top:0">Relationships</h2>
+      <h2 style="margin-top:0">Relationships <span class="tag lab" title="Names written by the lab">lab names</span></h2>
       <ul id="rel-list"></ul>
     </div>
     <div class="detail" id="model-detail"><p class="hint">Select a relationship, a table or a column to see its definition from the spec and how it looks in the loaded data.</p></div>
@@ -272,8 +309,9 @@
 <footer>
   Data: <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data">FOCUS-Sample-Data</a> and the worked examples and example queries in the
   <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec">FOCUS specification</a>, licensed under
-  <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Changes: data cleaned and typed, queries converted to DuckDB SQL,
-  and the data model drawn from the specification's dataset and column definitions.
+  <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Changes: data cleaned and typed, FOCUS 1.5 columns added to the
+  1.0 sample, and the data model drawn from the specification's dataset and column definitions. The example queries are
+  unchanged.
   Powered by <a href="https://duckdb.org/docs/api/wasm/overview">DuckDB-WASM</a>, with the response explorer by
   <a href="https://perspective.finos.org">Perspective</a> (FINOS). Not affiliated with the FinOps Foundation.
 </footer>
@@ -291,6 +329,117 @@ const store = {
 };
 
 let db, conn, manifest, model, examples = [], last = null, busy = false;
+let inputs = []; // one { value, type } per ? in the editor
+const SQL_KEY = 'editor-sql', INPUTS_KEY = 'editor-inputs';
+
+// ---- ? inputs ------------------------------------------------------------------------
+// The specification marks each value the reader supplies with ?. The page leaves the query exactly as published and,
+// when it runs, puts each input's value in place of its ? as a typed SQL literal, the way a database client binds a
+// parameter. tools/extract_sql.py does the same when it tests the queries.
+
+// Positions of the ? inputs, skipping any ? inside strings, quoted names and comments.
+function placeholders(sql) {
+  const out = [];
+  let i = 0;
+  const n = sql.length;
+  while (i < n) {
+    const c = sql[i];
+    if (c === "'" || c === '"') { // a string or quoted name; a doubled quote inside it is an escaped quote
+      let j = i + 1;
+      while (j < n) {
+        if (sql[j] === c && sql[j + 1] === c) j += 2;
+        else if (sql[j] === c) break;
+        else j += 1;
+      }
+      i = j + 1;
+    } else if (sql.startsWith('--', i)) {
+      const j = sql.indexOf('\n', i);
+      i = j < 0 ? n : j;
+    } else if (sql.startsWith('/*', i)) {
+      const j = sql.indexOf('*/', i + 2);
+      i = j < 0 ? n : j + 2;
+    } else {
+      if (c === '?') out.push(i);
+      i += 1;
+    }
+  }
+  return out;
+}
+
+const DATETIME_RE = /^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}(:\d{2}(\.\d+)?)?)?$/;
+const guessType = (v) => (DATETIME_RE.test(v) ? 'timestamp' : /^-?\d+(\.\d+)?([eE]-?\d+)?$/.test(v) ? 'number' : 'text');
+
+function sqlLiteral(p) {
+  const v = p && p.value != null ? String(p.value).trim() : '';
+  if (v === '') return 'NULL';
+  if (p.type === 'number') {
+    if (!/^-?\d+(\.\d+)?([eE]-?\d+)?$/.test(v)) throw new Error(`"${v}" is not a number. Change the input's type or value.`);
+    return v;
+  }
+  const quoted = `'${v.replace(/'/g, "''")}'`;
+  return p.type === 'timestamp' ? `TIMESTAMP ${quoted}` : quoted;
+}
+
+function bindInputs(sql) {
+  let out = '', from = 0;
+  placeholders(sql).forEach((pos, i) => {
+    out += sql.slice(from, pos) + sqlLiteral(inputs[i]);
+    from = pos + 1;
+  });
+  return out + sql.slice(from);
+}
+
+function renderInputs() {
+  const sql = $('editor').value;
+  const pos = placeholders(sql);
+  inputs = pos.map((_, i) => inputs[i] || { value: '', type: 'text' });
+  const box = $('inputs');
+  box.hidden = !pos.length;
+  if (!pos.length) { box.innerHTML = ''; return; }
+  // Show each ? on its line, highlighted. Where it sits in a VALUES list whose columns the query names, as in
+  // WITH Inputs (ServiceProviderName, SkuId) AS (VALUES (?, ?)), show the column it fills.
+  const context = (p) => {
+    const start = sql.lastIndexOf('\n', p - 1) + 1, end = sql.indexOf('\n', p);
+    const left = sql.slice(start, p).trimStart(), right = sql.slice(p + 1, end < 0 ? undefined : end).trimEnd();
+    const l = left.length > 45 ? '…' + left.slice(-45) : left, r = right.length > 25 ? right.slice(0, 25) + '…' : right;
+    let column = '';
+    const open = sql.lastIndexOf('(', p), close = sql.lastIndexOf(')', p);
+    if (open > close && /\bVALUES\s*$/i.test(sql.slice(0, open))) {
+      const head = sql.slice(0, open).match(/(\w+)\s*\(([^()]*)\)\s*AS\s*\(\s*VALUES\s*$/i);
+      const k = pos.filter((q) => q > open && q < p).length;
+      const cols = head ? head[2].split(',').map((s) => s.trim()) : [];
+      if (cols[k]) column = cols[k];
+    }
+    return { html: `${escapeHtml(l)}<mark>?</mark>${escapeHtml(r)}`, text: `${l}?${r}`, column };
+  };
+  const types = ['text', 'number', 'timestamp'];
+  box.innerHTML = `<div class="head">This query has ${pos.length} input${pos.length === 1 ? '' : 's'}, marked
+    <code>?</code>. The query stays as written: when it runs, each value takes the place of its <code>?</code>.</div>` +
+    pos.map((p, i) => { const c = context(p); return `<div class="row"><span class="q">?${i + 1}</span>
+      <code title="${escapeHtml(c.text)}">${c.column ? `<b>${escapeHtml(c.column)}</b> · ` : ''}${c.html}</code>
+      <input data-i="${i}" value="${escapeHtml(inputs[i].value ?? '')}" aria-label="Value for input ${i + 1}" spellcheck="false">
+      <select data-i="${i}" aria-label="Type of input ${i + 1}">${types.map((t) =>
+        `<option${t === inputs[i].type ? ' selected' : ''}>${t}</option>`).join('')}</select></div>`; }).join('');
+}
+
+$('inputs').addEventListener('input', (e) => {
+  const i = Number(e.target.dataset.i);
+  if (Number.isNaN(i) || !inputs[i]) return;
+  if (e.target.tagName === 'SELECT') inputs[i].type = e.target.value;
+  else {
+    const wasGuess = inputs[i].value === '' || guessType(String(inputs[i].value)) === inputs[i].type;
+    inputs[i].value = e.target.value;
+    if (wasGuess && e.target.value !== '') { // keep the type in step with what's typed, unless it was chosen by hand
+      inputs[i].type = guessType(e.target.value.trim());
+      e.target.nextElementSibling.value = inputs[i].type;
+    }
+  }
+  store.set(INPUTS_KEY, JSON.stringify(inputs));
+});
+
+function sqlStatements(text) {
+  return text.replace(/^\s*--.*$/gm, '').split(/;\s*(?:\n|$)/).map((s) => s.trim()).filter(Boolean);
+}
 
 function setStatus(text, ready = false) {
   $('status').textContent = text;
@@ -311,12 +460,16 @@ async function init() {
     if (!r.ok) throw new Error(`Could not load ${url} (${r.status})`);
     return r.json();
   });
-  let practice, specQueries;
-  [manifest, practice, specQueries, model] = await Promise.all([
+  let practice, specQueries, labSetup;
+  [manifest, practice, specQueries, model, labSetup] = await Promise.all([
     getJson('focus/data/manifest.json'),
     getJson('practice-queries.json'),
     getJson('focus/spec-queries.json'),
     getJson('focus/model.json'),
+    fetch('lab-setup.sql').then((r) => {
+      if (!r.ok) throw new Error(`Could not load lab-setup.sql (${r.status})`);
+      return r.text();
+    }),
   ]);
   examples = practice.concat(specQueries);
   const names = Object.keys(manifest.tables);
@@ -344,13 +497,19 @@ async function init() {
 
   const ds = manifest.tables[store.get('dataset')] ? store.get('dataset') : 'cau_sample';
   await setDataset(ds);
-  await conn.query('CREATE VIEW focus_data AS SELECT * FROM CostAndUsage'); // name used in the migration guide
+  // Everything the lab adds to DuckDB so the spec's queries run as published. Runs after the JSON functions have
+  // loaded (above), because it replaces json_value, and after CostAndUsage exists, because focus_data points at it.
+  for (const statement of sqlStatements(labSetup)) await conn.query(statement);
+  $('lab-setup').textContent = labSetup.trim();
   renderTables();
   renderExamples();
 
-  const saved = store.get('sql');
-  if (saved && saved.trim()) $('editor').value = saved;
-  else pickExample(examples[0].id);
+  const saved = store.get(SQL_KEY);
+  if (saved && saved.trim()) {
+    $('editor').value = saved;
+    try { inputs = JSON.parse(store.get(INPUTS_KEY) || '[]'); } catch { inputs = []; }
+    renderInputs();
+  } else pickExample(examples[0].id);
   $('run').disabled = false;
   const total = names.reduce((n, t) => n + manifest.tables[t].rows, 0);
   setStatus(`Ready · ${total.toLocaleString()} rows in ${names.length} tables`, true);
@@ -365,23 +524,40 @@ async function setDataset(t, why = '') {
   store.set('dataset', t);
   if (modelBuilt) refreshModelData();
   $('dataset-hint').textContent = why ||
-    (t === 'cau_sample' ? 'FOCUS 1.5-only columns, such as SkuPriceDetails, are NULL here.'
+    (t === 'cau_sample' ? 'FOCUS 1.0 data. The lab added the 1.5-only columns, such as SkuPriceDetails, empty.'
                       : 'Each worked-example file is its own scenario. Filter by x_ExampleFile.');
 }
 
 function renderTables() {
   const order = ['cau_sample', 'cau_examples', 'SkuPrice', 'InvoiceDetail', 'ContractCommitment', 'BillingPeriod', 'CorrectionExamples'];
-  const views = `<details class="table"><summary><span>CostAndUsage</span><span class="rows">view</span></summary>
-    <p>Points to the dataset chosen above. The spec's example queries use this name, apart from the migration guide's.</p></details>
-    <details class="table"><summary><span>focus_data</span><span class="rows">view</span></summary>
-    <p>Another name for CostAndUsage, created by this lab. It is not a FOCUS dataset: the spec's version migration
-    guide names its table focus_data in its 6 example queries, so this view lets them run unchanged.</p></details>`;
+  const FOCUS_NAME = 'The name of a FOCUS dataset in the specification.';
+  // Where each table or view name comes from.
+  const NAMES = {
+    cau_sample: ['lab', 'A name made by the lab for the FOCUS 1.0 sample data. CostAndUsage can point at it.'],
+    cau_examples: ['lab', "A name made by the lab for the specification's worked-example Cost and Usage rows. CostAndUsage can point at it."],
+    CorrectionExamples: ['lab', "A name made by the lab for the specification's correction-handling examples, which are Cost and Usage rows."],
+    SkuPrice: ['FOCUS', FOCUS_NAME], InvoiceDetail: ['FOCUS', FOCUS_NAME],
+    ContractCommitment: ['FOCUS', FOCUS_NAME], BillingPeriod: ['FOCUS', FOCUS_NAME],
+  };
+  const tag = ([kind, why]) => `<span class="tag${kind === 'lab' ? ' lab' : ''}" title="${escapeHtml(why)}">${kind}</span>`;
+  const views = `<details class="table"><summary><span>CostAndUsage${tag(['FOCUS', FOCUS_NAME])}</span><span class="rows">view</span></summary>
+    <p>The FOCUS Cost and Usage dataset, which the spec's queries read. Here it is a view the lab points at the data chosen above.</p></details>
+    <details class="table"><summary><span>focus_data${tag(['lab', 'Defined by the lab. Only the migration guide uses this name.'])}</span><span class="rows">view</span></summary>
+    <p>Another name for CostAndUsage. It is not a FOCUS dataset: the spec's version migration guide reads from a
+    table called focus_data in its 6 example queries without defining it, so the lab defines it.</p></details>`;
   $('tables').innerHTML = views + order.filter((t) => manifest.tables[t]).map((t) => {
     const m = manifest.tables[t];
-    const cols = m.columns.map((c) =>
-      `<li data-col="${c.name}" title="Insert ${c.name}"><span>${c.name}</span><span>${c.type.toLowerCase()}</span></li>`).join('');
-    return `<details class="table"><summary><span>${t}</span><span class="rows">${m.rows.toLocaleString()} rows</span></summary>
-      <p>${escapeHtml(m.description)}</p><ul class="cols">${cols}</ul></details>`;
+    const labCols = m.lab_columns || {};
+    const nLab = Object.keys(labCols).length;
+    const cols = m.columns.map((c) => {
+      const why = labCols[c.name];
+      return `<li data-col="${c.name}"${why ? ' class="labcol"' : ''} title="${escapeHtml(why ? `${why} Click to insert.` : `Click to insert ${c.name}.`)}">` +
+        `<span>${c.name}</span><span>${c.type.toLowerCase()}</span></li>`;
+    }).join('');
+    return `<details class="table"><summary><span>${t}${tag(NAMES[t] || ['lab', 'Made by the lab.'])}</span><span class="rows">${m.rows.toLocaleString()} rows</span></summary>
+      <p>${escapeHtml(m.description)}</p>
+      ${nLab ? `<p>${nLab} of ${m.columns.length} columns, underlined, were added or derived by the lab. Hover over one to see why.</p>` : ''}
+      <ul class="cols">${cols}</ul></details>`;
   }).join('');
   $('tables').addEventListener('click', (e) => {
     const li = e.target.closest('li[data-col]');
@@ -410,7 +586,10 @@ async function pickExample(id, autoRun = false) {
   if (!e) return;
   $('examples').value = id;
   $('editor').value = e.sql;
-  store.set('sql', e.sql);
+  inputs = (e.params || []).map((p) => ({ value: p.value == null ? '' : String(p.value), type: p.type }));
+  renderInputs();
+  store.set(SQL_KEY, e.sql);
+  store.set(INPUTS_KEY, JSON.stringify(inputs));
 
   let target = e.dataset || (e.sample.rows > 0 ? 'cau_sample' : e.examples.rows > 0 ? 'cau_examples' : null);
   if (target && target !== $('dataset').value && /CostAndUsage|focus_data/.test(e.sql)) {
@@ -419,14 +598,17 @@ async function pickExample(id, autoRun = false) {
 
   const status = (r, label) => r.ok ? `${label}: ${r.rows} row${r.rows === 1 ? '' : 's'}` : `${label}: fails`;
   const src = e.source ? ` · <a href="${SPEC_URL}${e.source}" target="_blank" rel="noopener">spec source</a>` : '';
-  const params = e.params && e.params.length
-    ? `<div class="meta">Placeholders filled with: <code>${e.params.map(escapeHtml).join('</code>, <code>')}</code></div>` : '';
+  const n = (e.params || []).length;
+  const source = e.lab
+    ? '<div class="source"><span class="tag lab">lab</span> Written for this lab in DuckDB SQL. Not from FOCUS.</div>'
+    : `<div class="source"><b>Exactly as published</b> in the specification.${n ? ` Its ${n} input${n === 1 ? '' : 's'}
+        (<code>?</code>) are values you supply: the lab suggests ${n === 1 ? 'one' : 'some'} from the data, below the query.` : ''}</div>`;
   $('example-info').innerHTML = `
     <div class="crumb">${escapeHtml(e.feature)}${src}</div>
     <div class="title">${escapeHtml(e.title)}</div>
     ${e.intro ? `<p>${escapeHtml(e.intro)}</p>` : ''}
+    ${source}
     ${e.note ? `<div class="note">${escapeHtml(e.note)}</div>` : ''}
-    ${params}
     <div class="meta">Tested · ${status(e.sample, 'sample data')} · ${status(e.examples, '1.5 examples')}</div>`;
   $('example-info').hidden = false;
   if (autoRun) run();
@@ -441,7 +623,8 @@ async function run() {
   $('meta').textContent = 'Running…';
   const t0 = performance.now();
   try {
-    const res = await conn.query(sql);
+    if (placeholders(sql).length !== inputs.length) renderInputs(); // the editor changed since the inputs were drawn
+    const res = await conn.query(bindInputs(sql));
     renderResult(res, performance.now() - t0);
     if (view === 'explore') renderExplore();
   } catch (err) {
@@ -656,7 +839,7 @@ function insertAtCursor(text) {
   ed.value = value.slice(0, s) + text + value.slice(e);
   ed.selectionStart = ed.selectionEnd = s + text.length;
   ed.focus();
-  store.set('sql', ed.value);
+  store.set(SQL_KEY, ed.value);
 }
 
 function escapeHtml(s) {
@@ -673,7 +856,11 @@ $('editor').addEventListener('keydown', (e) => {
 let saveTimer;
 $('editor').addEventListener('input', () => {
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => store.set('sql', $('editor').value), 400);
+  saveTimer = setTimeout(() => {
+    renderInputs();
+    store.set(SQL_KEY, $('editor').value);
+    store.set(INPUTS_KEY, JSON.stringify(inputs));
+  }, 300);
 });
 
 // ---- Data model view ---------------------------------------------------------------
@@ -880,9 +1067,14 @@ function openInQuery(sql) {
   if (!sql) return;
   showTab('query');
   $('examples').value = '';
-  $('example-info').hidden = true;
+  $('example-info').innerHTML = '<div class="source"><span class="tag lab">lab</span> Opened from the Data model. ' +
+    'Written by this lab in DuckDB SQL, not from FOCUS.</div>';
+  $('example-info').hidden = false;
   $('editor').value = sql;
-  store.set('sql', sql);
+  inputs = [];
+  renderInputs();
+  store.set(SQL_KEY, sql);
+  store.set(INPUTS_KEY, '[]');
   window.scrollTo({ top: 0 });
   run();
 }
@@ -909,14 +1101,16 @@ async function relDetail(r, el, token) {
   if (srcDataset) spec = srcDataset.relationships_text;
   else for (const d of model.datasets) { const c = d.columns.find((x) => x.source === r.source); if (c) spec = [c.description]; }
   detailSql = { join: r.join_sql };
-  el.innerHTML = `<h3>${escapeHtml(r.name)}</h3>
+  el.innerHTML = `<h3>${escapeHtml(r.name)}<span class="tag lab" title="Written by the lab">lab</span></h3>
     <div class="sub">${r.a} → ${r.b}</div>
+    <p class="hint">The specification describes this relationship in prose, quoted at the end. The name, keys,
+      matching rules and join SQL are the lab's reading of it.</p>
     <h4>Keys</h4>
     <ul>${r.keys.map((k) => `<li><code>${r.a}.${k[0]}</code> = <code>${r.b}.${k[1]}</code>${k[2] ? ' (optional)' : ''}</li>`).join('')}</ul>
     ${r.also.length ? `<h4>Also matched on</h4><ul>${r.also.map((x) => `<li>${escapeHtml(x)}</li>`).join('')}</ul>` : ''}
     <p>${escapeHtml(r.cardinality)}</p>
     <h4>In the loaded data</h4><div id="rel-stats"><p class="hint">Counting…</p></div>
-    <h4>Join</h4><pre>${escapeHtml(r.join_sql)}</pre>
+    <h4>Join, written by the lab</h4><pre>${escapeHtml(r.join_sql)}</pre>
     <div class="actions"><button class="primary" data-action="open" data-key="join">Open in Query</button></div>
     <h4>What the specification says</h4>${specParas(spec)}
     <p>${specLink(r.source)}</p>`;

@@ -7,7 +7,7 @@ Everything in this folder is derived from FOCUS project material and is used und
 > Series and its contributors.
 
 - `data/`: FOCUS-Sample-Data and the specification's worked examples, cleaned and stored as Parquet
-- `spec-queries.json`: the specification's example queries, converted to DuckDB SQL
+- `spec-queries.json`: the specification's example queries, verbatim, with a suggested value for each `?` input
 - `model.json`: datasets, columns and relationships from the specification
 
 See [NOTICE.md](../../NOTICE.md) for each file's source, the upstream version used and the changes made.

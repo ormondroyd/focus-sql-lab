@@ -92,14 +92,19 @@ def check_casts(src, dst, cols):
 
 
 def add_missing(table, dataset):
-    """Add every 1.5 column the table lacks, as a typed NULL, so spec queries bind."""
+    """Add every 1.5 column the table lacks, as a typed NULL, so spec queries bind. Returns the names added."""
     have = {r[0].lower() for r in con.execute(f"DESCRIBE {table}").fetchall()}
+    added = []
     for low, (name, ftype) in TYPES[dataset].items():
         if low not in have:
             con.execute(f'ALTER TABLE {table} ADD COLUMN "{name}" {SQL_TYPE[ftype]}')
+            added.append(name)
+    return added
 
 
 manifest = {"tables": {}}
+# Columns this lab added, renamed or derived, with the reason: shown on the page so they're never mistaken for FOCUS data.
+LAB_COLUMNS = {}
 
 # ---- Sample data: FOCUS-Sample-Data 1.0, anonymised ---------------------------------
 raw_csv = RAW / "focus_sample_100000.csv.gz"
@@ -121,8 +126,18 @@ con.execute("""UPDATE cau_sample SET
                                     OR PublisherName = InvoiceIssuerName THEN ProviderName
                                ELSE PublisherName END,
     HostProviderName = ProviderName""")
-add_missing("cau_sample", "CostAndUsage")
+added = add_missing("cau_sample", "CostAndUsage")
 con.execute("ALTER TABLE cau_sample ADD COLUMN x_Dataset VARCHAR DEFAULT 'FOCUS-Sample-Data 1.0 (anonymised)'")
+LAB_COLUMNS["cau_sample"] = {
+    "x_SampleRowId": "The sample's own row ID column, Id, renamed by the lab. It isn't a FOCUS column.",
+    "ServiceProviderName": "Derived by the lab from ProviderName, PublisherName and InvoiceIssuerName, following the "
+                           "spec's version migration guidance. FOCUS 1.0 has no such column.",
+    "HostProviderName": "Derived by the lab from ProviderName, following the spec's version migration guidance. "
+                        "FOCUS 1.0 has no such column.",
+    "x_Dataset": "Added by the lab: names the source dataset.",
+    **{c: "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have." for c in added
+       if c not in ("ServiceProviderName", "HostProviderName")},
+}
 print("cau_sample rows:", con.execute("SELECT count(*) FROM cau_sample").fetchone()[0], "cast losses:", lost)
 
 # ---- 1.5 worked examples from the spec --------------------------------------------
@@ -152,7 +167,11 @@ for table, (dataset, files) in groups.items():
     rel = f"replace(filename, '{DATA}/', '')"
     con.execute(f"CREATE TABLE {table} AS SELECT {', '.join(parts)}, {rel} AS x_ExampleFile FROM raw_{table}")
     lost = check_casts(f"raw_{table}", table, [c for c in cols if c.lower() in TYPES[dataset]])
-    add_missing(table, dataset)
+    added = add_missing(table, dataset)
+    LAB_COLUMNS[table] = {
+        "x_ExampleFile": "Added by the lab: the worked-example file the row came from.",
+        **{c: "Added empty by the lab: a FOCUS 1.5 column that none of these example files include." for c in added},
+    }
     print(f"{table} rows:", con.execute(f"SELECT count(*) FROM {table}").fetchone()[0],
           "files:", len(files), "cast losses:", lost)
 
@@ -173,7 +192,8 @@ for table in ["cau_sample", "cau_examples", "ContractCommitment", "InvoiceDetail
     columns = [{"name": r[0], "type": r[1]} for r in con.execute(f"DESCRIBE {table}").fetchall()]
     rows = con.execute(f"SELECT count(*) FROM {table}").fetchone()[0]
     manifest["tables"][table] = {"file": path.name, "rows": rows, "bytes": path.stat().st_size,
-                                 "description": DESCRIPTIONS[table], "columns": columns}
+                                 "description": DESCRIPTIONS[table], "columns": columns,
+                                 "lab_columns": LAB_COLUMNS.get(table, {})}
     print(f"wrote {path.name}: {rows} rows, {path.stat().st_size:,} bytes, {len(columns)} columns")
 
 (OUT / "manifest.json").write_text(json.dumps(manifest, indent=1))
