@@ -10,7 +10,9 @@ queries in the browser, so the server only serves static files: no database, no 
 - **Response explorer:** pivot and chart any query result by any column, using Perspective (FINOS).
 - **Data model:** the five FOCUS 1.5 datasets with lines between the key columns of every documented join. Click a
   join to see the spec's wording, the lab's join SQL and how well the keys match in the chosen data source. Click a
-  column to see its definition and a profile of its values. Each dataset, column and join also shows its **history**:
+  dataset, column or attribute to see a plain-language summary, the spec's definition, its requirements exactly as
+  written (each line marked with the pull request that last changed it), and a profile of its values. Attributes,
+  such as StringHandling or CorrectionHandling, are the shared rule sets the requirements point to. Each dataset, column and join also shows its **history**:
   the pull requests that changed its definition file, newest first, with an excerpt of each one's description, the
   issue it addressed, and how much discussion each had, with a summary of the conversation in each pull request and
   issue that had one. Each entry shows its status on GitHub (merged, open, or closed and why), and a "Not merged" list
@@ -51,6 +53,8 @@ Everything the lab made is labelled on the page:
   changed more than 15 files "spec-wide") are the lab's; its summaries are excerpts the lab cut, not text it wrote.
 - **Debate notes:** [site/column-notes.json](site/column-notes.json) holds notes on the 11 join-key columns, written
   by Claude (an AI model) from the GitHub threads each note lists. They are the lab's reading of those discussions.
+- **Plain-language summaries:** [site/object-summaries.json](site/object-summaries.json) summarises each dataset,
+  column and attribute page of the specification, written by Claude from that page.
 - **Conversation summaries:** [site/thread-summaries.json](site/thread-summaries.json) summarises the conversation in
   each FOCUS_Spec issue and pull request in the history that has three or more comments or reviews, written by Claude
   from each thread. Threads with less discussion show only their own description.
@@ -69,6 +73,7 @@ site/
   lab-setup.sql               what the lab adds to DuckDB so the spec's queries run as published
   column-notes.json           the lab's notes on the debate behind each join-key column, with the threads each draws on
   thread-summaries.json       summaries of the conversation in each discussed FOCUS_Spec issue and pull request
+  object-summaries.json       plain-language summaries of each dataset, column and attribute page
   practice-queries.json       the practice queries, with test results (built from tools/practice.json)
   focus/                      FOCUS-derived, rebuilt by the tools; not edited by hand
     data/*.parquet            sample data and the specification's worked examples

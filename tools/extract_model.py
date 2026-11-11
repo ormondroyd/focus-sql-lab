@@ -60,6 +60,41 @@ def constraints(text):
     return out
 
 
+def requirements(text):
+    """The Requirements section, line by line and exactly as written: lead sentences, bullets with their depth,
+    sub-headings and tables. Each keeps its line number in the file, so the history can say which pull request last
+    changed it."""
+    out, inside, table = [], False, None
+    for i, line in enumerate(text.split("\n"), 1):
+        if re.match(r"^## Requirements", line):
+            inside = True
+            continue
+        if inside and re.match(r"^#{1,2} ", line):
+            break
+        if not inside:
+            continue
+        if line.lstrip().startswith("|"):
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            if all(set(c) <= set(":- ") for c in cells):
+                continue  # the row under a table's header
+            if table is None:
+                table = {"table": [], "line": i}
+                out.append(table)
+            table["table"].append(cells)
+            continue
+        table = None
+        if not line.strip():
+            continue
+        m = re.match(r"^(\s*)[*-] (.*)$", line)
+        if m:
+            out.append({"depth": len(m.group(1).expandtabs(2)) // 2, "md": m.group(2).strip(), "line": i})
+        elif line.startswith("###"):
+            out.append({"heading": line.lstrip("# ").strip(), "line": i})
+        else:
+            out.append({"depth": -1, "md": line.strip(), "line": i})
+    return out
+
+
 def rel_path(p):
     return str(p.relative_to(SPEC))
 
@@ -88,6 +123,7 @@ for ds_id, folder in DATASETS:
             "conditions": c.get("Operating model conditions"),
             "introduced": clean(section(ct, "Version Introduced")),
             "source": rel_path(cpath),
+            "requirements": requirements(ct),
         })
     datasets.append({
         "id": ds_id,
@@ -97,8 +133,33 @@ for ds_id, folder in DATASETS:
         "preview": "**Preview:**" in text,
         "introduced": clean(section(text, "Version Introduced")),
         "source": rel_path(path),
+        "requirements": requirements(text),
         "columns": columns,
     })
+
+# Attributes: the shared rule sets that dataset and column requirements point to, such as StringHandling.
+attributes = []
+for path in sorted((SPEC / "specification/attributes").glob("*.md")):
+    if path.name == "attributes_overview.md":
+        continue
+    text = path.read_text()
+    name = clean(section(text, "Attribute Name"))
+    attributes.append({
+        "id": clean(section(text, "Attribute ID")),
+        "name": name,
+        "anchor": name.lower().replace(" ", ""),  # how the spec links to it, e.g. #attributes.date/timeformat
+        "description": clean(section(text, "Description")),
+        "introduced": clean(section(text, "Version Introduced")),
+        "source": rel_path(path),
+        "requirements": requirements(text),
+        "used_by": [],
+    })
+by_anchor = {a["anchor"]: a for a in attributes}
+for d in datasets:
+    for owner, reqs in [(None, d["requirements"])] + [(c["id"], c["requirements"]) for c in d["columns"]]:
+        for anchor in dict.fromkeys(re.findall(r"\(#attributes\.([^)]+)\)", " ".join(r.get("md", "") for r in reqs))):
+            if anchor in by_anchor:
+                by_anchor[anchor]["used_by"].append([d["id"], owner])
 
 
 def stats_sql(a, b, keys):
@@ -243,6 +304,7 @@ model = {
     "spec": {"repo": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec",
              "ref": commit[0] if commit else None, "date": commit[1] if len(commit) > 1 else None},
     "datasets": datasets,
+    "attributes": attributes,
     "relationships": RELS,
 }
 out = SITE / "focus" / "model.json"

@@ -177,9 +177,9 @@
   .pill.hl { border-color: var(--accent); color: var(--accent); font-weight: 600; }
   .erd.focus .pill:not(.hl) { opacity: 0.35; }
   .model-bottom { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 16px; margin-top: 22px; align-items: start; }
-  #rel-list { list-style: none; margin: 0; padding: 0; }
-  #rel-list button { width: 100%; text-align: left; border: 0; border-radius: 6px; padding: 6px 8px; background: transparent; font-size: 13px; }
-  #rel-list button[aria-pressed="true"] { background: var(--panel); box-shadow: 0 0 0 1px var(--accent); }
+  #rel-list, #attr-list { list-style: none; margin: 0; padding: 0; }
+  #rel-list button, #attr-list button { width: 100%; text-align: left; border: 0; border-radius: 6px; padding: 6px 8px; background: transparent; font-size: 13px; }
+  #rel-list button[aria-pressed="true"], #attr-list button[aria-pressed="true"] { background: var(--panel); box-shadow: 0 0 0 1px var(--accent); }
   #rel-list .opt { color: var(--muted); font-size: 11px; }
   .detail { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 13px; min-height: 140px; }
   .detail h3 { margin: 0 0 2px; font-size: 15px; }
@@ -207,6 +207,17 @@
   .detail .note-box { border: 1px dashed var(--line); border-radius: 8px; padding: 4px 10px 8px; margin: 10px 0; }
   .detail .note-box h5 { margin: 8px 0 2px; font-size: 12.5px; }
   .detail .conv { margin: 4px 0 2px; }
+  .detail .plain { font-size: 13.5px; line-height: 1.55; margin: 8px 0; }
+  .detail blockquote.spec-def { margin: 8px 0; }
+  .detail .reqs { font-size: 12.5px; line-height: 1.5; }
+  .detail .req { position: relative; margin: 3px 0; }
+  .detail .req .dot { position: absolute; margin-left: -11px; color: var(--muted); }
+  .detail .req.lead { font-weight: 600; margin-top: 8px; }
+  .detail .req-h { font-weight: 600; margin: 10px 0 2px; }
+  .detail .req-pr { font-size: 11px; color: var(--muted); margin-left: 4px; white-space: nowrap; }
+  .detail table.req-table { margin: 6px 0 6px 14px; }
+  .detail .used-by details { margin: 2px 0; }
+  .detail .used-by summary { color: inherit; margin: 2px 0; }
   .detail .state { display: inline-block; font-size: 11px; line-height: 1.5; padding: 0 7px; margin-right: 6px; border-radius: 9px;
     border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
   .detail .state.open { color: var(--accent); border-color: var(--accent); }
@@ -315,6 +326,9 @@
     <div>
       <h2 style="margin-top:0">Relationships <span class="tag lab" title="Names written by the lab">lab names</span></h2>
       <ul id="rel-list"></ul>
+      <h2 style="margin-top:18px">Attributes</h2>
+      <p class="hint" style="margin:0 0 6px">Shared rule sets that the datasets' and columns' requirements point to.</p>
+      <ul id="attr-list"></ul>
     </div>
     <div class="detail" id="model-detail"><p class="hint">Select a relationship, a table or a column to see its definition from the spec and how it looks in the loaded data.</p></div>
   </div>
@@ -952,6 +966,9 @@ function buildModel() {
     `<li><button data-rel="${r.id}" aria-pressed="false">${escapeHtml(r.name)}</button></li>`).join('');
   erd.addEventListener('click', onModelClick);
   $('rel-list').addEventListener('click', onModelClick);
+  $('attr-list').innerHTML = (model.attributes || []).map((a) =>
+    `<li><button data-attr="${escapeHtml(a.anchor)}" aria-pressed="false">${escapeHtml(a.name)}</button></li>`).join('');
+  $('attr-list').addEventListener('click', onModelClick);
   $('model-detail').addEventListener('click', onDetailClick);
   new ResizeObserver(() => drawLines()).observe(erd);
   modelBuilt = true;
@@ -1031,6 +1048,8 @@ function onModelClick(e) {
     requestAnimationFrame(drawLines);
     return;
   }
+  const attr = e.target.closest('[data-attr]');
+  if (attr) return select({ type: 'attr', id: attr.dataset.attr });
   const rel = e.target.closest('[data-rel]');
   if (rel) return select({ type: 'rel', id: rel.dataset.rel });
   const col = e.target.closest('.col');
@@ -1042,6 +1061,8 @@ function onModelClick(e) {
 function onDetailClick(e) {
   const open = e.target.closest('[data-action="open"]');
   if (open) return openInQuery(detailSql[open.dataset.key]);
+  const attr = e.target.closest('[data-attr]');
+  if (attr) return select({ type: 'attr', id: attr.dataset.attr }, true);
   const rel = e.target.closest('[data-rel]');
   if (rel) return select({ type: 'rel', id: rel.dataset.rel }, true);
   const col = e.target.closest('[data-col]');
@@ -1084,6 +1105,8 @@ function applySelection() {
   if (selection?.type === 'col') mark(selection.ds, selection.col, 'sel');
   if (selection?.type === 'table') erd.querySelector(`.card[data-ds="${selection.ds}"]`)?.classList.add('sel');
   $('rel-list').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(rels.has(b.dataset.rel))));
+  $('attr-list').querySelectorAll('button').forEach((b) =>
+    b.setAttribute('aria-pressed', String(selection?.type === 'attr' && selection.id === b.dataset.attr)));
 }
 
 function openInQuery(sql) {
@@ -1111,6 +1134,7 @@ function renderDetail() {
   }
   if (selection.type === 'rel') return relDetail(relById(selection.id), el, token);
   if (selection.type === 'table') return tableDetail(dsById(selection.ds), el, token);
+  if (selection.type === 'attr') return attrDetail(attrByAnchor(selection.id), el, token);
   return colDetail(dsById(selection.ds), colOf(selection.ds, selection.col), el, token);
 }
 
@@ -1203,6 +1227,90 @@ async function fillNote(colId, token) {
     <p class="hint">Threads read: ${n.threads.map((t) => `<a href="${ISSUE_URL}${t}" target="_blank" rel="noopener">#${t}</a>`).join(', ')}</p></div>`;
 }
 
+// ---- Plain summaries, requirements and attributes ------------------------------------------------------------
+const attrByAnchor = (anchor) => (model.attributes || []).find((a) => a.anchor === anchor);
+const specDef = (text) => (text ? `<blockquote class="spec-def">${escapeHtml(text)}<cite>The specification's definition</cite></blockquote>` : '');
+const REQS = '<h4>Requirements</h4><div id="reqs" class="reqs"><p class="hint">Loading…</p></div>';
+
+// A plain-language summary of each dataset, column and attribute page (site/object-summaries.json).
+let objP = null;
+const loadObj = () => (objP ??= fetch('object-summaries.json').then((r) => (r.ok ? r.json() : null)).catch(() => null));
+async function fillSummary(path, token) {
+  const o = await loadObj();
+  const box = $('obj-summary');
+  if (token !== detailToken || !box || !o || !o.summaries[path]) return;
+  box.innerHTML = `<p class="plain">${escapeHtml(o.summaries[path])}</p>`;
+}
+
+// One line of a requirement, as written: attribute and column links open them here, glossary terms are italic.
+const reqFmt = (t) => escapeHtml(t).replace(/`([^`]+)`/g, '<code>$1</code>')
+  .replace(/(^|[^\w*])\*([^*]+)\*(?![\w*])/g, '$1<em>$2</em>')
+  .replace(/\b(MUST NOT|MUST|SHOULD NOT|SHOULD|MAY|RECOMMENDED)\b/g, '<b>$1</b>');
+function reqText(md) {
+  let out = '', last = 0, m;
+  const re = /\[([^\]]+)\]\(#([^)]+)\)/g;
+  while ((m = re.exec(md))) {
+    out += reqFmt(md.slice(last, m.index));
+    const label = escapeHtml(m[1].replace(/^\*(.*)\*$/, '$1')), target = m[2];
+    if (target.startsWith('attributes.') && attrByAnchor(target.slice(11))) {
+      out += `<button class="linkish" data-attr="${escapeHtml(target.slice(11))}">${label}</button>`;
+    } else if (target.startsWith('datamodel.')) {
+      const [, ds, col] = target.split('.');
+      const d = model.datasets.find((x) => x.id.toLowerCase() === ds);
+      const c = d && d.columns.find((x) => x.id.toLowerCase() === col);
+      out += c ? `<button class="linkish" data-ds="${d.id}" data-col="${escapeHtml(c.id)}">${label}</button>` : label;
+    } else out += `<em>${label}</em>`;
+    last = re.lastIndex;
+  }
+  return out + reqFmt(md.slice(last));
+}
+
+async function fillReqs(owner, token) {
+  const h = await loadHistory();
+  const box = $('reqs');
+  if (token !== detailToken || !box) return;
+  const blamed = (h && h.lines && h.lines[owner.source]) || {};
+  const tag = (line) => {
+    const n = blamed[line], p = n && h.prs[n];
+    return p ? `<a class="req-pr" href="${p.url}" target="_blank" rel="noopener" title="Last changed in #${n}: ${escapeHtml(p.title)} (merged ${p.merged})">#${n}</a>` : '';
+  };
+  const reqs = owner.requirements || [];
+  box.innerHTML = !reqs.length ? '<p class="hint">None listed.</p>' : `<p class="hint">As written in the specification. Click an
+      attribute or a column to open it. The number after each line is the pull request that last changed it.</p>` +
+    reqs.map((r) => {
+      if (r.table) return `<table class="req-table">${r.table.map((row, i) => `<tr>${row.map((cell) =>
+        (i ? `<td>${reqText(cell)}</td>` : `<th>${reqText(cell)}</th>`)).join('')}</tr>`).join('')}</table>${tag(r.line)}`;
+      if (r.heading) return `<div class="req-h">${escapeHtml(r.heading)}${tag(r.line)}</div>`;
+      const pad = r.depth < 0 ? 0 : (r.depth + 1) * 14;
+      return `<div class="req${r.depth < 0 ? ' lead' : ''}" style="padding-left:${pad}px">${r.depth >= 0 ? '<span class="dot">•</span>' : ''}${reqText(r.md)}${tag(r.line)}</div>`;
+    }).join('');
+}
+
+async function attrDetail(a, el, token) {
+  if (!a) { el.innerHTML = ''; return; }
+  const byDs = new Map();
+  for (const [ds, col] of a.used_by) {
+    if (!byDs.has(ds)) byDs.set(ds, { self: false, cols: [] });
+    if (col) byDs.get(ds).cols.push(col); else byDs.get(ds).self = true;
+  }
+  const usedBy = [...byDs].map(([ds, u]) => {
+    const name = escapeHtml(dsById(ds).name);
+    const self = u.self ? `<button class="linkish" data-table="${ds}">${name}</button> (the dataset)` : '';
+    const cols = u.cols.length ? `<details><summary>${self ? '' : `${name}: `}${plural(u.cols.length, 'column')}</summary>${u.cols.map((c) =>
+      `<button class="linkish" data-ds="${ds}" data-col="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join(', ')}</details>` : '';
+    return `<div>${self}${cols}</div>`;
+  }).join('');
+  el.innerHTML = `<h3>${escapeHtml(a.name)}<span class="badge">attribute</span></h3>
+    <div class="sub">${escapeHtml(a.id)}</div>
+    <div id="obj-summary"></div>${specDef(a.description)}
+    <dl><dt>Introduced</dt><dd>${escapeHtml(a.introduced || '–')}</dd></dl>
+    <h4>Used by</h4><div class="used-by">${usedBy || '<p class="hint">Only other attributes refer to it.</p>'}</div>
+    ${REQS}<p>${specLink(a.source)}</p>${HISTORY}`;
+  fillSummary(a.source, token);
+  fillReqs(a, token);
+  fillHistory(a.source, token);
+}
+
 async function relDetail(r, el, token) {
   let spec = [];
   const srcDataset = model.datasets.find((d) => d.source === r.source);
@@ -1256,14 +1364,16 @@ async function tableDetail(d, el, token) {
   detailSql = { summarize: `SUMMARIZE ${d.id};` };
   el.innerHTML = `<h3>${escapeHtml(d.name)}${d.preview ? '<span class="badge">preview</span>' : ''}</h3>
     <div class="sub">${d.id}</div>
-    <p>${escapeHtml(d.description)}</p>
+    <div id="obj-summary"></div>${specDef(d.description)}
     <dl><dt>Introduced</dt><dd>${escapeHtml(d.introduced || '–')}</dd>
       <dt>Columns</dt><dd>${d.columns.length}: ${Object.entries(levels).map(([k, v]) => `${v} ${escapeHtml(String(k).toLowerCase())}`).join(', ')}</dd>
       <dt>Rows in the lab</dt><dd id="tbl-rows">…</dd></dl>
     <h4>Relationships</h4>
     <ul>${rels.map((r) => `<li><button class="linkish" data-rel="${r.id}">${escapeHtml(r.name)}</button></li>`).join('')}</ul>
     <div class="actions"><button class="primary" data-action="open" data-key="summarize">Profile every column</button></div>
-    <p>${specLink(d.source)}</p>${HISTORY}`;
+    ${REQS}<p>${specLink(d.source)}</p>${HISTORY}`;
+  fillSummary(d.source, token);
+  fillReqs(d, token);
   fillHistory(d.source, token);
   try {
     const n = num((await conn.query(`SELECT count(*) AS n FROM "${d.id}"`)).toArray()[0].n);
@@ -1279,7 +1389,7 @@ async function colDetail(d, c, el, token) {
   const row = (k, v) => (v && !/not (specified|applicable)/i.test(v) ? `<dt>${k}</dt><dd>${escapeHtml(v)}</dd>` : '');
   el.innerHTML = `<h3>${escapeHtml(c.name)}</h3>
     <div class="sub">${d.id}.${escapeHtml(c.id)}</div>
-    <p>${escapeHtml(c.description)}</p>
+    <div id="obj-summary"></div>${specDef(c.description)}
     <dl>${row('Data type', c.data_type)}${row('Column type', c.column_type)}${row('Feature level', c.feature_level)}
       ${row('Required when', c.conditions)}${row('Allows nulls', c.allows_nulls)}${row('Value format', c.value_format)}
       ${row('Introduced', c.introduced)}</dl>
@@ -1287,7 +1397,9 @@ async function colDetail(d, c, el, token) {
     <h4>In the loaded data</h4><div id="col-stats"><p class="hint">Profiling…</p></div>
     <div class="actions"><button class="primary" data-action="open" data-key="values">Query its values</button>
       <button class="linkish" data-table="${d.id}" style="margin-left:10px">About ${escapeHtml(d.name)}</button></div>
-    <p>${specLink(c.source)}</p><div id="col-note"></div>${HISTORY}`;
+    ${REQS}<p>${specLink(c.source)}</p><div id="col-note"></div>${HISTORY}`;
+  fillSummary(c.source, token);
+  fillReqs(c, token);
   fillNote(c.id, token);
   fillHistory(c.source, token);
   const q = `"${c.id}"`;

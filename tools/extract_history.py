@@ -34,7 +34,8 @@ def git(*args):
 model = json.loads((SITE / "focus" / "model.json").read_text())
 paths = sorted({d["source"] for d in model["datasets"]}
                | {c["source"] for d in model["datasets"] for c in d["columns"]}
-               | {r["source"] for r in model["relationships"]})
+               | {r["source"] for r in model["relationships"]}
+               | {a["source"] for a in model.get("attributes", [])})
 
 # ---- Which pull requests changed each file -------------------------------------------------------------------
 files = {}
@@ -251,9 +252,28 @@ for n in out_prs:
 for n in out_issues:
     out_issues[n].update(state_of(n))
 
+# ---- Which pull request last changed each requirement line (git blame) ------------------------------------------
+subjects = dict(line.split(" ", 1) for line in git("log", "--format=%H %s", COMMIT).splitlines() if " " in line)
+req_lines = {}
+for owner in model["datasets"] + [c for d in model["datasets"] for c in d["columns"]] + model.get("attributes", []):
+    req_lines.setdefault(owner["source"], set()).update(r["line"] for r in owner.get("requirements", []))
+lines = {}
+for path, wanted in req_lines.items():
+    blamed = {}
+    for line in git("blame", "-l", "-s", COMMIT, "--", path).splitlines():
+        m = re.match(r"^\^?([0-9a-f]{40})\s+(?:\S+\s+)?(\d+)\)", line)  # renamed files add the old name
+        if m and int(m.group(2)) in wanted:
+            pr = re.search(r"\(#(\d+)\)\s*$", subjects.get(m.group(1), ""))
+            blamed[int(m.group(2))] = int(pr.group(1)) if pr else None
+    lines[path] = blamed
+blamed_prs = {n for b in lines.values() for n in b.values() if n}
+print(f"blamed {sum(len(b) for b in lines.values())} requirement lines to {len(blamed_prs)} pull requests; "
+      f"{sum(1 for b in lines.values() for n in b.values() if not n)} lines to commits naming no pull request; "
+      f"not in the history: {sorted(blamed_prs - set(out_prs))[:5]}")
+
 history = {"spec": {"repo": f"https://github.com/{OWNER}/{NAME}", "commit": git("rev-parse", COMMIT).strip()},
            "wide": WIDE, "status_checked": datetime.date.today().isoformat(),
-           "prs": out_prs, "issues": out_issues, "files": files}
+           "prs": out_prs, "issues": out_issues, "files": files, "lines": lines}
 (SITE / "focus" / "history.json").write_text(json.dumps(history, separators=(",", ":")))
 
 focused = [p for p in out_prs.values() if (p["files"] or 0) <= WIDE]
