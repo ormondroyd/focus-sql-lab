@@ -94,6 +94,91 @@
   .empty { padding: 14px; color: var(--muted); }
   footer { font-size: 12px; color: var(--muted); padding: 16px; border-top: 1px solid var(--line); }
   footer a { color: inherit; }
+  .viewtabs { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .viewtabs button { border: 0; border-radius: 0; padding: 6px 12px; }
+  .viewtabs button + button { border-left: 1px solid var(--line); }
+  .viewtabs button[aria-pressed="true"] { background: var(--fg); color: var(--bg); font-weight: 600; }
+  #explore { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--panel); }
+  #explore perspective-viewer { display: block; height: min(640px, 78vh); }
+  #explore-status { padding: 10px 12px; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line); }
+  [hidden] { display: none !important; }
+  .apptabs { display: inline-flex; gap: 2px; background: var(--bg); border-radius: 8px; padding: 2px; }
+  .apptabs button { border: 0; background: transparent; padding: 5px 12px; border-radius: 6px; color: var(--muted); }
+  .apptabs button[aria-pressed="true"] { background: var(--panel); color: var(--fg); font-weight: 600;
+    box-shadow: 0 0 0 1px var(--line); }
+
+  /* Data model view */
+  #model { padding: 14px 16px 32px; }
+  .model-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .model-head p { margin: 0; color: var(--muted); font-size: 13px; max-width: 78ch; }
+  .model-head label { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+  .model-head select { width: auto; }
+  .erd { position: relative; display: grid; padding: 0 64px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-areas: "inv cau sku" "bp cau cc"; column-gap: 112px; row-gap: 28px; align-items: start; }
+  .erd > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 2; }
+  #erd-labels { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; position: relative; z-index: 1; min-width: 0; }
+  .card.sel { box-shadow: 0 0 0 2px var(--accent); }
+  .card-head { padding: 8px 10px 6px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .card-head .top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .card-head b { font-size: 14px; }
+  .card-head .rows { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .card-head .tname { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+  .badge { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid var(--warn-line);
+    background: var(--warn-bg); border-radius: 4px; padding: 0 4px; margin-left: 6px; font-weight: 600; }
+  .keys { padding: 4px 0; }
+  .col { display: flex; justify-content: space-between; gap: 8px; padding: 3px 10px; font-family: var(--mono);
+    font-size: 12px; cursor: pointer; }
+  .col:hover { background: var(--row-alt); }
+  .col .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .col .t { color: var(--muted); font-size: 11px; white-space: nowrap; }
+  .col.key .n::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); margin-right: 6px; vertical-align: middle; }
+  .col.hl { background: color-mix(in srgb, var(--accent) 16%, transparent); }
+  .col.sel { box-shadow: inset 0 0 0 2px var(--accent); }
+  .more { display: block; width: 100%; text-align: left; border: 0; border-top: 1px dashed var(--line); border-radius: 0;
+    background: transparent; color: var(--muted); font-size: 12px; padding: 6px 10px; }
+  .allcols { max-height: 320px; overflow-y: auto; padding: 2px 0 6px; border-top: 1px solid var(--line); }
+  path.rel { fill: none; stroke: var(--muted); stroke-width: 1.5; opacity: 0.75; }
+  path.rel.opt { stroke-dasharray: 4 3; }
+  path.rel.hl { stroke: var(--accent); stroke-width: 2.5; opacity: 1; }
+  .erd.focus path.rel:not(.hl) { opacity: 0.15; }
+  path.hit { fill: none; stroke: transparent; stroke-width: 12; pointer-events: stroke; cursor: pointer; }
+  .pill { position: absolute; transform: translate(-50%, -50%); pointer-events: auto; font-size: 11px; padding: 1px 7px;
+    border-radius: 999px; background: var(--panel); border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+  .pill.hl { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .erd.focus .pill:not(.hl) { opacity: 0.35; }
+  .model-bottom { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 16px; margin-top: 22px; align-items: start; }
+  #rel-list { list-style: none; margin: 0; padding: 0; }
+  #rel-list button { width: 100%; text-align: left; border: 0; border-radius: 6px; padding: 6px 8px; background: transparent; font-size: 13px; }
+  #rel-list button[aria-pressed="true"] { background: var(--panel); box-shadow: 0 0 0 1px var(--accent); }
+  #rel-list .opt { color: var(--muted); font-size: 11px; }
+  .detail { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 13px; min-height: 140px; }
+  .detail h3 { margin: 0 0 2px; font-size: 15px; }
+  .detail .sub { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .detail p { margin: 6px 0; }
+  .detail ul { margin: 6px 0; padding-left: 18px; }
+  .detail h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 14px 0 6px; }
+  .detail dl { display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; font-size: 12.5px; margin: 8px 0; }
+  .detail dt { color: var(--muted); }
+  .detail dd { margin: 0; }
+  .detail pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px;
+    font-size: 12px; overflow: auto; margin: 6px 0; }
+  .detail code { font-family: var(--mono); font-size: 12px; }
+  .detail a { color: var(--accent); }
+  .detail .linkish { border: 0; background: none; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font-size: 13px; }
+  .detail .actions { margin: 8px 0 0; }
+  .meter { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin: 4px 0 8px; max-width: 360px; }
+  .meter span { display: block; height: 100%; background: var(--accent); }
+  .detail table { font-size: 12px; min-width: 0; width: auto; }
+  .detail th, .detail td { position: static; padding: 3px 10px 3px 0; border-bottom: 1px solid var(--line); background: none; }
+  @media (max-width: 1000px) {
+    .erd { grid-template-columns: 1fr; grid-template-areas: "cau" "sku" "cc" "inv" "bp"; padding: 0; }
+    .erd > svg, #erd-labels { display: none; }
+    .model-bottom { grid-template-columns: 1fr; }
+  }
+
   @media (max-width: 760px) {
     .layout { grid-template-columns: 1fr; }
     aside { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--line); }
@@ -104,6 +189,10 @@
 <body>
 <header>
   <h1>FOCUS SQL Lab</h1>
+  <nav class="apptabs" aria-label="Views">
+    <button data-tab="query" aria-pressed="true">Query</button>
+    <button data-tab="model" aria-pressed="false">Data model</button>
+  </nav>
   <span id="status">Loading DuckDB…</span>
 </header>
 <div class="layout">
@@ -146,17 +235,47 @@
       <button id="run" class="primary" disabled>Run</button>
       <span class="kbd">⌘ / Ctrl + Enter</span>
       <button id="csv" disabled>Download CSV</button>
+      <div class="viewtabs" role="group" aria-label="Result view">
+        <button data-view="table" aria-pressed="true">Table</button>
+        <button data-view="explore" aria-pressed="false" title="Pivot and chart this query's results by any column">Response explorer</button>
+      </div>
       <span id="meta"></span>
     </div>
     <div id="error" hidden></div>
     <div id="results" class="results" hidden></div>
+    <div id="explore" hidden>
+      <div id="explore-status" hidden></div>
+      <perspective-viewer id="psp"></perspective-viewer>
+    </div>
   </main>
 </div>
+<section id="model" hidden>
+  <div class="model-head">
+    <p>The FOCUS 1.5 data model: five datasets and the joins the specification documents. Lines connect key columns,
+      and dashed lines are optional keys. Click a line, a table name or a column.</p>
+    <label for="model-dataset">Cost and Usage rows from
+      <select id="model-dataset">
+        <option value="cau_sample">FOCUS sample data</option>
+        <option value="cau_examples">Spec 1.5 worked examples</option>
+      </select>
+    </label>
+  </div>
+  <div class="erd" id="erd"><p class="hint">Loading the data model…</p></div>
+  <div class="model-bottom">
+    <div>
+      <h2 style="margin-top:0">Relationships</h2>
+      <ul id="rel-list"></ul>
+    </div>
+    <div class="detail" id="model-detail"><p class="hint">Select a relationship, a table or a column to see its definition from the spec and how it looks in the loaded data.</p></div>
+  </div>
+</section>
 <footer>
   Data: <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data">FOCUS-Sample-Data</a> and the worked examples and example queries in the
   <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec">FOCUS specification</a>, licensed under
-  <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Changes: data cleaned and typed, and queries converted to DuckDB SQL.
-  Powered by <a href="https://duckdb.org/docs/api/wasm/overview">DuckDB-WASM</a>. Not affiliated with the FinOps Foundation.
+  <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Changes: data cleaned and typed, queries converted to DuckDB SQL,
+  and the data model drawn from the specification's dataset and column definitions.
+  Powered by <a href="https://duckdb.org/docs/api/wasm/overview">DuckDB-WASM</a>, with the response explorer by
+  <a href="https://perspective.finos.org">Perspective</a> (FINOS). Not affiliated with the FinOps Foundation.
 </footer>
 
 <script type="module">
@@ -171,7 +290,7 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, v); } catch { /* storage unavailable */ } },
 };
 
-let db, conn, manifest, examples = [], last = null, busy = false;
+let db, conn, manifest, model, examples = [], last = null, busy = false;
 
 function setStatus(text, ready = false) {
   $('status').textContent = text;
@@ -188,13 +307,21 @@ async function init() {
   conn = await db.connect();
 
   setStatus('Loading data…');
-  [manifest, examples] = await Promise.all([
-    fetch('data/manifest.json').then((r) => r.json()),
-    fetch('examples.json').then((r) => r.json()),
+  const getJson = (url) => fetch(url).then((r) => {
+    if (!r.ok) throw new Error(`Could not load ${url} (${r.status})`);
+    return r.json();
+  });
+  let practice, specQueries;
+  [manifest, practice, specQueries, model] = await Promise.all([
+    getJson('focus/data/manifest.json'),
+    getJson('practice-queries.json'),
+    getJson('focus/spec-queries.json'),
+    getJson('focus/model.json'),
   ]);
+  examples = practice.concat(specQueries);
   const names = Object.keys(manifest.tables);
   const buffers = await Promise.all(names.map(async (t) => {
-    const r = await fetch('data/' + manifest.tables[t].file);
+    const r = await fetch('focus/data/' + manifest.tables[t].file);
     if (!r.ok) throw new Error(`Could not load ${manifest.tables[t].file} (${r.status})`);
     return new Uint8Array(await r.arrayBuffer());
   }));
@@ -204,6 +331,16 @@ async function init() {
     await conn.query(`CREATE TABLE "${names[i]}" AS SELECT * FROM read_parquet('${file}')`);
   }
   try { await conn.query(`SELECT '{"a":1}'::JSON ->> '$.a'`); } catch { /* json loads on first use */ }
+
+  // The spec has no example data for Billing Period: create it empty from the spec's columns so joins still run.
+  const SQL_TYPE = { String: 'VARCHAR', Decimal: 'DOUBLE', 'Date/Time': 'TIMESTAMP', JSON: 'VARCHAR' };
+  const bp = model.datasets.find((d) => d.id === 'BillingPeriod');
+  if (bp && !manifest.tables.BillingPeriod) {
+    const cols = bp.columns.map((c) => ({ name: c.id, type: SQL_TYPE[c.data_type] || 'VARCHAR' }));
+    await conn.query(`CREATE TABLE BillingPeriod (${cols.map((c) => `"${c.name}" ${c.type}`).join(', ')})`);
+    manifest.tables.BillingPeriod = { rows: 0, columns: cols,
+      description: 'FOCUS 1.5 Billing Period dataset. The specification has no example data for it, so this table is empty, but joins to it still run.' };
+  }
 
   const ds = manifest.tables[store.get('dataset')] ? store.get('dataset') : 'cau_sample';
   await setDataset(ds);
@@ -218,19 +355,22 @@ async function init() {
   const total = names.reduce((n, t) => n + manifest.tables[t].rows, 0);
   setStatus(`Ready · ${total.toLocaleString()} rows in ${names.length} tables`, true);
   if (!saved) run();
+  if (tab === 'model') renderModel();
 }
 
 async function setDataset(t, why = '') {
   await conn.query(`CREATE OR REPLACE VIEW CostAndUsage AS SELECT * FROM "${t}"`);
   $('dataset').value = t;
+  $('model-dataset').value = t;
   store.set('dataset', t);
+  if (modelBuilt) refreshModelData();
   $('dataset-hint').textContent = why ||
     (t === 'cau_sample' ? 'FOCUS 1.5-only columns, such as SkuPriceDetails, are NULL here.'
                       : 'Each worked-example file is its own scenario. Filter by x_ExampleFile.');
 }
 
 function renderTables() {
-  const order = ['cau_sample', 'cau_examples', 'SkuPrice', 'InvoiceDetail', 'ContractCommitment', 'CorrectionExamples'];
+  const order = ['cau_sample', 'cau_examples', 'SkuPrice', 'InvoiceDetail', 'ContractCommitment', 'BillingPeriod', 'CorrectionExamples'];
   const views = `<details class="table"><summary><span>CostAndUsage</span><span class="rows">view</span></summary>
     <p>Points to the dataset chosen above. Every spec query uses this name.</p></details>
     <details class="table"><summary><span>focus_data</span><span class="rows">view</span></summary>
@@ -302,10 +442,11 @@ async function run() {
   try {
     const res = await conn.query(sql);
     renderResult(res, performance.now() - t0);
+    if (view === 'explore') renderExplore();
   } catch (err) {
     last = null;
     $('csv').disabled = true;
-    $('results').hidden = true;
+    showView();
     $('meta').textContent = '';
     $('error').textContent = String(err && err.message ? err.message : err);
     $('error').hidden = false;
@@ -348,7 +489,7 @@ function renderResult(res, ms) {
   $('meta').textContent = `${rows.length.toLocaleString()} row${rows.length === 1 ? '' : 's'} · ${time}` +
     (rows.length > SHOW_ROWS ? ` · showing first ${SHOW_ROWS.toLocaleString()}` : '');
   $('csv').disabled = rows.length === 0;
-  if (!fields.length) { $('results').innerHTML = '<div class="empty">Done.</div>'; $('results').hidden = false; return; }
+  if (!fields.length) { $('results').innerHTML = '<div class="empty">Done.</div>'; showView(); return; }
   const num = fields.map((f) => isNumericType(f.type));
   const head = '<tr>' + fields.map((f) => `<th title="${escapeHtml(String(f.type))}">${escapeHtml(f.name)}</th>`).join('') + '</tr>';
   const body = rows.slice(0, SHOW_ROWS).map((r) => '<tr>' + fields.map((f, i) => {
@@ -359,8 +500,133 @@ function renderResult(res, ms) {
   $('results').innerHTML = rows.length
     ? `<table><thead>${head}</thead><tbody>${body}</tbody></table>`
     : `<table><thead>${head}</thead></table><div class="empty">No rows.</div>`;
-  $('results').hidden = false;
+  showView();
 }
+
+// ---- Explore view: Perspective (FINOS), loaded the first time it's opened ----------
+const PSP = 'https://cdn.jsdelivr.net/npm/@finos/';
+const PSP_V = '3.8.0';
+const darkMode = matchMedia('(prefers-color-scheme: dark)');
+const pspTheme = () => (darkMode.matches ? 'Pro Dark' : 'Pro Light');
+let view = store.get('view') === 'explore' ? 'explore' : 'table';
+let psp = null, pspTable = null, pspSig = null, exploredResult = null, exploreQueue = Promise.resolve();
+
+function showView() {
+  document.querySelectorAll('.viewtabs button').forEach((b) =>
+    b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+  const hasColumns = !!(last && last.fields.length);
+  $('results').hidden = !(last && view === 'table');
+  $('explore').hidden = !(hasColumns && view === 'explore');
+}
+
+function loadPerspective() {
+  if (!psp) {
+    psp = (async () => {
+      document.head.appendChild(Object.assign(document.createElement('link'), {
+        rel: 'stylesheet', crossOrigin: 'anonymous', href: `${PSP}perspective-viewer@${PSP_V}/dist/css/themes.css` }));
+      const core = await import(`${PSP}perspective@${PSP_V}/dist/cdn/perspective.js`);
+      await import(`${PSP}perspective-viewer@${PSP_V}/dist/cdn/perspective-viewer.js`);
+      await Promise.all([
+        import(`${PSP}perspective-viewer-datagrid@${PSP_V}/dist/cdn/perspective-viewer-datagrid.js`),
+        import(`${PSP}perspective-viewer-d3fc@${PSP_V}/dist/cdn/perspective-viewer-d3fc.js`),
+      ]);
+      return core.default.worker();
+    })();
+    psp.catch(() => { psp = null; });
+  }
+  return psp;
+}
+
+// Turn the DuckDB (Arrow) result into a typed Perspective schema plus column arrays.
+function toPerspective(result) {
+  const schema = {}, data = {}, cols = [], seen = new Map();
+  for (const f of result.fields) {
+    const n = (seen.get(f.name) || 0) + 1;
+    seen.set(f.name, n);
+    const name = n > 1 ? `${f.name} (${n})` : f.name;
+    const t = String(f.type);
+    const raw = result.rows.map((r) => r[f.name]);
+    let type, values;
+    if (/^(Timestamp|Date)/.test(t)) {
+      type = /^Date/.test(t) ? 'date' : 'datetime';
+      values = raw.map((v) => (v == null ? null : new Date(Number(v))));
+    } else if (/^(Int|Uint)/.test(t)) {
+      values = raw.map((v) => (v == null ? null : Number(v)));
+      type = values.every((v) => v === null || Math.abs(v) < 2147483647) ? 'integer' : 'float';
+    } else if (/^(Float|Decimal)/.test(t)) {
+      type = 'float';
+      values = raw.map((v) => (v == null ? null : Number(fmt(v, f))));
+    } else if (/^Bool/.test(t)) {
+      type = 'boolean';
+      values = raw.map((v) => (v == null ? null : Boolean(v)));
+    } else {
+      type = 'string';
+      values = raw.map((v) => fmt(v, f));
+    }
+    schema[name] = type;
+    data[name] = values;
+    cols.push({ name, type });
+  }
+  return { schema, data, cols, sig: cols.map((c) => `${c.name}:${c.type}`).join('|') };
+}
+
+// A sensible first view: a trend line if there's a date, otherwise bars by the first text column.
+function defaultConfig(cols, data) {
+  const text = cols.filter((c) => c.type === 'string');
+  const nums = cols.filter((c) => c.type === 'float' || c.type === 'integer');
+  const time = cols.filter((c) => c.type === 'datetime' || c.type === 'date');
+  const fewValues = (c) => { const d = new Set(data[c.name]).size; return d > 1 && d <= 12; };
+  if (nums.length && time.length) {
+    const split = text.find(fewValues);
+    return { plugin: 'Y Line', group_by: [time[0].name], split_by: split ? [split.name] : [],
+             columns: [nums[0].name], settings: true };
+  }
+  if (nums.length && text.length) {
+    const split = text.slice(1).find(fewValues);
+    return { plugin: 'Y Bar', group_by: [text[0].name], split_by: split ? [split.name] : [],
+             columns: [nums[0].name], settings: true };
+  }
+  return { plugin: 'Datagrid', settings: true };
+}
+
+function renderExplore() {
+  const result = last;
+  exploreQueue = exploreQueue.then(async () => {
+    if (!result || !result.fields.length || result !== last) return;
+    const status = $('explore-status');
+    status.textContent = psp ? 'Updating…' : 'Loading Perspective…';
+    status.hidden = false;
+    try {
+      const worker = await loadPerspective();
+      const viewer = $('psp');
+      // Don't draw while hidden (Table view or the Data model tab): charts drawn at zero size produce NaN paths.
+      if (viewer.setAutoPause) viewer.setAutoPause(true);
+      const { schema, data, cols, sig } = toPerspective(result);
+      const keep = pspTable && sig === pspSig ? await viewer.save() : null; // same columns: keep the user's view
+      const table = await worker.table(schema);
+      await table.update(data);
+      await viewer.load(table);
+      if (pspTable) pspTable.delete().catch(() => {});
+      pspTable = table;
+      pspSig = sig;
+      exploredResult = result;
+      await viewer.restore({ ...(keep || defaultConfig(cols, data)), theme: pspTheme() });
+      status.hidden = true;
+    } catch (err) {
+      console.error(err);
+      status.textContent = 'Could not load the response explorer: ' + (err && err.message ? err.message : err);
+    }
+  });
+  return exploreQueue;
+}
+
+document.querySelectorAll('.viewtabs button').forEach((b) => b.addEventListener('click', () => {
+  view = b.dataset.view;
+  store.set('view', view);
+  showView();
+  if (view === 'explore' && last && exploredResult !== last) renderExplore();
+}));
+darkMode.addEventListener('change', () => { if (pspTable) $('psp').restore({ theme: pspTheme() }); });
 
 function downloadCsv() {
   if (!last) return;
@@ -398,6 +664,339 @@ $('editor').addEventListener('input', () => {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => store.set('sql', $('editor').value), 400);
 });
+
+// ---- Data model view ---------------------------------------------------------------
+const AREA = { CostAndUsage: 'cau', SkuPrice: 'sku', InvoiceDetail: 'inv', ContractCommitment: 'cc', BillingPeriod: 'bp' };
+const SHORT = { 'cau-sku': 'SKU Price ID', 'cau-cc': 'Commitment ID', 'cau-inv': 'Invoice ID',
+  'cau-bp': 'Billing period', 'inv-bp': 'Billing period', 'sku-cc': 'Contract ID',
+  'inv-pay': 'Payment record', 'inv-ref': 'Adjusted invoice' };
+let tab = store.get('tab') === 'model' ? 'model' : 'query';
+let modelBuilt = false, selection = null, detailToken = 0, detailSql = {};
+
+const dsById = (id) => model.datasets.find((d) => d.id === id);
+const relById = (id) => model.relationships.find((r) => r.id === id);
+const colOf = (ds, id) => dsById(ds).columns.find((c) => c.id === id);
+const specLink = (path, text = 'Read it in the specification') =>
+  `<a href="${SPEC_URL}${path}" target="_blank" rel="noopener">${text}</a>`;
+const num = (v) => Number(v);
+
+function keyColumns(dsId) {
+  const out = [];
+  for (const r of model.relationships) for (const k of r.keys) {
+    if (r.a === dsId && !out.includes(k[0])) out.push(k[0]);
+    if (r.b === dsId && !out.includes(k[1])) out.push(k[1]);
+  }
+  return out;
+}
+
+function showTab(t) {
+  tab = t;
+  store.set('tab', t);
+  document.querySelectorAll('.apptabs button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tab === t)));
+  document.querySelector('.layout').hidden = t !== 'query';
+  $('model').hidden = t !== 'model';
+  if (t === 'model') renderModel();
+}
+
+function colRow(ds, c, isKey) {
+  if (!c) return '';
+  const level = (c.feature_level || '').charAt(0);
+  return `<div class="col${isKey ? ' key' : ''}" data-ds="${ds}" data-col="${escapeHtml(c.id)}" ` +
+    `title="${escapeHtml(c.name)} · ${escapeHtml(c.feature_level || '')}"><span class="n">${escapeHtml(c.id)}</span>` +
+    `<span class="t">${escapeHtml((c.data_type || '').toLowerCase())} · ${level}</span></div>`;
+}
+
+function renderModel() {
+  if (!model || !conn) return; // init() calls this again once the data is loaded
+  if (!modelBuilt) buildModel();
+  requestAnimationFrame(drawLines);
+}
+
+function buildModel() {
+  const erd = $('erd');
+  erd.innerHTML = model.datasets.map((d) => {
+    const keys = keyColumns(d.id);
+    return `<div class="card" data-ds="${d.id}" style="grid-area:${AREA[d.id]}">
+      <div class="card-head" data-ds="${d.id}" title="About the ${escapeHtml(d.name)} dataset">
+        <div class="top"><b>${escapeHtml(d.name)}${d.preview ? '<span class="badge">preview</span>' : ''}</b>
+          <span class="rows" data-rows="${d.id}"></span></div>
+        <div class="tname">${d.id}</div>
+      </div>
+      <div class="keys">${keys.map((k) => colRow(d.id, colOf(d.id, k), true)).join('')}</div>
+      <button class="more" aria-expanded="false">All ${d.columns.length} columns ▸</button>
+      <div class="allcols" hidden>${d.columns.map((c) => colRow(d.id, c, keys.includes(c.id))).join('')}</div>
+    </div>`;
+  }).join('') + '<svg id="erd-lines" aria-hidden="true"></svg><div id="erd-labels"></div>';
+  $('rel-list').innerHTML = model.relationships.map((r) =>
+    `<li><button data-rel="${r.id}" aria-pressed="false">${escapeHtml(r.name)}</button></li>`).join('');
+  erd.addEventListener('click', onModelClick);
+  $('rel-list').addEventListener('click', onModelClick);
+  $('model-detail').addEventListener('click', onDetailClick);
+  new ResizeObserver(() => drawLines()).observe(erd);
+  modelBuilt = true;
+  refreshModelData();
+}
+
+async function refreshModelData() {
+  for (const d of model.datasets) {
+    const el = document.querySelector(`[data-rows="${d.id}"]`);
+    if (!el) continue;
+    try {
+      const n = num((await conn.query(`SELECT count(*) AS n FROM "${d.id}"`)).toArray()[0].n);
+      el.textContent = n ? `${n.toLocaleString()} rows` : 'no data';
+    } catch { el.textContent = ''; }
+  }
+  if (selection) renderDetail();
+}
+
+// Lines run from key column to key column. Tables in the same grid column get a bracket on their outer side.
+function drawLines() {
+  if (!modelBuilt || $('model').hidden) return;
+  const erd = $('erd'), svg = $('erd-lines'), labels = $('erd-labels');
+  if (getComputedStyle(svg).display === 'none') return;
+  const box = erd.getBoundingClientRect();
+  const mid = box.left + box.width / 2;
+  const loops = { left: 0, right: 0 }, brackets = { left: 0, right: 0 };
+  let paths = '', pills = '';
+  for (const r of model.relationships) {
+    const cardA = erd.querySelector(`.card[data-ds="${r.a}"]`), cardB = erd.querySelector(`.card[data-ds="${r.b}"]`);
+    const ra = cardA.getBoundingClientRect(), rb = cardB.getBoundingClientRect();
+    const self = r.a === r.b;
+    const sameColumn = ra.left < rb.right && rb.left < ra.right;
+    const side = sameColumn ? (ra.left + ra.width / 2 < mid ? 'left' : 'right') : null;
+    // Self-references are tight loops; joins between stacked tables sit further out.
+    const bulge = !sameColumn ? 0 : self ? 10 + 9 * loops[side]++ : 34 + 12 * brackets[side]++;
+    let label = null;
+    for (const k of r.keys) {
+      const ea = cardA.querySelector(`.keys .col[data-col="${k[0]}"]`), eb = cardB.querySelector(`.keys .col[data-col="${k[1]}"]`);
+      if (!ea || !eb) continue;
+      const a = ea.getBoundingClientRect(), b = eb.getBoundingClientRect();
+      const y1 = a.top + a.height / 2 - box.top, y2 = b.top + b.height / 2 - box.top;
+      let x1, x2, c1, c2;
+      if (sameColumn) {
+        const s = side === 'left' ? -1 : 1;
+        x1 = (side === 'left' ? ra.left : ra.right) - box.left;
+        x2 = (side === 'left' ? rb.left : rb.right) - box.left;
+        c1 = x1 + s * bulge * 1.6;
+        c2 = x2 + s * bulge * 1.6;
+      } else if (ra.right <= rb.left) {
+        x1 = ra.right - box.left; x2 = rb.left - box.left;
+        c1 = x1 + (x2 - x1) / 2; c2 = x2 - (x2 - x1) / 2;
+      } else {
+        x1 = ra.left - box.left; x2 = rb.right - box.left;
+        c1 = x1 - (x1 - x2) / 2; c2 = x2 + (x1 - x2) / 2;
+      }
+      const d = `M${x1},${y1} C${c1},${y1} ${c2},${y2} ${x2},${y2}`;
+      paths += `<path class="rel${k[2] ? ' opt' : ''}" data-rel="${r.id}" d="${d}"/><path class="hit" data-rel="${r.id}" d="${d}"><title>${escapeHtml(r.name)}</title></path>`;
+      if (!label && !k[2] && !self) label = { x: (x1 + 3 * c1 + 3 * c2 + x2) / 8, y: (y1 + y2) / 2 };
+    }
+    if (label) {
+      const x = Math.min(Math.max(label.x, 56), box.width - 56); // keep labels inside the diagram
+      pills += `<button class="pill" data-rel="${r.id}" style="left:${x}px;top:${label.y}px">${SHORT[r.id] || r.name}</button>`;
+    }
+  }
+  svg.innerHTML = paths;
+  labels.innerHTML = pills;
+  applySelection();
+}
+
+function onModelClick(e) {
+  const more = e.target.closest('.more');
+  if (more) {
+    const list = more.nextElementSibling;
+    list.hidden = !list.hidden;
+    more.setAttribute('aria-expanded', String(!list.hidden));
+    more.textContent = list.hidden ? `All ${list.children.length} columns ▸` : `Hide the ${list.children.length} columns ▾`;
+    requestAnimationFrame(drawLines);
+    return;
+  }
+  const rel = e.target.closest('[data-rel]');
+  if (rel) return select({ type: 'rel', id: rel.dataset.rel });
+  const col = e.target.closest('.col');
+  if (col) return select({ type: 'col', ds: col.dataset.ds, col: col.dataset.col });
+  const head = e.target.closest('.card-head');
+  if (head) return select({ type: 'table', ds: head.dataset.ds });
+}
+
+function onDetailClick(e) {
+  const open = e.target.closest('[data-action="open"]');
+  if (open) return openInQuery(detailSql[open.dataset.key]);
+  const rel = e.target.closest('[data-rel]');
+  if (rel) return select({ type: 'rel', id: rel.dataset.rel }, true);
+  const col = e.target.closest('[data-col]');
+  if (col) return select({ type: 'col', ds: col.dataset.ds, col: col.dataset.col }, true);
+  const t = e.target.closest('[data-table]');
+  if (t) return select({ type: 'table', ds: t.dataset.table }, true);
+}
+
+function select(s, force = false) {
+  const same = selection && JSON.stringify(selection) === JSON.stringify(s);
+  selection = same && !force ? null : s;
+  applySelection();
+  renderDetail();
+}
+
+function selectedRels() {
+  const out = new Set();
+  if (!selection) return out;
+  for (const r of model.relationships) {
+    if (selection.type === 'rel' && r.id === selection.id) out.add(r.id);
+    if (selection.type === 'table' && (r.a === selection.ds || r.b === selection.ds)) out.add(r.id);
+    if (selection.type === 'col' && r.keys.some((k) =>
+      (r.a === selection.ds && k[0] === selection.col) || (r.b === selection.ds && k[1] === selection.col))) out.add(r.id);
+  }
+  return out;
+}
+
+function applySelection() {
+  const erd = $('erd');
+  const rels = selectedRels();
+  erd.classList.toggle('focus', rels.size > 0);
+  erd.querySelectorAll('[data-rel]').forEach((el) => el.classList.toggle('hl', rels.has(el.dataset.rel)));
+  erd.querySelectorAll('.col.hl, .col.sel').forEach((el) => el.classList.remove('hl', 'sel'));
+  erd.querySelectorAll('.card.sel').forEach((el) => el.classList.remove('sel'));
+  const mark = (ds, col, cls) => erd.querySelectorAll(`.col[data-ds="${ds}"][data-col="${col}"]`).forEach((el) => el.classList.add(cls));
+  for (const id of rels) {
+    const r = relById(id);
+    r.keys.forEach((k) => { mark(r.a, k[0], 'hl'); mark(r.b, k[1], 'hl'); });
+  }
+  if (selection?.type === 'col') mark(selection.ds, selection.col, 'sel');
+  if (selection?.type === 'table') erd.querySelector(`.card[data-ds="${selection.ds}"]`)?.classList.add('sel');
+  $('rel-list').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(rels.has(b.dataset.rel))));
+}
+
+function openInQuery(sql) {
+  if (!sql) return;
+  showTab('query');
+  $('examples').value = '';
+  $('example-info').hidden = true;
+  $('editor').value = sql;
+  store.set('sql', sql);
+  window.scrollTo({ top: 0 });
+  run();
+}
+
+function renderDetail() {
+  const token = ++detailToken;
+  const el = $('model-detail');
+  if (!selection) {
+    el.innerHTML = '<p class="hint">Select a relationship, a table or a column to see its definition from the spec and how it looks in the loaded data.</p>';
+    return;
+  }
+  if (selection.type === 'rel') return relDetail(relById(selection.id), el, token);
+  if (selection.type === 'table') return tableDetail(dsById(selection.ds), el, token);
+  return colDetail(dsById(selection.ds), colOf(selection.ds, selection.col), el, token);
+}
+
+const tableLabel = (id) => (id === 'CostAndUsage' ? `Cost and Usage (${DATASET_LABEL[$('dataset').value]})` : dsById(id).name);
+const specParas = (paras) => paras.map((p) => `<p style="white-space:pre-line">${escapeHtml(p.replace(/^\s*\* /gm, '• '))}</p>`).join('');
+const meter = (share) => `<div class="meter"><span style="width:${Math.max(0, Math.min(100, share))}%"></span></div>`;
+
+async function relDetail(r, el, token) {
+  let spec = [];
+  const srcDataset = model.datasets.find((d) => d.source === r.source);
+  if (srcDataset) spec = srcDataset.relationships_text;
+  else for (const d of model.datasets) { const c = d.columns.find((x) => x.source === r.source); if (c) spec = [c.description]; }
+  detailSql = { join: r.join_sql };
+  el.innerHTML = `<h3>${escapeHtml(r.name)}</h3>
+    <div class="sub">${r.a} → ${r.b}</div>
+    <h4>Keys</h4>
+    <ul>${r.keys.map((k) => `<li><code>${r.a}.${k[0]}</code> = <code>${r.b}.${k[1]}</code>${k[2] ? ' (optional)' : ''}</li>`).join('')}</ul>
+    ${r.also.length ? `<h4>Also matched on</h4><ul>${r.also.map((x) => `<li>${escapeHtml(x)}</li>`).join('')}</ul>` : ''}
+    <p>${escapeHtml(r.cardinality)}</p>
+    <h4>In the loaded data</h4><div id="rel-stats"><p class="hint">Counting…</p></div>
+    <h4>Join</h4><pre>${escapeHtml(r.join_sql)}</pre>
+    <div class="actions"><button class="primary" data-action="open" data-key="join">Open in Query</button></div>
+    <h4>What the specification says</h4>${specParas(spec)}
+    <p>${specLink(r.source)}</p>`;
+  try {
+    const s = (await conn.query(r.stats_sql)).toArray()[0];
+    const bRows = num((await conn.query(`SELECT count(*) AS n FROM "${r.b}"`)).toArray()[0].n);
+    if (token !== detailToken) return;
+    const total = num(s.rows_total), withKey = num(s.rows_with_key), matched = num(s.rows_matched);
+    const share = withKey ? (100 * matched) / withKey : 0;
+    let html;
+    if (!total) html = `<p>${escapeHtml(tableLabel(r.a))} has no rows in the lab.</p>`;
+    else {
+      html = `<p>${withKey.toLocaleString()} of ${total.toLocaleString()} ${escapeHtml(tableLabel(r.a))} rows carry the key. ` +
+        `${matched.toLocaleString()} of them (${share.toFixed(1)}%) find a match in ${escapeHtml(tableLabel(r.b))}.</p>` + meter(share) +
+        `<p class="hint">${num(s.keys_distinct).toLocaleString()} distinct key values, ${num(s.keys_matched).toLocaleString()} matched.</p>`;
+      if (!bRows) html += `<p>${escapeHtml(tableLabel(r.b))} has no rows: the specification has no example data for it.</p>`;
+      else if (withKey && !matched) html += '<p>Nothing matches. In this lab the two tables come from separate sources or example scenarios, so their IDs don\'t line up.</p>';
+    }
+    $('rel-stats').innerHTML = html;
+  } catch (err) {
+    if (token === detailToken) $('rel-stats').innerHTML = `<p class="hint">Could not count: ${escapeHtml(err.message || err)}</p>`;
+  }
+}
+
+async function tableDetail(d, el, token) {
+  const levels = {};
+  d.columns.forEach((c) => { levels[c.feature_level] = (levels[c.feature_level] || 0) + 1; });
+  const rels = model.relationships.filter((r) => r.a === d.id || r.b === d.id);
+  detailSql = { summarize: `SUMMARIZE ${d.id};` };
+  el.innerHTML = `<h3>${escapeHtml(d.name)}${d.preview ? '<span class="badge">preview</span>' : ''}</h3>
+    <div class="sub">${d.id}</div>
+    <p>${escapeHtml(d.description)}</p>
+    <dl><dt>Introduced</dt><dd>${escapeHtml(d.introduced || '–')}</dd>
+      <dt>Columns</dt><dd>${d.columns.length}: ${Object.entries(levels).map(([k, v]) => `${v} ${escapeHtml(String(k).toLowerCase())}`).join(', ')}</dd>
+      <dt>Rows in the lab</dt><dd id="tbl-rows">…</dd></dl>
+    <h4>Relationships</h4>
+    <ul>${rels.map((r) => `<li><button class="linkish" data-rel="${r.id}">${escapeHtml(r.name)}</button></li>`).join('')}</ul>
+    <div class="actions"><button class="primary" data-action="open" data-key="summarize">Profile every column</button></div>
+    <p>${specLink(d.source)}</p>`;
+  try {
+    const n = num((await conn.query(`SELECT count(*) AS n FROM "${d.id}"`)).toArray()[0].n);
+    if (token === detailToken) $('tbl-rows').textContent = n ? `${n.toLocaleString()}${d.id === 'CostAndUsage' ? ` (${DATASET_LABEL[$('dataset').value]})` : ''}` : 'none (no example data in the spec)';
+  } catch { /* leave the placeholder */ }
+}
+
+async function colDetail(d, c, el, token) {
+  if (!c) { el.innerHTML = ''; return; }
+  const rels = model.relationships.filter((r) => r.keys.some((k) =>
+    (r.a === d.id && k[0] === c.id) || (r.b === d.id && k[1] === c.id)));
+  detailSql = { values: `SELECT ${c.id}, count(*) AS Rows\nFROM ${d.id}\nGROUP BY ALL\nORDER BY Rows DESC\nLIMIT 50;` };
+  const row = (k, v) => (v && !/not (specified|applicable)/i.test(v) ? `<dt>${k}</dt><dd>${escapeHtml(v)}</dd>` : '');
+  el.innerHTML = `<h3>${escapeHtml(c.name)}</h3>
+    <div class="sub">${d.id}.${escapeHtml(c.id)}</div>
+    <p>${escapeHtml(c.description)}</p>
+    <dl>${row('Data type', c.data_type)}${row('Column type', c.column_type)}${row('Feature level', c.feature_level)}
+      ${row('Required when', c.conditions)}${row('Allows nulls', c.allows_nulls)}${row('Value format', c.value_format)}
+      ${row('Introduced', c.introduced)}</dl>
+    ${rels.length ? `<h4>Key in</h4><ul>${rels.map((r) => `<li><button class="linkish" data-rel="${r.id}">${escapeHtml(r.name)}</button></li>`).join('')}</ul>` : ''}
+    <h4>In the loaded data</h4><div id="col-stats"><p class="hint">Profiling…</p></div>
+    <div class="actions"><button class="primary" data-action="open" data-key="values">Query its values</button>
+      <button class="linkish" data-table="${d.id}" style="margin-left:10px">About ${escapeHtml(d.name)}</button></div>
+    <p>${specLink(c.source)}</p>`;
+  const q = `"${c.id}"`;
+  try {
+    const s = (await conn.query(`SELECT count(*) AS total, count(${q}) AS non_null, approx_count_distinct(${q}) AS distinct_values,
+      CAST(min(${q}) AS VARCHAR) AS lo, CAST(max(${q}) AS VARCHAR) AS hi FROM "${d.id}"`)).toArray()[0];
+    const top = (await conn.query(`SELECT CAST(${q} AS VARCHAR) AS v, count(*) AS n FROM "${d.id}"
+      WHERE ${q} IS NOT NULL GROUP BY 1 ORDER BY n DESC, v LIMIT 6`)).toArray();
+    if (token !== detailToken) return;
+    const total = num(s.total), nonNull = num(s.non_null);
+    const cut = (v) => (v.length > 70 ? v.slice(0, 70) + '…' : v);
+    let html;
+    if (!total) html = `<p>${escapeHtml(tableLabel(d.id))} has no rows in the lab.</p>`;
+    else {
+      const share = (100 * nonNull) / total;
+      html = `<p>${nonNull.toLocaleString()} of ${total.toLocaleString()} rows have a value (${share.toFixed(1)}%)` +
+        `${nonNull ? `, about ${num(s.distinct_values).toLocaleString()} distinct` : ''}.</p>` + meter(share);
+      if (nonNull && /Decimal|Date/.test(c.data_type || '')) html += `<p>Range: <code>${escapeHtml(s.lo)}</code> to <code>${escapeHtml(s.hi)}</code></p>`;
+      if (top.length) html += `<table><thead><tr><th>Most common values</th><th>Rows</th></tr></thead><tbody>` +
+        top.map((t) => `<tr><td><code title="${escapeHtml(t.v)}">${escapeHtml(cut(t.v))}</code></td><td class="num">${num(t.n).toLocaleString()}</td></tr>`).join('') +
+        '</tbody></table>';
+    }
+    $('col-stats').innerHTML = html;
+  } catch (err) {
+    if (token === detailToken) $('col-stats').innerHTML = `<p class="hint">Could not profile: ${escapeHtml(err.message || err)}</p>`;
+  }
+}
+
+document.querySelectorAll('.apptabs button').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
+$('model-dataset').addEventListener('change', () => setDataset($('model-dataset').value));
+showTab(tab);
 
 init().catch((err) => {
   console.error(err);

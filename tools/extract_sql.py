@@ -1,6 +1,10 @@
 """Extract the FOCUS spec's example SQL, convert BigQuery SQL to DuckDB, and test each query.
+Also tests the lab's own practice queries (tools/practice.json).
 
-Usage: python -I extract_sql.py <FOCUS_Spec clone> <site/data dir> <output examples.json>
+Usage: python -I extract_sql.py <FOCUS_Spec clone> <site dir>
+Reads  <site dir>/focus/data/*.parquet
+Writes <site dir>/focus/spec-queries.json   (the specification's queries, converted: FOCUS-derived)
+       <site dir>/practice-queries.json     (the lab's own practice queries, with test results)
 """
 
 import json
@@ -12,8 +16,8 @@ import duckdb
 import sqlglot
 
 SPEC = pathlib.Path(sys.argv[1])
-DATA = pathlib.Path(sys.argv[2])
-OUT = pathlib.Path(sys.argv[3])
+SITE = pathlib.Path(sys.argv[2])
+DATA = SITE / "focus" / "data"
 
 SOURCES = sorted((SPEC / "specification/supported_features").glob("*.md"))
 SOURCES += [SPEC / "supporting_content/appendix/version_migration_guidance.md"]
@@ -164,9 +168,10 @@ for p in practice:
     p.update({"feature": "Practice queries", "source": None, "params": [], "transpiled": False,
               "sample": run(p["sql"], "cau_sample"), "examples": run(p["sql"], "cau_examples")})
     print("practice", p["id"], "sample:", p["sample"], "examples:", p["examples"])
-examples = practice + examples
 
-OUT.write_text(json.dumps(examples, indent=1))
+(SITE / "focus" / "spec-queries.json").write_text(json.dumps(examples, indent=1))
+(SITE / "practice-queries.json").write_text(json.dumps(practice, indent=1))
+examples = practice + examples
 ok_sample = sum(e["sample"]["ok"] for e in examples)
 ok_ex = sum(e["examples"]["ok"] for e in examples)
 nonempty_sample = sum(e["sample"].get("rows", 0) > 0 for e in examples)
