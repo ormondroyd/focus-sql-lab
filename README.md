@@ -13,7 +13,9 @@ queries in the browser, so the server only serves static files: no database, no 
   column to see its definition and a profile of its values. Each dataset, column and join also shows its **history**:
   the pull requests that changed its definition file, newest first, with an excerpt of each one's description, the
   issue it addressed, and how much discussion each had, with a summary of the conversation in each pull request and
-  issue that had one. The 11 join-key columns also have a note on the debate behind them.
+  issue that had one. Each entry shows its status on GitHub (merged, open, or closed and why), and a "Not merged" list
+  shows pull requests that proposed changes to the definition but were closed without merging or are still open. The
+  11 join-key columns also have a note on the debate behind them.
 - **Data sources:** switch between the accepted 1.0 sample, two samples proposed in open FOCUS-Sample-Data pull
   requests (1.3 and 1.4), and the specification's 1.5 worked examples. The Data model shows which joins work in each.
 

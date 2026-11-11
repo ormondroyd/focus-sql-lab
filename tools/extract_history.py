@@ -12,6 +12,7 @@ pull request has none. Nothing is written by the lab: the excerpts are cut at a 
 emphasis marks removed.
 """
 
+import datetime
 import json
 import os
 import pathlib
@@ -164,8 +165,95 @@ for n in numbers:
             out_issues[i] = {"title": x["title"], "url": x["url"], "opened": (x.get("createdAt") or "")[:10],
                              "author": (x.get("author") or {}).get("login"), **counts(x)}
 
+# ---- Pull requests that were never merged: closed without merging, or still open ----------------------------
+# They aren't in the git history, so they're matched by the files they changed. A definition file may have had other
+# names (columns used to live in specification/columns/, for example), so every name git's rename tracking knows for
+# each file counts.
+aliases = {}
+for path in paths:
+    names = {line.strip() for line in git("log", "--follow", "--name-only", "--format=", COMMIT, "--", path).splitlines()
+             if line.strip()}
+    for name in names | {path}:
+        aliases.setdefault(name, set()).add(path)
+
+UNMERGED = """pullRequests(states: [OPEN, CLOSED], first: 50{after}) {{ pageInfo {{ hasNextPage endCursor }}
+  nodes {{ number title body url state isDraft createdAt closedAt changedFiles author {{ login }}
+    comments {{ totalCount }} reviews {{ totalCount }} reviewThreads {{ totalCount }}
+    closingIssuesReferences(first: 5) {{ nodes {{ number }} }}
+    files(first: 100) {{ nodes {{ path additions deletions }} }} }} }}"""
+unmerged_prs, cursor = [], None
+while True:
+    after = f', after: "{cursor}"' if cursor else ""
+    page = graphql(f'query {{ repository(owner: "{OWNER}", name: "{NAME}") {{ {UNMERGED.format(after=after)} }} }}')
+    conn = page.get("pullRequests") or {}
+    unmerged_prs += conn.get("nodes") or []
+    if not (conn.get("pageInfo") or {}).get("hasNextPage"):
+        break
+    cursor = conn["pageInfo"]["endCursor"]
+
+unmerged_issues = set()
+for pr in unmerged_prs:
+    hits = {}
+    for f in (pr.get("files") or {}).get("nodes") or []:
+        for target in aliases.get(f["path"], ()):
+            a, d = hits.get(target, (0, 0))
+            hits[target] = (a + f["additions"], d + f["deletions"])
+    if not hits:
+        continue
+    n = pr["number"]
+    linked = [issue_in_title(pr["title"])] if issue_in_title(pr["title"]) else []
+    linked += [x["number"] for x in pr["closingIssuesReferences"]["nodes"] if x["number"] not in linked]
+    unmerged_issues |= set(linked)
+    out_prs[n] = {"title": pr["title"], "url": pr["url"], "opened": pr["createdAt"][:10],
+                  "author": (pr.get("author") or {}).get("login"), "files": pr.get("changedFiles"), **counts(pr),
+                  "summary": excerpt(pr.get("body")), "summary_from": "pr" if excerpt(pr.get("body")) else None,
+                  "issues": linked, "state": pr["state"].lower(), "unmerged": True, "draft": pr.get("isDraft"),
+                  "closed": (pr.get("closedAt") or "")[:10]}
+    for target, (a, d) in hits.items():
+        files[target].setdefault("unmerged", []).append([n, a, d])
+fetch(sorted(i for i in unmerged_issues if i not in out_issues))
+for i in unmerged_issues:
+    x = cache.get(str(i))
+    if x and i not in out_issues:
+        out_issues[i] = {"title": x["title"], "url": x["url"], "opened": (x.get("createdAt") or "")[:10],
+                         "author": (x.get("author") or {}).get("login"), **counts(x)}
+print(f"unmerged pull requests: {len(unmerged_prs)} in all, {sum(1 for p in out_prs.values() if p.get('unmerged'))} "
+      f"touched a definition file")
+
+# ---- Current status, fetched fresh on every build (it changes; the cached text above doesn't need to) ----------
+STATUS = """... on PullRequest { state mergedAt closedAt }
+            ... on Issue { state stateReason closedAt }"""
+status = {}
+everything = sorted(set(out_prs) | set(out_issues))
+for i in range(0, len(everything), 50):
+    chunk = everything[i:i + 50]
+    body = " ".join(f"n{n}: issueOrPullRequest(number: {n}) {{ {STATUS} }}" for n in chunk)
+    data = graphql(f'query {{ repository(owner: "{OWNER}", name: "{NAME}") {{ {body} }} }}')
+    for n in chunk:
+        status[n] = data.get(f"n{n}") or {}
+
+
+def state_of(n):
+    """open, merged, closed (completed), closed (not planned) or closed (duplicate), with the date it closed."""
+    s = status.get(n, {})
+    state = (s.get("state") or "").lower()
+    reason = (s.get("stateReason") or "").lower().replace("_", " ")
+    out = {"state": state}
+    if state == "closed" and reason and reason != "reopened":
+        out["reason"] = reason
+    if state in ("closed", "merged"):
+        out["closed"] = ((s.get("mergedAt") if state == "merged" else s.get("closedAt")) or "")[:10]
+    return out
+
+
+for n in out_prs:
+    out_prs[n].update(state_of(n))
+for n in out_issues:
+    out_issues[n].update(state_of(n))
+
 history = {"spec": {"repo": f"https://github.com/{OWNER}/{NAME}", "commit": git("rev-parse", COMMIT).strip()},
-           "wide": WIDE, "prs": out_prs, "issues": out_issues, "files": files}
+           "wide": WIDE, "status_checked": datetime.date.today().isoformat(),
+           "prs": out_prs, "issues": out_issues, "files": files}
 (SITE / "focus" / "history.json").write_text(json.dumps(history, separators=(",", ":")))
 
 focused = [p for p in out_prs.values() if (p["files"] or 0) <= WIDE]

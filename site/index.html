@@ -207,6 +207,9 @@
   .detail .note-box { border: 1px dashed var(--line); border-radius: 8px; padding: 4px 10px 8px; margin: 10px 0; }
   .detail .note-box h5 { margin: 8px 0 2px; font-size: 12.5px; }
   .detail .conv { margin: 4px 0 2px; }
+  .detail .state { display: inline-block; font-size: 11px; line-height: 1.5; padding: 0 7px; margin-right: 6px; border-radius: 9px;
+    border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+  .detail .state.open { color: var(--accent); border-color: var(--accent); }
   .detail .conv-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-right: 4px; }
   .detail ul.pr-issues .conv { font-size: 12.5px; color: var(--muted); }
   .meter { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin: 4px 0 8px; max-width: 360px; }
@@ -1130,6 +1133,13 @@ const loadSummaries = () => (summariesP ??= fetch('thread-summaries.json').then(
 async function fillHistory(path, token) {
   const [h, sums] = await Promise.all([loadHistory(), loadSummaries()]);
   const said = (sums && sums.summaries) || {};
+  // GitHub's status for a pull request or issue, as last checked by tools/extract_history.py.
+  const stateTag = (x) => {
+    if (!x || !x.state) return '';
+    const label = x.unmerged ? (x.state === 'open' ? (x.draft ? 'open draft' : 'open') : 'closed, not merged')
+      : x.state === 'closed' && x.reason ? `closed as ${x.reason}` : x.state;
+    return `<span class="state ${x.state}" title="Status on GitHub, checked ${h.status_checked}">${escapeHtml(label)}${x.closed ? ` ${x.closed}` : ''}</span>`;
+  };
   const conv = (n) => (said[n] ? `<p class="conv"><span class="conv-label">The conversation</span>${linkRefs(said[n])}</p>` : '');
   const box = $('history');
   if (token !== detailToken || !box) return;
@@ -1139,24 +1149,36 @@ async function fillHistory(path, token) {
   const prs = f.prs.map(([n, a, d]) => ({ n, a, d, ...h.prs[n] })).filter((p) => p.title)
     .sort((x, y) => y.merged.localeCompare(x.merged) || y.n - x.n);
   const focused = prs.filter((p) => p.files <= h.wide), wide = prs.filter((p) => p.files > h.wide);
+  // Pull requests that touched this file but were never merged: open ones first, then newest first.
+  const un = (f.unmerged || []).map(([n, a, d]) => ({ n, a, d, ...h.prs[n] })).filter((p) => p.title)
+    .sort((x, y) => (x.state === 'open' ? 0 : 1) - (y.state === 'open' ? 0 : 1)
+      || (y.closed || y.opened).localeCompare(x.closed || x.opened) || y.n - x.n);
+  const unFocused = un.filter((p) => p.files <= h.wide), unWide = un.filter((p) => p.files > h.wide);
   const link = (url, text) => `<a href="${url}" target="_blank" rel="noopener">${text}</a>`;
   const issue = (i) => {
     const x = h.issues[i];
-    return x ? `<li>${link(x.url, `#${i}`)} ${escapeHtml(x.title)} · ${plural(x.comments, 'comment')}${said[i] ? `<div class="conv">${linkRefs(said[i])}</div>` : ''}</li>` : '';
+    return x ? `<li>${stateTag(x)}${link(x.url, `#${i}`)} ${escapeHtml(x.title)} · ${plural(x.comments, 'comment')}${said[i] ? `<div class="conv">${linkRefs(said[i])}</div>` : ''}</li>` : '';
   };
   const item = (p) => `<li class="pr">
-    <div class="pr-head"><span class="date">${p.merged}</span>${link(p.url, `#${p.n}`)} ${escapeHtml(p.title)}</div>
-    <div class="pr-meta">${p.author ? `${escapeHtml(p.author)} · ` : ''}+${p.a} −${p.d} lines in ${escapeHtml(file)} ·
+    <div class="pr-head">${p.state ? stateTag(p) : `<span class="date">${p.merged}</span>`}${link(p.url, `#${p.n}`)} ${escapeHtml(p.title)}</div>
+    <div class="pr-meta">${p.unmerged ? `opened ${p.opened} · ` : ''}${p.author ? `${escapeHtml(p.author)} · ` : ''}+${p.a} −${p.d} lines in ${escapeHtml(file)} ·
       ${plural(p.files, 'file')} changed · ${plural(p.comments, 'comment')} · ${plural(p.reviews, 'review')}</div>
     ${p.summary ? `<blockquote>${escapeHtml(p.summary)}<cite>From ${p.summary_from === 'pr' ? 'the pull request' : `issue #${p.summary_from.split(' ')[1]}`}</cite></blockquote>` : ''}
     ${conv(p.n)}
     ${p.issues.length ? `<ul class="pr-issues">${p.issues.map(issue).join('')}</ul>` : ''}</li>`;
   box.innerHTML = `<p class="hint">The pull requests that changed <code>${escapeHtml(file)}</code>, newest first, from the
       specification's git history. The quoted text is an excerpt of the pull request's own description, or of its
-      issue's. Where a pull request or issue had a discussion, a summary of it follows.</p>
+      issue's. Where a pull request or issue had a discussion, a summary of it follows. Statuses are GitHub's, checked
+      ${escapeHtml(h.status_checked || '')}.</p>
     <ul class="history">${focused.map(item).join('') || '<li class="hint">None that changed only a few files.</li>'}</ul>
     ${wide.length ? `<details><summary>${plural(wide.length, 'spec-wide change')}: pull requests that changed more than ${h.wide} files</summary>
       <ul class="history">${wide.map(item).join('')}</ul></details>` : ''}
+    ${un.length ? `<h4>Not merged</h4>
+      <p class="hint">Pull requests that proposed changes to <code>${escapeHtml(file)}</code> but were closed without
+        merging, or are still open. They are found by the files they changed, including the file's earlier names.</p>
+      <ul class="history">${unFocused.map(item).join('') || '<li class="hint">None that changed only a few files.</li>'}</ul>
+      ${unWide.length ? `<details><summary>${plural(unWide.length, 'spec-wide pull request')} that changed more than ${h.wide} files</summary>
+        <ul class="history">${unWide.map(item).join('')}</ul></details>` : ''}` : ''}
     <p>${link(`${h.spec.repo}/commits/working_draft/${path}`, `Every commit to ${escapeHtml(file)} on GitHub`)}${f.unlinked
       ? ` (${plural(f.unlinked, 'commit')} there name${f.unlinked === 1 ? 's' : ''} no pull request, so ${f.unlinked === 1 ? 'it isn\'t' : 'they aren\'t'} listed here)` : ''}</p>`;
 }
