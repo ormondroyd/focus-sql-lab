@@ -1,0 +1,1236 @@
+{
+ "tables": {
+  "cau_real": {
+   "file": "cau_real.parquet",
+   "rows": 100000,
+   "bytes": 4949737,
+   "description": "Anonymised real FOCUS 1.0 billing data (AWS, Microsoft, Oracle), 100,000 rows from FinOps Foundation FOCUS-Sample-Data, with FOCUS 1.5 column names added. 1.5-only columns are NULL.",
+   "columns": [
+    {
+     "name": "AvailabilityZone",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BilledCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "BillingAccountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingAccountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "BillingPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ChargeCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeClass",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeDescription",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeFrequency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargePeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ChargePeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "CommitmentDiscountCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ConsumedQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ConsumedUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractedCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractedUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "EffectiveCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "InvoiceIssuerName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ListCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ListUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PublisherName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RegionId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RegionName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "x_SampleRowId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "Tags",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "HostProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedMethodDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedMethodId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedResourceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedResourceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedServiceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedTags",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingAccountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CapacityReservationId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CapacityReservationStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "CommitmentDiscountUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentProgramEligibilityDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractApplied",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CredentialId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceDetailId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrencyContractedUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCurrencyEffectiveCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCurrencyListUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PrincipalId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RequesterDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceSubcategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuMeter",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "x_Dataset",
+     "type": "VARCHAR"
+    }
+   ]
+  },
+  "cau_examples": {
+   "file": "cau_examples.parquet",
+   "rows": 493,
+   "bytes": 36964,
+   "description": "FOCUS 1.5 worked-example Cost and Usage rows from the specification (AI tokens, prompt caching, commitments, SaaS). Each scenario is separate: filter by x_ExampleFile before summing.",
+   "columns": [
+    {
+     "name": "BilledCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "BillingAccountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingAccountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "BillingPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ChargeCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeClass",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeDescription",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeFrequency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargePeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ChargePeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ConsumedQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ConsumedUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractedCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractedUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "EffectiveCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "HostProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceIssuerName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ListCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ListUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CredentialId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PrincipalId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RequesterDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceSubcategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuMeter",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "CommitmentDiscountStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "x_CommitmentDiscountUnitPrice",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PublisherName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RegionId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RegionName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AvailabilityZone",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentProgramEligibilityDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrencyContractedUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCurrencyEffectiveCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCurrencyListUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "CapacityReservationId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CapacityReservationStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "Tags",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "x_ExampleFile",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedMethodDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedMethodId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedResourceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedResourceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedServiceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedTags",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingAccountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractApplied",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceDetailId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountType",
+     "type": "VARCHAR"
+    }
+   ]
+  },
+  "ContractCommitment": {
+   "file": "ContractCommitment.parquet",
+   "rows": 9,
+   "bytes": 7721,
+   "description": "FOCUS 1.5 Contract Commitment worked examples.",
+   "columns": [
+    {
+     "name": "BillingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentBenefitCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractCommitmentCreated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractCommitmentDescription",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentDiscountPercentage",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractCommitmentDurationType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentApplicability",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentFulfillmentInterval",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentLastUpdated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractCommitmentModel",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentOfferCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentPaymentInterval",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentPaymentModel",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentPaymentUpfrontPercentage",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractCommitmentPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractCommitmentPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractCommitmentQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractCommitmentLifecycleStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "InvoiceIssuerName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrencyContractCommitmentCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ServiceProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "x_ExampleFile",
+     "type": "VARCHAR"
+    }
+   ]
+  },
+  "InvoiceDetail": {
+   "file": "InvoiceDetail.parquet",
+   "rows": 8,
+   "bytes": 5283,
+   "description": "FOCUS 1.5 Invoice Detail worked examples.",
+   "columns": [
+    {
+     "name": "BilledCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "BillingAccountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "BillingPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ChargeCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceDetailCreated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "InvoiceDetailDescription",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceDetailGrain",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceDetailId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceDetailLastUpdated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "InvoiceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceIssueDate",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "InvoiceIssueStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceIssuerName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PaymentCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PaymentCurrencyBilledCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PaymentCurrencyInvoiceDetailId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PaymentDueDate",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "PaymentTerms",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PurchaseOrderNumber",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ReferenceInvoiceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "x_ExampleFile",
+     "type": "VARCHAR"
+    }
+   ]
+  },
+  "SkuPrice": {
+   "file": "SkuPrice.parquet",
+   "rows": 62,
+   "bytes": 9465,
+   "description": "FOCUS 1.5 SKU Price (preview) worked examples.",
+   "columns": [
+    {
+     "name": "ChargeCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrencyCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingRegionId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingServiceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PurchaseDurationType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PurchasePaymentModel",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "QuantityTierMaximum",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "QuantityTierMinimum",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ServiceProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceCreated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "SkuPriceDescription",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceEffectiveEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "SkuPriceEffectiveStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "SkuPriceEligibility",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceLastUpdated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "UnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "UnitPriceType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "x_ExampleFile",
+     "type": "VARCHAR"
+    }
+   ]
+  },
+  "CorrectionExamples": {
+   "file": "CorrectionExamples.parquet",
+   "rows": 114,
+   "bytes": 14281,
+   "description": "FOCUS correction-handling worked examples (original, delta, ledger, replacement files).",
+   "columns": [
+    {
+     "name": "ChargeDescription",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "x_ExportDateTime",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "x_IncurredDateTime",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeClass",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "BillingPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "InvoiceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargePeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ChargePeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ResourceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "EffectiveCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "BilledCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractedCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ListCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractedUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ListUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ConsumedQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ConsumedUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "x_ExampleFile",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedMethodDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedMethodId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedResourceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedResourceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedServiceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedTags",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AvailabilityZone",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingAccountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingAccountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingAccountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CapacityReservationId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CapacityReservationStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeFrequency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "CommitmentDiscountStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentProgramEligibilityDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractApplied",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CredentialId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "HostProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceDetailId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceIssuerName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrencyContractedUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCurrencyEffectiveCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCurrencyListUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PrincipalId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RegionId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RegionName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RequesterDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceSubcategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuMeter",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "Tags",
+     "type": "VARCHAR"
+    }
+   ]
+  }
+ }
+}
