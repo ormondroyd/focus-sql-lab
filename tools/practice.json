@@ -30,7 +30,7 @@
   "intro": "Rows that break simple FOCUS rules. Each count should be zero in conformant data.",
   "sql": "SELECT 'ChargeCategory outside the allowed values' AS Check,\n       count(*) AS Rows\nFROM CostAndUsage\nWHERE ChargeCategory NOT IN ('Usage', 'Purchase', 'Tax', 'Credit', 'Adjustment')\nUNION ALL\nSELECT 'ChargePeriodEnd not after ChargePeriodStart', count(*)\nFROM CostAndUsage WHERE ChargePeriodEnd <= ChargePeriodStart\nUNION ALL\nSELECT 'Charge period outside its billing period', count(*)\nFROM CostAndUsage\nWHERE ChargePeriodStart < BillingPeriodStart OR ChargePeriodEnd > BillingPeriodEnd\nUNION ALL\nSELECT 'Usage row with no ConsumedQuantity', count(*)\nFROM CostAndUsage WHERE ChargeCategory = 'Usage' AND ConsumedQuantity IS NULL\nUNION ALL\nSELECT 'Tag key with leading or trailing spaces', count(*)\nFROM CostAndUsage, unnest(json_keys(Tags)) AS t(k) WHERE k <> trim(k);"},
  {"id": "practice-ai-tokens", "title": "AI token cost by model and token type (1.5 examples)",
-  "intro": "FOCUS 1.5 puts model identity and token type in SkuPriceDetails. Switch the dataset to the 1.5 examples to see rows.",
-  "dataset": "cau_examples",
+  "intro": "FOCUS 1.5 puts model identity and token type in SkuPriceDetails. Switch the data source to the spec 1.5 worked examples to see rows.",
+  "dataset": "examples",
   "sql": "SELECT\n  SkuPriceDetails ->> '$.ModelId'          AS ModelId,\n  SkuPriceDetails ->> '$.TokenDirection'   AS TokenDirection,\n  SkuPriceDetails ->> '$.TokenCacheAction' AS TokenCacheAction,\n  sum(ConsumedQuantity)                    AS Tokens,\n  round(sum(EffectiveCost), 4)             AS EffectiveCost,\n  round(sum(EffectiveCost) * 1e6 / nullif(sum(ConsumedQuantity), 0), 4) AS CostPerMillionTokens\nFROM CostAndUsage\nWHERE ConsumedUnit = 'Tokens'\nGROUP BY ALL\nORDER BY ModelId, TokenDirection, TokenCacheAction;"}
 ]

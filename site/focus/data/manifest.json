@@ -332,6 +332,1012 @@
     "SubAccountType": "Added empty by the lab: a FOCUS 1.5 column that FOCUS 1.0 doesn't have."
    }
   },
+  "cau_pr7": {
+   "file": "cau_pr7.parquet",
+   "rows": 3000,
+   "bytes": 220228,
+   "description": "Synthetic FOCUS 1.3 Cost and Usage data for AWS, Azure and Google Cloud (1,000 rows each), proposed in FOCUS-Sample-Data pull request #7. Not accepted by FOCUS.",
+   "columns": [
+    {
+     "name": "ProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PublisherName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "HostProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceIssuerName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingAccountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingAccountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingAccountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "BillingPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ChargePeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ChargePeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ChargeCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeClass",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeDescription",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeFrequency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BilledCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "EffectiveCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ListCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractedCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ListUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractedUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrencyContractedUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCurrencyEffectiveCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCurrencyListUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "BillingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ConsumedQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ConsumedUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceSubcategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuMeter",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RegionId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RegionName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AvailabilityZone",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "CommitmentDiscountUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractApplied",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CapacityReservationId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CapacityReservationStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedMethodId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedMethodDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedResourceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedResourceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedTags",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "Tags",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedServiceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentProgramEligibilityDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CredentialId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceDetailId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PrincipalId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RequesterDetails",
+     "type": "VARCHAR"
+    }
+   ],
+   "lab_columns": {
+    "AllocatedServiceName": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "CommitmentProgramEligibilityDetails": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "CredentialId": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "InvoiceDetailId": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "PrincipalId": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "RequesterDetails": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have."
+   }
+  },
+  "cc_pr7": {
+   "file": "cc_pr7.parquet",
+   "rows": 66,
+   "bytes": 7970,
+   "description": "Synthetic FOCUS 1.3 Contract Commitment data for AWS, Azure and Google Cloud, proposed in FOCUS-Sample-Data pull request #7. Not accepted by FOCUS.",
+   "columns": [
+    {
+     "name": "ContractCommitmentId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractCommitmentQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractCommitmentUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentDescription",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractCommitmentPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "BillingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentApplicability",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentBenefitCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentCreated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractCommitmentDiscountPercentage",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractCommitmentDurationType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentFulfillmentInterval",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentLastUpdated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractCommitmentLifecycleStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentModel",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentOfferCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentPaymentInterval",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentPaymentModel",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentPaymentUpfrontPercentage",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "InvoiceIssuerName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrencyContractCommitmentCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ServiceProviderName",
+     "type": "VARCHAR"
+    }
+   ],
+   "lab_columns": {
+    "ContractCommitmentApplicability": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "ContractCommitmentBenefitCategory": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "ContractCommitmentCreated": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "ContractCommitmentDiscountPercentage": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "ContractCommitmentDurationType": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "ContractCommitmentFulfillmentInterval": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "ContractCommitmentLastUpdated": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "ContractCommitmentLifecycleStatus": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "ContractCommitmentModel": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "ContractCommitmentOfferCategory": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "ContractCommitmentPaymentInterval": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "ContractCommitmentPaymentModel": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "ContractCommitmentPaymentUpfrontPercentage": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "InvoiceIssuerName": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "PricingCurrency": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "PricingCurrencyContractCommitmentCost": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have.",
+    "ServiceProviderName": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.3 sample doesn't have."
+   }
+  },
+  "cau_pr5": {
+   "file": "cau_pr5.parquet",
+   "rows": 1000,
+   "bytes": 155278,
+   "description": "Generated FOCUS 1.4 Cost and Usage data (AWS, Microsoft, Google, Oracle), proposed in draft FOCUS-Sample-Data pull request #5. Its README says this file hasn't been validated. Not accepted by FOCUS.",
+   "columns": [
+    {
+     "name": "AllocatedMethodId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedResourceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedResourceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedTags",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BilledCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "BillingAccountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingAccountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingAccountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "BillingPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "CapacityReservationId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CapacityReservationStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeClass",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeDescription",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargePeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ChargePeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "CommitmentDiscountCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "CommitmentDiscountStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentDiscountUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ConsumedQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ConsumedUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractApplied",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractedCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractedUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "EffectiveCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "HostProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceIssuerName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ListCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ListUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PublisherName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RegionId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RegionName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ResourceType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceProviderName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuMeter",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SkuPriceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "SubAccountType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "Tags",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AllocatedMethodDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "AvailabilityZone",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ChargeFrequency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ServiceSubcategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrencyContractedUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCurrencyEffectiveCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PricingCurrencyListUnitPrice",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "AllocatedServiceName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CommitmentProgramEligibilityDetails",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "CredentialId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceDetailId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PrincipalId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "RequesterDetails",
+     "type": "VARCHAR"
+    }
+   ],
+   "lab_columns": {
+    "AllocatedServiceName": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.4 sample doesn't have.",
+    "CommitmentProgramEligibilityDetails": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.4 sample doesn't have.",
+    "CredentialId": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.4 sample doesn't have.",
+    "InvoiceDetailId": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.4 sample doesn't have.",
+    "PrincipalId": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.4 sample doesn't have.",
+    "RequesterDetails": "Added empty by the lab: a FOCUS 1.5 column that this FOCUS 1.4 sample doesn't have."
+   }
+  },
+  "cc_pr5": {
+   "file": "cc_pr5.parquet",
+   "rows": 1000,
+   "bytes": 55276,
+   "description": "Generated FOCUS 1.4 Contract Commitment data, proposed in draft FOCUS-Sample-Data pull request #5. Not accepted by FOCUS.",
+   "columns": [
+    {
+     "name": "BillingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentApplicability",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentBenefitCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractCommitmentCreated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractCommitmentDescription",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentDiscountPercentage",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractCommitmentDurationType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentFulfillmentInterval",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentLastUpdated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractCommitmentLifecycleStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentModel",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentOfferCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentPaymentInterval",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentPaymentModel",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentPaymentUpfrontPercentage",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractCommitmentPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractCommitmentPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractCommitmentQuantity",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ContractCommitmentType",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractCommitmentUnit",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ContractPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ContractPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "InvoiceIssuerName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PricingCurrencyContractCommitmentCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "ServiceProviderName",
+     "type": "VARCHAR"
+    }
+   ],
+   "lab_columns": {}
+  },
+  "inv_pr5": {
+   "file": "inv_pr5.parquet",
+   "rows": 1000,
+   "bytes": 49432,
+   "description": "Generated FOCUS 1.4 Invoice Detail data, proposed in draft FOCUS-Sample-Data pull request #5. Not accepted by FOCUS.",
+   "columns": [
+    {
+     "name": "BilledCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "BillingAccountId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "BillingPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "BillingPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "ChargeCategory",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceDetailCreated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "InvoiceDetailDescription",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceDetailGrain",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceDetailId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceDetailLastUpdated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "InvoiceId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceIssueDate",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "InvoiceIssueStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceIssuerName",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PaymentCurrency",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PaymentCurrencyBilledCost",
+     "type": "DOUBLE"
+    },
+    {
+     "name": "PaymentCurrencyInvoiceDetailId",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PaymentDueDate",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "PaymentTerms",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "PurchaseOrderNumber",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "ReferenceInvoiceId",
+     "type": "VARCHAR"
+    }
+   ],
+   "lab_columns": {}
+  },
+  "bp_pr5": {
+   "file": "bp_pr5.parquet",
+   "rows": 1000,
+   "bytes": 3538,
+   "description": "Generated FOCUS 1.4 Billing Period data, proposed in draft FOCUS-Sample-Data pull request #5. Not accepted by FOCUS.",
+   "columns": [
+    {
+     "name": "BillingPeriodCreated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "BillingPeriodEnd",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "BillingPeriodLastUpdated",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "BillingPeriodStart",
+     "type": "TIMESTAMP"
+    },
+    {
+     "name": "BillingPeriodStatus",
+     "type": "VARCHAR"
+    },
+    {
+     "name": "InvoiceIssuerName",
+     "type": "VARCHAR"
+    }
+   ],
+   "lab_columns": {}
+  },
   "cau_examples": {
    "file": "cau_examples.parquet",
    "rows": 493,
@@ -645,11 +1651,11 @@
     "SubAccountType": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include."
    }
   },
-  "ContractCommitment": {
-   "file": "ContractCommitment.parquet",
+  "cc_examples": {
+   "file": "cc_examples.parquet",
    "rows": 9,
    "bytes": 7610,
-   "description": "FOCUS 1.5 Contract Commitment worked examples.",
+   "description": "FOCUS 1.5 Contract Commitment worked examples from the specification.",
    "columns": [
     {
      "name": "BillingCurrency",
@@ -780,11 +1786,11 @@
     "x_ExampleFile": "Added by the lab: the worked-example file the row came from."
    }
   },
-  "InvoiceDetail": {
-   "file": "InvoiceDetail.parquet",
+  "inv_examples": {
+   "file": "inv_examples.parquet",
    "rows": 8,
    "bytes": 5184,
-   "description": "FOCUS 1.5 Invoice Detail worked examples.",
+   "description": "FOCUS 1.5 Invoice Detail worked examples from the specification.",
    "columns": [
     {
      "name": "BilledCost",
@@ -883,11 +1889,11 @@
     "x_ExampleFile": "Added by the lab: the worked-example file the row came from."
    }
   },
-  "SkuPrice": {
-   "file": "SkuPrice.parquet",
+  "sku_examples": {
+   "file": "sku_examples.parquet",
    "rows": 62,
    "bytes": 9219,
-   "description": "FOCUS 1.5 SKU Price (preview) worked examples.",
+   "description": "FOCUS 1.5 SKU Price (preview) worked examples from the specification.",
    "columns": [
     {
      "name": "ChargeCategory",
@@ -1335,6 +2341,61 @@
     "SubAccountName": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
     "SubAccountType": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include.",
     "Tags": "Added empty by the lab: a FOCUS 1.5 column that none of these example files include."
+   }
+  }
+ },
+ "sources": {
+  "sample": {
+   "abbr": "1.0 sample",
+   "label": "FOCUS-Sample-Data 1.0, accepted",
+   "short": "the 1.0 sample",
+   "status": "accepted",
+   "about": "The FinOps Foundation's accepted sample: anonymised FOCUS 1.0 Cost and Usage data. FOCUS 1.0 has no other datasets. The lab added the 1.5-only columns, empty.",
+   "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data/tree/main/FOCUS-1.0",
+   "tables": {
+    "CostAndUsage": "cau_sample"
+   }
+  },
+  "pr7": {
+   "abbr": "1.3 PR #7",
+   "label": "FOCUS 1.3, proposed in Sample-Data PR #7",
+   "short": "the proposed 1.3 sample (PR #7)",
+   "status": "proposed",
+   "about": "Proposed, not accepted by FOCUS: synthetic FOCUS 1.3 data from an open pull request. FOCUS 1.3 added Contract Commitment; Invoice Detail and Billing Period came in 1.4.",
+   "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data/pull/7",
+   "commit": "guymano/FOCUS-Sample-Data@99917010b27f7c0ca3586f8e0daab7e1c8103dac",
+   "tables": {
+    "CostAndUsage": "cau_pr7",
+    "ContractCommitment": "cc_pr7"
+   }
+  },
+  "pr5": {
+   "abbr": "1.4 PR #5",
+   "label": "FOCUS 1.4, proposed in Sample-Data PR #5 (draft)",
+   "short": "the proposed 1.4 sample (PR #5)",
+   "status": "proposed",
+   "about": "Proposed, not accepted by FOCUS: generated FOCUS 1.4 data from an open draft pull request, with all four 1.4 datasets.",
+   "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data/pull/5",
+   "commit": "beau-finopsorg/FOCUS-Sample-Data@4fe60d96737ea06c64851f3a0b2bcd675125b980",
+   "tables": {
+    "CostAndUsage": "cau_pr5",
+    "ContractCommitment": "cc_pr5",
+    "InvoiceDetail": "inv_pr5",
+    "BillingPeriod": "bp_pr5"
+   }
+  },
+  "examples": {
+   "abbr": "1.5 examples",
+   "label": "Spec 1.5 worked examples",
+   "short": "the spec 1.5 examples",
+   "status": "spec",
+   "about": "The specification's own worked examples. Each file is its own scenario, so filter by x_ExampleFile. The spec has no Billing Period examples.",
+   "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/tree/working_draft/specification/data",
+   "tables": {
+    "CostAndUsage": "cau_examples",
+    "ContractCommitment": "cc_examples",
+    "InvoiceDetail": "inv_examples",
+    "SkuPrice": "sku_examples"
    }
   }
  }

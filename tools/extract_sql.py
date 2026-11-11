@@ -2,7 +2,7 @@
 Also tests the lab's own practice queries (tools/practice.json).
 
 Usage: python -I extract_sql.py <FOCUS_Spec clone> <site dir>
-Reads  <site dir>/focus/data/*.parquet and <site dir>/lab-setup.sql
+Reads  <site dir>/focus/data/ (Parquet and manifest), <site dir>/focus/model.json and <site dir>/lab-setup.sql
 Writes <site dir>/focus/spec-queries.json   (the specification's queries, verbatim: FOCUS-derived)
        <site dir>/practice-queries.json     (the lab's own practice queries, with test results)
 
@@ -54,9 +54,26 @@ def blocks(md):
 
 
 con = duckdb.connect()
-for t in ["cau_sample", "cau_examples", "ContractCommitment", "InvoiceDetail", "SkuPrice", "CorrectionExamples"]:
-    con.execute(f"CREATE VIEW {t} AS SELECT * FROM '{DATA / (t + '.parquet')}'")
-con.execute("CREATE VIEW CostAndUsage AS SELECT * FROM cau_examples")
+manifest = json.loads((DATA / "manifest.json").read_text())
+for t, m in manifest["tables"].items():
+    con.execute(f"CREATE VIEW {t} AS SELECT * FROM '{DATA / m['file']}'")
+# Each FOCUS dataset name is a view onto the chosen source's table, or onto an empty table with the spec's columns
+# when the source doesn't have that dataset. The page does the same (setDataset in index.html).
+SQL_TYPE = {"String": "VARCHAR", "Decimal": "DOUBLE", "Date/Time": "TIMESTAMP", "JSON": "VARCHAR"}
+DATASETS = json.loads((SITE / "focus" / "model.json").read_text())["datasets"]
+for d in DATASETS:
+    cols = ", ".join(f'"{c["id"]}" {SQL_TYPE.get(c["data_type"], "VARCHAR")}' for c in d["columns"])
+    con.execute(f'CREATE TABLE "empty_{d["id"]}" ({cols})')
+SOURCES_DATA = manifest["sources"]
+
+
+def set_source(src):
+    for d in DATASETS:
+        table = SOURCES_DATA[src]["tables"].get(d["id"], "empty_" + d["id"])
+        con.execute(f'CREATE OR REPLACE VIEW "{d["id"]}" AS SELECT * FROM "{table}"')
+
+
+set_source("examples")
 con.execute("SELECT json_extract_string('{}', '$')")  # load DuckDB's JSON functions before the lab replaces json_value
 con.execute((SITE / "lab-setup.sql").read_text())
 
@@ -176,7 +193,7 @@ def suggest(sql, eid):
 
 
 def run(sql, params, source):
-    con.execute(f"CREATE OR REPLACE VIEW CostAndUsage AS SELECT * FROM {source}")
+    set_source(source)
     try:
         rows = con.execute(bind(sql, params)).fetchall()
         return {"ok": True, "rows": len(rows)}
@@ -204,6 +221,7 @@ examples = []
 for md in SOURCES:
     for n, (feature, heading, intro, sql) in enumerate(blocks(md), 1):
         eid = f"{md.stem}-{n}"
+        set_source("examples")  # inputs are suggested from the spec's worked examples
         params = suggest(sql, eid)
         assert len(params) == len(placeholders(sql)), eid
         example = {
@@ -214,8 +232,7 @@ for md in SOURCES:
             "source": str(md.relative_to(SPEC)),
             "sql": sql,
             "params": params,
-            "sample": run(sql, params, "cau_sample"),
-            "examples": run(sql, params, "cau_examples"),
+            "results": {src: run(sql, params, src) for src in SOURCES_DATA},
         }
         if eid in NOTES:
             example["note"] = NOTES[eid]
@@ -224,15 +241,17 @@ for md in SOURCES:
 practice = json.loads((pathlib.Path(__file__).parent / "practice.json").read_text())
 for p in practice:
     p.update({"feature": "Lab practice queries (DuckDB SQL, not from FOCUS)", "source": None, "params": [],
-              "lab": True, "sample": run(p["sql"], [], "cau_sample"), "examples": run(p["sql"], [], "cau_examples")})
-    print("practice", p["id"], "sample:", p["sample"], "examples:", p["examples"])
+              "lab": True, "results": {src: run(p["sql"], [], src) for src in SOURCES_DATA}})
+    print("practice", p["id"], p["results"])
 
 (SITE / "focus" / "spec-queries.json").write_text(json.dumps(examples, indent=1))
 (SITE / "practice-queries.json").write_text(json.dumps(practice, indent=1))
 for label, group in (("spec", examples), ("practice", practice)):
-    ok = sum(e["sample"]["ok"] or e["examples"]["ok"] for e in group)
-    rows = sum(e["sample"].get("rows", 0) > 0 or e["examples"].get("rows", 0) > 0 for e in group)
+    ok = sum(any(r["ok"] for r in e["results"].values()) for e in group)
+    rows = sum(any(r.get("rows", 0) > 0 for r in e["results"].values()) for e in group)
     print(f"{label}: {len(group)} queries, {ok} run as published, {rows} return rows")
+    for src in SOURCES_DATA:
+        print(f"  {src}: {sum(e['results'][src].get('rows', 0) > 0 for e in group)} return rows")
 for e in examples + practice:
-    if not (e["sample"]["ok"] or e["examples"]["ok"]):
-        print("FAIL", e["id"], "|", e["title"], "|", e["examples"].get("error"), "| note:", "note" in e)
+    if not any(r["ok"] for r in e["results"].values()):
+        print("FAIL", e["id"], "|", e["title"], "|", e["results"]["examples"].get("error"), "| note:", "note" in e)

@@ -225,12 +225,9 @@
 <div class="layout">
   <aside>
     <section>
-      <h2>Dataset</h2>
-      <label class="field" for="dataset"><code>CostAndUsage</code> points to</label>
-      <select id="dataset">
-        <option value="cau_sample">FOCUS sample data, 1.0 with 1.5 columns added by the lab (100,000 rows)</option>
-        <option value="cau_examples">Spec 1.5 worked examples (493 rows)</option>
-      </select>
+      <h2>Data source</h2>
+      <label class="field" for="dataset">The five FOCUS dataset names read from</label>
+      <select id="dataset"><option>Loading…</option></select>
       <p class="hint" id="dataset-hint"></p>
     </section>
     <section>
@@ -246,7 +243,10 @@
           <li><b>cau_sample</b> is the FinOps Foundation's FOCUS-Sample-Data: anonymised FOCUS 1.0 data from AWS, Microsoft, Oracle and a little Google. Costs are anonymised: read the method, not the money.</li>
           <li>It is not FOCUS 1.5 data. So that 1.5 queries can run on it, the lab added every 1.5 column it lacks, empty. It derived <code>ServiceProviderName</code> and <code>HostProviderName</code> from <code>ProviderName</code>, <code>PublisherName</code> and <code>InvoiceIssuerName</code> using the spec's migration guidance. The 1.0 columns that later versions removed are kept.</li>
           <li>The sample writes missing values as the text <code>NULL</code>. These were loaded as nulls.</li>
-          <li><b>cau_examples</b> and the other tables come from the specification's worked-example CSVs. Each file is a separate scenario, so filter by <code>x_ExampleFile</code> before you add anything up. Some files used the text <code>null</code> or currency text such as <code>$10,000.00</code> in Decimal columns. These were cleaned on load.</li>
+          <li><b>cau_pr7</b> and <b>cc_pr7</b> (FOCUS 1.3), and <b>cau_pr5</b>, <b>cc_pr5</b>, <b>inv_pr5</b> and <b>bp_pr5</b> (FOCUS 1.4), are sample data proposed in open FOCUS-Sample-Data pull requests
+            <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data/pull/7">#7</a> and
+            <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data/pull/5">#5</a> (a draft). FOCUS hasn't accepted either. Values are as published at each pull request's latest commit, typed to the 1.5 column types. The lab added the 1.5 columns each one lacks, empty.</li>
+          <li><b>cau_examples</b> and the other <b>_examples</b> tables come from the specification's worked-example CSVs. Each file is a separate scenario, so filter by <code>x_ExampleFile</code> before you add anything up. Some files used the text <code>null</code> or currency text such as <code>$10,000.00</code> in Decimal columns. These were cleaned on load.</li>
           <li>Decimal columns are 64-bit floating point, one of the precisions the spec allows. Sums of charges and credits can leave tiny remainders instead of exactly zero.</li>
         </ul>
       </details>
@@ -290,11 +290,8 @@
       and dashed lines are optional keys. Click a line, a table name or a column. Dataset and column definitions are
       the specification's. The specification describes relationships only in prose, so the diagram's lines, the
       relationship names and the join SQL are the lab's reading of it.</p>
-    <label for="model-dataset">Cost and Usage rows from
-      <select id="model-dataset">
-        <option value="cau_sample">FOCUS sample data</option>
-        <option value="cau_examples">Spec 1.5 worked examples</option>
-      </select>
+    <label for="model-dataset">Data from
+      <select id="model-dataset"><option>Loading…</option></select>
     </label>
   </div>
   <div class="erd" id="erd"><p class="hint">Loading the data model…</p></div>
@@ -307,7 +304,7 @@
   </div>
 </section>
 <footer>
-  Data: <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data">FOCUS-Sample-Data</a> and the worked examples and example queries in the
+  Data: <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data">FOCUS-Sample-Data</a> (the accepted 1.0 sample, and samples proposed in its open pull requests #5 and #7) and the worked examples and example queries in the
   <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec">FOCUS specification</a>, licensed under
   <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Changes: data cleaned and typed, FOCUS 1.5 columns added to the
   1.0 sample, and the data model drawn from the specification's dataset and column definitions. The example queries are
@@ -322,7 +319,8 @@ import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.33.1
 const $ = (id) => document.getElementById(id);
 const SPEC_URL = 'https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/blob/working_draft/';
 const SHOW_ROWS = 1000;
-const DATASET_LABEL = { cau_sample: 'the FOCUS sample data', cau_examples: 'the spec 1.5 examples' };
+const srcShort = () => manifest.sources[$('dataset').value].short;
+const SrcShort = () => srcShort().charAt(0).toUpperCase() + srcShort().slice(1); // to start a sentence
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch { /* storage unavailable */ } },
@@ -485,18 +483,18 @@ async function init() {
   }
   try { await conn.query(`SELECT '{"a":1}'::JSON ->> '$.a'`); } catch { /* json loads on first use */ }
 
-  // The spec has no example data for Billing Period: create it empty from the spec's columns so joins still run.
+  // Each FOCUS dataset name is a view onto the chosen source's table. A dataset the source doesn't have points at an
+  // empty table with the spec's columns, so queries and joins still run.
   const SQL_TYPE = { String: 'VARCHAR', Decimal: 'DOUBLE', 'Date/Time': 'TIMESTAMP', JSON: 'VARCHAR' };
-  const bp = model.datasets.find((d) => d.id === 'BillingPeriod');
-  if (bp && !manifest.tables.BillingPeriod) {
-    const cols = bp.columns.map((c) => ({ name: c.id, type: SQL_TYPE[c.data_type] || 'VARCHAR' }));
-    await conn.query(`CREATE TABLE BillingPeriod (${cols.map((c) => `"${c.name}" ${c.type}`).join(', ')})`);
-    manifest.tables.BillingPeriod = { rows: 0, columns: cols,
-      description: 'FOCUS 1.5 Billing Period dataset. The specification has no example data for it, so this table is empty, but joins to it still run.' };
+  for (const d of model.datasets) {
+    await conn.query(`CREATE TABLE "empty_${d.id}" (${d.columns.map((c) => `"${c.id}" ${SQL_TYPE[c.data_type] || 'VARCHAR'}`).join(', ')})`);
   }
-
-  const ds = manifest.tables[store.get('dataset')] ? store.get('dataset') : 'cau_sample';
-  await setDataset(ds);
+  const options = Object.entries(manifest.sources).map(([k, src]) =>
+    `<option value="${k}">${escapeHtml(src.label)} (${Object.keys(src.tables).length} of ${model.datasets.length} datasets)</option>`).join('');
+  $('dataset').innerHTML = options;
+  $('model-dataset').innerHTML = options;
+  const stored = store.get('source');
+  await setDataset(manifest.sources[stored] ? stored : 'sample');
   // Everything the lab adds to DuckDB so the spec's queries run as published. Runs after the JSON functions have
   // loaded (above), because it replaces json_value, and after CostAndUsage exists, because focus_data points at it.
   for (const statement of sqlStatements(labSetup)) await conn.query(statement);
@@ -517,52 +515,58 @@ async function init() {
   if (tab === 'model') renderModel();
 }
 
-async function setDataset(t, why = '') {
-  await conn.query(`CREATE OR REPLACE VIEW CostAndUsage AS SELECT * FROM "${t}"`);
-  $('dataset').value = t;
-  $('model-dataset').value = t;
-  store.set('dataset', t);
+async function setDataset(key, why = '') {
+  const src = manifest.sources[key];
+  for (const d of model.datasets) {
+    await conn.query(`CREATE OR REPLACE VIEW "${d.id}" AS SELECT * FROM "${src.tables[d.id] || 'empty_' + d.id}"`);
+  }
+  $('dataset').value = key;
+  $('model-dataset').value = key;
+  store.set('source', key);
   if (modelBuilt) refreshModelData();
-  $('dataset-hint').textContent = why ||
-    (t === 'cau_sample' ? 'FOCUS 1.0 data. The lab added the 1.5-only columns, such as SkuPriceDetails, empty.'
-                      : 'Each worked-example file is its own scenario. Filter by x_ExampleFile.');
+  if ($('tables').dataset.ready) renderTables();
+  const empty = model.datasets.filter((d) => !src.tables[d.id]).map((d) => d.name);
+  $('dataset-hint').innerHTML = (why ? `<b>${escapeHtml(why)}</b> ` : '') + escapeHtml(src.about) +
+    (empty.length ? ` Empty here: ${escapeHtml(empty.join(', '))}.` : '') +
+    ` <a href="${src.url}" target="_blank" rel="noopener">Source</a>`;
 }
 
 function renderTables() {
-  const order = ['cau_sample', 'cau_examples', 'SkuPrice', 'InvoiceDetail', 'ContractCommitment', 'BillingPeriod', 'CorrectionExamples'];
+  const src = manifest.sources[$('dataset').value];
   const FOCUS_NAME = 'The name of a FOCUS dataset in the specification.';
-  // Where each table or view name comes from.
-  const NAMES = {
-    cau_sample: ['lab', 'A name made by the lab for the FOCUS 1.0 sample data. CostAndUsage can point at it.'],
-    cau_examples: ['lab', "A name made by the lab for the specification's worked-example Cost and Usage rows. CostAndUsage can point at it."],
-    CorrectionExamples: ['lab', "A name made by the lab for the specification's correction-handling examples, which are Cost and Usage rows."],
-    SkuPrice: ['FOCUS', FOCUS_NAME], InvoiceDetail: ['FOCUS', FOCUS_NAME],
-    ContractCommitment: ['FOCUS', FOCUS_NAME], BillingPeriod: ['FOCUS', FOCUS_NAME],
-  };
   const tag = ([kind, why]) => `<span class="tag${kind === 'lab' ? ' lab' : ''}" title="${escapeHtml(why)}">${kind}</span>`;
-  const views = `<details class="table"><summary><span>CostAndUsage${tag(['FOCUS', FOCUS_NAME])}</span><span class="rows">view</span></summary>
-    <p>The FOCUS Cost and Usage dataset, which the spec's queries read. Here it is a view the lab points at the data chosen above.</p></details>
-    <details class="table"><summary><span>focus_data${tag(['lab', 'Defined by the lab. Only the migration guide uses this name.'])}</span><span class="rows">view</span></summary>
-    <p>Another name for CostAndUsage. It is not a FOCUS dataset: the spec's version migration guide reads from a
-    table called focus_data in its 6 example queries without defining it, so the lab defines it.</p></details>`;
-  $('tables').innerHTML = views + order.filter((t) => manifest.tables[t]).map((t) => {
-    const m = manifest.tables[t];
+  const wasOpen = new Set([...$('tables').querySelectorAll('details[open]')].map((d) => d.dataset.t));
+  const box = (key, head, rows, body) => `<details class="table" data-t="${key}"${wasOpen.has(key) ? ' open' : ''}>
+    <summary><span>${head}</span><span class="rows">${rows}</span></summary>${body}</details>`;
+  const colList = (m) => {
     const labCols = m.lab_columns || {};
     const nLab = Object.keys(labCols).length;
-    const cols = m.columns.map((c) => {
-      const why = labCols[c.name];
-      return `<li data-col="${c.name}"${why ? ' class="labcol"' : ''} title="${escapeHtml(why ? `${why} Click to insert.` : `Click to insert ${c.name}.`)}">` +
-        `<span>${c.name}</span><span>${c.type.toLowerCase()}</span></li>`;
-    }).join('');
-    return `<details class="table"><summary><span>${t}${tag(NAMES[t] || ['lab', 'Made by the lab.'])}</span><span class="rows">${m.rows.toLocaleString()} rows</span></summary>
-      <p>${escapeHtml(m.description)}</p>
-      ${nLab ? `<p>${nLab} of ${m.columns.length} columns, underlined, were added or derived by the lab. Hover over one to see why.</p>` : ''}
-      <ul class="cols">${cols}</ul></details>`;
-  }).join('');
-  $('tables').addEventListener('click', (e) => {
+    return (nLab ? `<p>${nLab} of ${m.columns.length} columns, underlined, were added or derived by the lab. Hover over one to see why.</p>` : '') +
+      '<ul class="cols">' + m.columns.map((c) => {
+        const why = labCols[c.name];
+        return `<li data-col="${c.name}"${why ? ' class="labcol"' : ''} title="${escapeHtml(why ? `${why} Click to insert.` : `Click to insert ${c.name}.`)}">` +
+          `<span>${c.name}</span><span>${c.type.toLowerCase()}</span></li>`;
+      }).join('') + '</ul>';
+  };
+  // The five FOCUS dataset names, as views onto the chosen source.
+  const views = model.datasets.map((d) => {
+    const t = src.tables[d.id], m = t && manifest.tables[t];
+    return box(d.id, `${d.id}${tag(['FOCUS', FOCUS_NAME])}`, m ? `${m.rows.toLocaleString()} rows` : 'empty',
+      m ? `<p>A view the lab points at <b>${t}</b>, from ${escapeHtml(src.short)}.</p>${colList(m)}`
+        : `<p>${escapeHtml(src.short)} has no ${escapeHtml(d.name)} data, so this view is empty. It has the spec's columns, so queries still run.</p>`);
+  }).join('') + box('focus_data', `focus_data${tag(['lab', 'Defined by the lab. Only the migration guide uses this name.'])}`, 'view',
+    `<p>Another name for CostAndUsage. It is not a FOCUS dataset: the spec's version migration guide reads from a
+    table called focus_data in its 6 example queries without defining it, so the lab defines it.</p>`);
+  const NAMED = 'A name made by the lab. The FOCUS dataset views point at this table when its data source is chosen.';
+  const tables = Object.entries(manifest.tables).map(([t, m]) =>
+    box(t, `${t}${tag(['lab', t === 'CorrectionExamples' ? "A name made by the lab for the specification's correction-handling examples, which are Cost and Usage rows." : NAMED])}`,
+      `${m.rows.toLocaleString()} rows`, `<p>${escapeHtml(m.description)}</p>${colList(m)}`)).join('');
+  $('tables').innerHTML = `${views}<p class="hint" style="margin:12px 0 4px">The tables behind the views</p>${tables}`;
+  $('tables').dataset.ready = '1';
+  $('tables').onclick = (e) => {
     const li = e.target.closest('li[data-col]');
     if (li) insertAtCursor(li.dataset.col);
-  });
+  };
 }
 
 function renderExamples() {
@@ -574,7 +578,7 @@ function renderExamples() {
   const sel = $('examples');
   sel.innerHTML = '<option value="">Pick an example query…</option>' + [...groups].map(([feature, list]) =>
     `<optgroup label="${escapeHtml(feature)}">` + list.map((e) => {
-      const broken = !e.sample.ok && !e.examples.ok;
+      const broken = !Object.values(e.results).some((r) => r.ok);
       return `<option value="${e.id}">${broken ? '⚠ ' : ''}${escapeHtml(e.title)}</option>`;
     }).join('') + '</optgroup>').join('');
   sel.disabled = false;
@@ -591,9 +595,12 @@ async function pickExample(id, autoRun = false) {
   store.set(SQL_KEY, e.sql);
   store.set(INPUTS_KEY, JSON.stringify(inputs));
 
-  let target = e.dataset || (e.sample.rows > 0 ? 'cau_sample' : e.examples.rows > 0 ? 'cau_examples' : null);
-  if (target && target !== $('dataset').value && /CostAndUsage|focus_data/.test(e.sql)) {
-    await setDataset(target, `Switched to ${DATASET_LABEL[target]}, because this query returns rows there.`);
+  // Stay on the chosen data source if the query returns rows there; otherwise switch to one where it does.
+  const current = $('dataset').value;
+  const hasRows = (k) => (e.results[k]?.rows || 0) > 0;
+  const target = hasRows(current) ? current : (e.dataset && hasRows(e.dataset) ? e.dataset : Object.keys(manifest.sources).find(hasRows));
+  if (target && target !== current) {
+    await setDataset(target, `Switched to ${manifest.sources[target].short}, because this query returns rows there.`);
   }
 
   const status = (r, label) => r.ok ? `${label}: ${r.rows} row${r.rows === 1 ? '' : 's'}` : `${label}: fails`;
@@ -609,7 +616,7 @@ async function pickExample(id, autoRun = false) {
     ${e.intro ? `<p>${escapeHtml(e.intro)}</p>` : ''}
     ${source}
     ${e.note ? `<div class="note">${escapeHtml(e.note)}</div>` : ''}
-    <div class="meta">Tested · ${status(e.sample, 'sample data')} · ${status(e.examples, '1.5 examples')}</div>`;
+    <div class="meta">Tested · ${Object.entries(manifest.sources).map(([k, src]) => status(e.results[k], src.abbr)).join(' · ')}</div>`;
   $('example-info').hidden = false;
   if (autoRun) run();
 }
@@ -1091,7 +1098,7 @@ function renderDetail() {
   return colDetail(dsById(selection.ds), colOf(selection.ds, selection.col), el, token);
 }
 
-const tableLabel = (id) => (id === 'CostAndUsage' ? `Cost and Usage (${DATASET_LABEL[$('dataset').value]})` : dsById(id).name);
+const tableLabel = (id) => dsById(id).name;
 const specParas = (paras) => paras.map((p) => `<p style="white-space:pre-line">${escapeHtml(p.replace(/^\s*\* /gm, '• '))}</p>`).join('');
 const meter = (share) => `<div class="meter"><span style="width:${Math.max(0, Math.min(100, share))}%"></span></div>`;
 
@@ -1121,13 +1128,18 @@ async function relDetail(r, el, token) {
     const total = num(s.rows_total), withKey = num(s.rows_with_key), matched = num(s.rows_matched);
     const share = withKey ? (100 * matched) / withKey : 0;
     let html;
-    if (!total) html = `<p>${escapeHtml(tableLabel(r.a))} has no rows in the lab.</p>`;
+    if (!total) html = `<p>${escapeHtml(SrcShort())} has no ${escapeHtml(dsById(r.a).name)} data.</p>`;
+    else if (!withKey) html = `<p>In ${escapeHtml(srcShort())}, none of the ${total.toLocaleString()} ${escapeHtml(tableLabel(r.a))} rows carry the key.</p>`;
     else {
-      html = `<p>${withKey.toLocaleString()} of ${total.toLocaleString()} ${escapeHtml(tableLabel(r.a))} rows carry the key. ` +
+      html = `<p>In ${escapeHtml(srcShort())}, ${withKey.toLocaleString()} of ${total.toLocaleString()} ${escapeHtml(tableLabel(r.a))} rows carry the key. ` +
         `${matched.toLocaleString()} of them (${share.toFixed(1)}%) find a match in ${escapeHtml(tableLabel(r.b))}.</p>` + meter(share) +
         `<p class="hint">${num(s.keys_distinct).toLocaleString()} distinct key values, ${num(s.keys_matched).toLocaleString()} matched.</p>`;
-      if (!bRows) html += `<p>${escapeHtml(tableLabel(r.b))} has no rows: the specification has no example data for it.</p>`;
-      else if (withKey && !matched) html += '<p>Nothing matches. In this lab the two tables come from separate sources or example scenarios, so their IDs don\'t line up.</p>';
+    }
+    if (total) {
+      if (!bRows) html += `<p>${escapeHtml(SrcShort())} has no ${escapeHtml(dsById(r.b).name)} data, so there is nothing to match.</p>`;
+      else if (withKey && !matched) html += manifest.sources[$('dataset').value].status === 'spec'
+        ? "<p>Nothing matches. The spec's worked examples are separate scenarios, so their IDs aren't meant to line up.</p>"
+        : `<p>Nothing matches: in this sample, the two datasets' keys don't line up.</p>`;
     }
     $('rel-stats').innerHTML = html;
   } catch (err) {
@@ -1152,7 +1164,7 @@ async function tableDetail(d, el, token) {
     <p>${specLink(d.source)}</p>`;
   try {
     const n = num((await conn.query(`SELECT count(*) AS n FROM "${d.id}"`)).toArray()[0].n);
-    if (token === detailToken) $('tbl-rows').textContent = n ? `${n.toLocaleString()}${d.id === 'CostAndUsage' ? ` (${DATASET_LABEL[$('dataset').value]})` : ''}` : 'none (no example data in the spec)';
+    if (token === detailToken) $('tbl-rows').textContent = n ? `${n.toLocaleString()} (${srcShort()})` : `none (${srcShort()} has no ${d.name} data)`;
   } catch { /* leave the placeholder */ }
 }
 
@@ -1183,7 +1195,7 @@ async function colDetail(d, c, el, token) {
     const total = num(s.total), nonNull = num(s.non_null);
     const cut = (v) => (v.length > 70 ? v.slice(0, 70) + '…' : v);
     let html;
-    if (!total) html = `<p>${escapeHtml(tableLabel(d.id))} has no rows in the lab.</p>`;
+    if (!total) html = `<p>${escapeHtml(SrcShort())} has no ${escapeHtml(d.name)} data.</p>`;
     else {
       const share = (100 * nonNull) / total;
       html = `<p>${nonNull.toLocaleString()} of ${total.toLocaleString()} rows have a value (${share.toFixed(1)}%)` +

@@ -6,8 +6,13 @@ Tables
   cau_sample            FOCUS-Sample-Data 1.0 (anonymised, 100k rows),
                       typed and given FOCUS 1.5 column names where a mapping exists
   cau_examples        FOCUS 1.5 worked-example Cost and Usage rows from the spec
-  ContractCommitment, InvoiceDetail, SkuPrice   1.5 worked examples
+  cc_examples, inv_examples, sku_examples   1.5 worked-example Contract Commitment, Invoice Detail, SKU Price rows
   CorrectionExamples  correction-handling worked examples (ledger/delta/replacement)
+  cau_pr7, cc_pr7     FOCUS 1.3 sample proposed in FOCUS-Sample-Data pull request #7 (not accepted)
+  cau_pr5, cc_pr5, inv_pr5, bp_pr5   FOCUS 1.4 sample proposed in FOCUS-Sample-Data pull request #5 (draft, not accepted)
+
+The manifest's "sources" say which table each FOCUS dataset name points to for each data source. The page and
+extract_sql.py turn them into views, so a spec query that reads ContractCommitment reads that source's rows.
 """
 
 import json
@@ -146,9 +151,9 @@ groups = {
     "cau_examples": ("CostAndUsage", [p for p in DATA.rglob("*.csv") if p.parts[len(DATA.parts)] not in
                                       ("contract_commitments", "invoice_detail", "sku_price_examples",
                                        "correction-handling-examples")]),
-    "ContractCommitment": ("ContractCommitment", sorted((DATA / "contract_commitments").glob("*.csv"))),
-    "InvoiceDetail": ("InvoiceDetail", sorted((DATA / "invoice_detail").glob("*.csv"))),
-    "SkuPrice": ("SkuPrice", sorted((DATA / "sku_price_examples").glob("*.csv"))),
+    "cc_examples": ("ContractCommitment", sorted((DATA / "contract_commitments").glob("*.csv"))),
+    "inv_examples": ("InvoiceDetail", sorted((DATA / "invoice_detail").glob("*.csv"))),
+    "sku_examples": ("SkuPrice", sorted((DATA / "sku_price_examples").glob("*.csv"))),
     "CorrectionExamples": ("CostAndUsage", sorted((DATA / "correction-handling-examples").rglob("*.csv"))),
 }
 for table, (dataset, files) in groups.items():
@@ -175,18 +180,88 @@ for table, (dataset, files) in groups.items():
     print(f"{table} rows:", con.execute(f"SELECT count(*) FROM {table}").fetchone()[0],
           "files:", len(files), "cast losses:", lost)
 
+# ---- Proposed samples from open FOCUS-Sample-Data pull requests (not accepted by FOCUS) --------------------
+# Read as published at each pull request's head commit, typed to the FOCUS 1.5 column types. Values are unchanged.
+PROPOSED = {
+    "pr7": ("FOCUS 1.3", RAW / "pr7-1.3", {
+        "cau_pr7": ("CostAndUsage", "focus_sample_costandusage_*_1000.csv"),
+        "cc_pr7": ("ContractCommitment", "focus_sample_contractcommitment_*.csv")}),
+    "pr5": ("FOCUS 1.4", RAW / "pr5-1.4", {
+        "cau_pr5": ("CostAndUsage", "focus_sample_costandusage.csv"),
+        "cc_pr5": ("ContractCommitment", "focus_sample_contractcommitment.csv"),
+        "inv_pr5": ("InvoiceDetail", "focus_sample_invoicedetail.csv"),
+        "bp_pr5": ("BillingPeriod", "focus_sample_billingperiod.csv")}),
+}
+for src, (version, folder, tables) in PROPOSED.items():
+    for table, (dataset, pattern) in tables.items():
+        files = sorted(folder.glob(pattern))
+        assert files, (table, pattern)
+        flist = "[" + ", ".join(f"'{f}'" for f in files) + "]"
+        con.execute(f"CREATE TABLE raw_{table} AS SELECT * FROM read_csv({flist}, all_varchar=true, header=true, "
+                    f"union_by_name=true)")
+        parts, cols = typed_select(f"raw_{table}", dataset)
+        con.execute(f"CREATE TABLE {table} AS SELECT {', '.join(parts)} FROM raw_{table}")
+        lost = check_casts(f"raw_{table}", table, [c for c in cols if c.lower() in TYPES[dataset]])
+        extra = [c for c in cols if c.lower() not in TYPES[dataset]]
+        added = add_missing(table, dataset)
+        LAB_COLUMNS[table] = {c: f"Added empty by the lab: a FOCUS 1.5 column that this {version} sample doesn't have."
+                              for c in added}
+        print(f"{table} rows:", con.execute(f"SELECT count(*) FROM {table}").fetchone()[0], "files:", len(files),
+              "cast losses:", lost, "not in 1.5:", extra, "added:", len(added))
+
 # ---- Write Parquet + manifest --------------------------------------------------------
 DESCRIPTIONS = {
     "cau_sample": "Anonymised FOCUS 1.0 data (AWS, Microsoft, Oracle), 100,000 rows from "
                 "FinOps Foundation FOCUS-Sample-Data, with FOCUS 1.5 column names added. 1.5-only columns are NULL.",
     "cau_examples": "FOCUS 1.5 worked-example Cost and Usage rows from the specification (AI tokens, prompt caching, "
                     "commitments, SaaS). Each scenario is separate: filter by x_ExampleFile before summing.",
-    "ContractCommitment": "FOCUS 1.5 Contract Commitment worked examples.",
-    "InvoiceDetail": "FOCUS 1.5 Invoice Detail worked examples.",
-    "SkuPrice": "FOCUS 1.5 SKU Price (preview) worked examples.",
+    "cc_examples": "FOCUS 1.5 Contract Commitment worked examples from the specification.",
+    "inv_examples": "FOCUS 1.5 Invoice Detail worked examples from the specification.",
+    "sku_examples": "FOCUS 1.5 SKU Price (preview) worked examples from the specification.",
     "CorrectionExamples": "FOCUS correction-handling worked examples (original, delta, ledger, replacement files).",
+    "cau_pr7": "Synthetic FOCUS 1.3 Cost and Usage data for AWS, Azure and Google Cloud (1,000 rows each), proposed in "
+               "FOCUS-Sample-Data pull request #7. Not accepted by FOCUS.",
+    "cc_pr7": "Synthetic FOCUS 1.3 Contract Commitment data for AWS, Azure and Google Cloud, proposed in "
+              "FOCUS-Sample-Data pull request #7. Not accepted by FOCUS.",
+    "cau_pr5": "Generated FOCUS 1.4 Cost and Usage data (AWS, Microsoft, Google, Oracle), proposed in draft "
+               "FOCUS-Sample-Data pull request #5. Its README says this file hasn't been validated. Not accepted by FOCUS.",
+    "cc_pr5": "Generated FOCUS 1.4 Contract Commitment data, proposed in draft FOCUS-Sample-Data pull request #5. "
+              "Not accepted by FOCUS.",
+    "inv_pr5": "Generated FOCUS 1.4 Invoice Detail data, proposed in draft FOCUS-Sample-Data pull request #5. "
+               "Not accepted by FOCUS.",
+    "bp_pr5": "Generated FOCUS 1.4 Billing Period data, proposed in draft FOCUS-Sample-Data pull request #5. "
+              "Not accepted by FOCUS.",
 }
-for table in ["cau_sample", "cau_examples", "ContractCommitment", "InvoiceDetail", "SkuPrice", "CorrectionExamples"]:
+SAMPLE_REPO = "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data"
+# Which table each FOCUS dataset name points to, per data source. A dataset a source doesn't have is left empty.
+manifest["sources"] = {
+    "sample": {"abbr": "1.0 sample", "label": "FOCUS-Sample-Data 1.0, accepted", "short": "the 1.0 sample", "status": "accepted",
+               "about": "The FinOps Foundation's accepted sample: anonymised FOCUS 1.0 Cost and Usage data. FOCUS 1.0 "
+                        "has no other datasets. The lab added the 1.5-only columns, empty.",
+               "url": SAMPLE_REPO + "/tree/main/FOCUS-1.0",
+               "tables": {"CostAndUsage": "cau_sample"}},
+    "pr7": {"abbr": "1.3 PR #7", "label": "FOCUS 1.3, proposed in Sample-Data PR #7", "short": "the proposed 1.3 sample (PR #7)",
+            "status": "proposed",
+            "about": "Proposed, not accepted by FOCUS: synthetic FOCUS 1.3 data from an open pull request. FOCUS 1.3 "
+                     "added Contract Commitment; Invoice Detail and Billing Period came in 1.4.",
+            "url": SAMPLE_REPO + "/pull/7", "commit": "guymano/FOCUS-Sample-Data@99917010b27f7c0ca3586f8e0daab7e1c8103dac",
+            "tables": {"CostAndUsage": "cau_pr7", "ContractCommitment": "cc_pr7"}},
+    "pr5": {"abbr": "1.4 PR #5", "label": "FOCUS 1.4, proposed in Sample-Data PR #5 (draft)", "short": "the proposed 1.4 sample (PR #5)",
+            "status": "proposed",
+            "about": "Proposed, not accepted by FOCUS: generated FOCUS 1.4 data from an open draft pull request, "
+                     "with all four 1.4 datasets.",
+            "url": SAMPLE_REPO + "/pull/5", "commit": "beau-finopsorg/FOCUS-Sample-Data@4fe60d96737ea06c64851f3a0b2bcd675125b980",
+            "tables": {"CostAndUsage": "cau_pr5", "ContractCommitment": "cc_pr5", "InvoiceDetail": "inv_pr5",
+                       "BillingPeriod": "bp_pr5"}},
+    "examples": {"abbr": "1.5 examples", "label": "Spec 1.5 worked examples", "short": "the spec 1.5 examples", "status": "spec",
+                 "about": "The specification's own worked examples. Each file is its own scenario, so filter by "
+                          "x_ExampleFile. The spec has no Billing Period examples.",
+                 "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/tree/working_draft/specification/data",
+                 "tables": {"CostAndUsage": "cau_examples", "ContractCommitment": "cc_examples",
+                            "InvoiceDetail": "inv_examples", "SkuPrice": "sku_examples"}},
+}
+for table in ["cau_sample", "cau_pr7", "cc_pr7", "cau_pr5", "cc_pr5", "inv_pr5", "bp_pr5",
+              "cau_examples", "cc_examples", "inv_examples", "sku_examples", "CorrectionExamples"]:
     path = OUT / f"{table}.parquet"
     con.execute(f"COPY {table} TO '{path}' (FORMAT parquet, COMPRESSION zstd, ROW_GROUP_SIZE 20000)")
     columns = [{"name": r[0], "type": r[1]} for r in con.execute(f"DESCRIBE {table}").fetchall()]

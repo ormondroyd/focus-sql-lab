@@ -9,8 +9,10 @@ queries in the browser, so the server only serves static files: no database, no 
   62 of the 66 run in DuckDB as published; the page explains why the other 4 don't.
 - **Response explorer:** pivot and chart any query result by any column, using Perspective (FINOS).
 - **Data model:** the five FOCUS 1.5 datasets with lines between the key columns of every documented join. Click a
-  join to see the spec's wording, the lab's join SQL and how well the keys match in the loaded data. Click a column to
-  see its definition and a profile of its values.
+  join to see the spec's wording, the lab's join SQL and how well the keys match in the chosen data source. Click a
+  column to see its definition and a profile of its values.
+- **Data sources:** switch between the accepted 1.0 sample, two samples proposed in open FOCUS-Sample-Data pull
+  requests (1.3 and 1.4), and the specification's 1.5 worked examples. The Data model shows which joins work in each.
 
 ## How the spec's queries run unchanged
 
@@ -31,11 +33,13 @@ value the reader supplies with `?`.
 
 Everything the lab made is labelled on the page:
 
-- **Names:** the tables `cau_sample`, `cau_examples` and `CorrectionExamples`, and the view `focus_data`.
-  `CostAndUsage`, `SkuPrice`, `InvoiceDetail`, `ContractCommitment` and `BillingPeriod` are FOCUS dataset names.
+- **Names:** every table name (`cau_sample`, `cau_pr7`, `cc_examples` and so on), and the view `focus_data`.
+  `CostAndUsage`, `SkuPrice`, `InvoiceDetail`, `ContractCommitment` and `BillingPeriod` are FOCUS dataset names: on
+  the page they are views onto the chosen data source's tables.
 - **Columns:** `x_SampleRowId`, `x_Dataset` and `x_ExampleFile`. In `cau_sample`, `ServiceProviderName` and
   `HostProviderName`, derived using the spec's migration guidance, and the FOCUS 1.5 columns that 1.0 lacks, added
-  empty. The sample is FOCUS 1.0 data, not 1.5 data.
+  empty. The sample is FOCUS 1.0 data, not 1.5 data. The proposed 1.3 and 1.4 samples also have the 1.5 columns they
+  lack added empty.
 - **Queries:** the 11 practice queries, written in DuckDB SQL.
 - **Data model:** the relationship names, key pairs and join SQL. The specification describes relationships only in
   prose, which the page quotes.
@@ -60,27 +64,32 @@ site/
     model.json                datasets, columns and relationships from the specification
 ```
 
-## Tables
+## Data sources
 
-| Table | Rows | Source |
-| --- | --- | --- |
-| `cau_sample` | 100,000 | FOCUS-Sample-Data: anonymised FOCUS 1.0 data, with FOCUS 1.5 columns added by the lab |
-| `cau_examples` | 493 | The specification's worked-example Cost and Usage rows |
-| `SkuPrice`, `InvoiceDetail`, `ContractCommitment`, `CorrectionExamples` | small | The specification's worked examples |
-| `BillingPeriod` | 0 | Created empty from the specification's columns, because the spec has no example data for it |
+The page has one data source switch. It points all five FOCUS dataset names at that source's tables. A dataset the
+source doesn't have points at an empty table with the specification's columns, so queries and joins still run.
 
-`CostAndUsage` is a view that points at either `cau_sample` or `cau_examples`, chosen on the page.
+| Source | Status | Cost and Usage | Contract Commitment | Invoice Detail | Billing Period | SKU Price |
+| --- | --- | --- | --- | --- | --- | --- |
+| FOCUS-Sample-Data 1.0 | accepted | `cau_sample`, 100,000 | – | – | – | – |
+| FOCUS 1.3, [Sample-Data PR #7](https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data/pull/7) | proposed, not accepted | `cau_pr7`, 3,000 | `cc_pr7`, 66 | – | – | – |
+| FOCUS 1.4, [Sample-Data PR #5](https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data/pull/5) | draft, not accepted | `cau_pr5`, 1,000 | `cc_pr5`, 1,000 | `inv_pr5`, 1,000 | `bp_pr5`, 1,000 | – |
+| Spec 1.5 worked examples | in the specification | `cau_examples`, 493 | `cc_examples`, 9 | `inv_examples`, 8 | – | `sku_examples`, 62 |
+
+`CorrectionExamples` (114 rows, the specification's correction-handling examples) sits outside the switch.
 
 Decimal columns are stored as 64-bit floating point (DOUBLE), one of the precisions the spec's NumericFormat attribute
 allows. Sums of charges and credits can therefore leave tiny remainders instead of exactly zero.
 
 ## Rebuild
 
-You need Python with `duckdb`, a clone of `FOCUS_Spec` (branch `working_draft`), and
-`focus_sample_100000.csv.gz` from FOCUS-Sample-Data.
+You need Python with `duckdb==1.5.4` (see `tools/requirements.txt`), a clone of `FOCUS_Spec` (branch
+`working_draft`), and a raw data folder holding `focus_sample_100000.csv.gz` from FOCUS-Sample-Data, plus `pr7-1.3/`
+and `pr5-1.4/` with the CSV files from each pull request's `FOCUS-1.3/` and `FOCUS-1.4/` folder at the commits listed
+in [NOTICE.md](NOTICE.md).
 
 ```bash
-python -I tools/build_data.py <FOCUS_Spec clone> <folder with focus_sample_100000.csv.gz> site/focus/data
+python -I tools/build_data.py <FOCUS_Spec clone> <raw data folder> site/focus/data
 python -I tools/extract_sql.py <FOCUS_Spec clone> site
 python -I tools/extract_model.py <FOCUS_Spec clone> site
 ```

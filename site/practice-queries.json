@@ -8,13 +8,23 @@
   "source": null,
   "params": [],
   "lab": true,
-  "sample": {
-   "ok": true,
-   "rows": 36
-  },
-  "examples": {
-   "ok": true,
-   "rows": 17
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 36
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 15
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 22
+   },
+   "examples": {
+    "ok": true,
+    "rows": 17
+   }
   }
  },
  {
@@ -26,13 +36,23 @@
   "source": null,
   "params": [],
   "lab": true,
-  "sample": {
-   "ok": true,
-   "rows": 10
-  },
-  "examples": {
-   "ok": true,
-   "rows": 18
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 10
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 9
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 27
+   },
+   "examples": {
+    "ok": true,
+    "rows": 18
+   }
   }
  },
  {
@@ -44,13 +64,23 @@
   "source": null,
   "params": [],
   "lab": true,
-  "sample": {
-   "ok": true,
-   "rows": 5
-  },
-  "examples": {
-   "ok": true,
-   "rows": 11
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 5
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 3
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 4
+   },
+   "examples": {
+    "ok": true,
+    "rows": 11
+   }
   }
  },
  {
@@ -62,13 +92,23 @@
   "source": null,
   "params": [],
   "lab": true,
-  "sample": {
-   "ok": true,
-   "rows": 2
-  },
-  "examples": {
-   "ok": true,
-   "rows": 5
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 2
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 4
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 3
+   },
+   "examples": {
+    "ok": true,
+    "rows": 5
+   }
   }
  },
  {
@@ -80,13 +120,23 @@
   "source": null,
   "params": [],
   "lab": true,
-  "sample": {
-   "ok": true,
-   "rows": 82
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 82
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 7
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 6
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -98,13 +148,23 @@
   "source": null,
   "params": [],
   "lab": true,
-  "sample": {
-   "ok": true,
-   "rows": 5
-  },
-  "examples": {
-   "ok": true,
-   "rows": 11
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 5
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 3
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 4
+   },
+   "examples": {
+    "ok": true,
+    "rows": 11
+   }
   }
  },
  {
@@ -116,13 +176,23 @@
   "source": null,
   "params": [],
   "lab": true,
-  "sample": {
-   "ok": true,
-   "rows": 93
-  },
-  "examples": {
-   "ok": true,
-   "rows": 32
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 93
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 84
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 120
+   },
+   "examples": {
+    "ok": true,
+    "rows": 32
+   }
   }
  },
  {
@@ -134,13 +204,23 @@
   "source": null,
   "params": [],
   "lab": true,
-  "sample": {
-   "ok": true,
-   "rows": 10
-  },
-  "examples": {
-   "ok": true,
-   "rows": 10
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 10
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 10
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 10
+   },
+   "examples": {
+    "ok": true,
+    "rows": 10
+   }
   }
  },
  {
@@ -152,13 +232,23 @@
   "source": null,
   "params": [],
   "lab": true,
-  "sample": {
-   "ok": true,
-   "rows": 2
-  },
-  "examples": {
-   "ok": true,
-   "rows": 2
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 2
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 2
+   }
   }
  },
  {
@@ -170,32 +260,52 @@
   "source": null,
   "params": [],
   "lab": true,
-  "sample": {
-   "ok": true,
-   "rows": 5
-  },
-  "examples": {
-   "ok": true,
-   "rows": 5
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 5
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 5
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 5
+   },
+   "examples": {
+    "ok": true,
+    "rows": 5
+   }
   }
  },
  {
   "id": "practice-ai-tokens",
   "title": "AI token cost by model and token type (1.5 examples)",
-  "intro": "FOCUS 1.5 puts model identity and token type in SkuPriceDetails. Switch the dataset to the 1.5 examples to see rows.",
-  "dataset": "cau_examples",
+  "intro": "FOCUS 1.5 puts model identity and token type in SkuPriceDetails. Switch the data source to the spec 1.5 worked examples to see rows.",
+  "dataset": "examples",
   "sql": "SELECT\n  SkuPriceDetails ->> '$.ModelId'          AS ModelId,\n  SkuPriceDetails ->> '$.TokenDirection'   AS TokenDirection,\n  SkuPriceDetails ->> '$.TokenCacheAction' AS TokenCacheAction,\n  sum(ConsumedQuantity)                    AS Tokens,\n  round(sum(EffectiveCost), 4)             AS EffectiveCost,\n  round(sum(EffectiveCost) * 1e6 / nullif(sum(ConsumedQuantity), 0), 4) AS CostPerMillionTokens\nFROM CostAndUsage\nWHERE ConsumedUnit = 'Tokens'\nGROUP BY ALL\nORDER BY ModelId, TokenDirection, TokenCacheAction;",
   "feature": "Lab practice queries (DuckDB SQL, not from FOCUS)",
   "source": null,
   "params": [],
   "lab": true,
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 27
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 27
+   }
   }
  }
 ]

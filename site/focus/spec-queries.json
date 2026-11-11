@@ -16,13 +16,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 106
-  },
-  "examples": {
-   "ok": true,
-   "rows": 13
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 106
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 24
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 10
+   },
+   "examples": {
+    "ok": true,
+    "rows": 13
+   }
   }
  },
  {
@@ -42,13 +52,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 27
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 27
+   }
   }
  },
  {
@@ -68,13 +88,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 27
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 27
+   }
   }
  },
  {
@@ -85,13 +115,23 @@
   "source": "specification/supported_features/billed_cost_and_invoice_alignment.md",
   "sql": "SELECT\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  InvoiceId,\n  BillingCurrency,\n  SUM(BilledCost)\nFROM CostAndUsage\nGROUP BY\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  InvoiceId,\n  BillingCurrency",
   "params": [],
-  "sample": {
-   "ok": true,
-   "rows": 5
-  },
-  "examples": {
-   "ok": true,
-   "rows": 19
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 5
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 6
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 993
+   },
+   "examples": {
+    "ok": true,
+    "rows": 19
+   }
   }
  },
  {
@@ -119,13 +159,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 17
-  },
-  "examples": {
-   "ok": true,
-   "rows": 17
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 17
+   }
   }
  },
  {
@@ -153,13 +203,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 2
-  },
-  "examples": {
-   "ok": true,
-   "rows": 2
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 1
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 1
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 1
+   },
+   "examples": {
+    "ok": true,
+    "rows": 2
+   }
   }
  },
  {
@@ -187,13 +247,23 @@
     "type": "text"
    }
   ],
-  "sample": {
-   "ok": false,
-   "error": "Binder Error: UNNEST not supported here"
-  },
-  "examples": {
-   "ok": false,
-   "error": "Binder Error: UNNEST not supported here"
+  "results": {
+   "sample": {
+    "ok": false,
+    "error": "Binder Error: UNNEST not supported here"
+   },
+   "pr7": {
+    "ok": false,
+    "error": "Binder Error: UNNEST not supported here"
+   },
+   "pr5": {
+    "ok": false,
+    "error": "Binder Error: UNNEST not supported here"
+   },
+   "examples": {
+    "ok": false,
+    "error": "Binder Error: UNNEST not supported here"
+   }
   },
   "note": "Doesn't run in DuckDB as published. It tests whether a value is in a list with BigQuery's `value IN UNNEST(array)` form, which DuckDB doesn't support (DuckDB writes it list_contains(array, value)). The specification says this query may need small changes for a particular database engine."
  },
@@ -218,13 +288,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 8
-  },
-  "examples": {
-   "ok": true,
-   "rows": 8
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 8
+   }
   }
  },
  {
@@ -248,13 +328,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 12
-  },
-  "examples": {
-   "ok": true,
-   "rows": 12
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 12
+   }
   }
  },
  {
@@ -282,13 +372,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 17
-  },
-  "examples": {
-   "ok": true,
-   "rows": 17
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 17
+   }
   }
  },
  {
@@ -308,13 +408,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 2
-  },
-  "examples": {
-   "ok": true,
-   "rows": 17
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 2
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 57
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 21
+   },
+   "examples": {
+    "ok": true,
+    "rows": 17
+   }
   }
  },
  {
@@ -334,13 +444,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 20
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -360,13 +480,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 2
-  },
-  "examples": {
-   "ok": true,
-   "rows": 9
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 2
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 57
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 9
+   },
+   "examples": {
+    "ok": true,
+    "rows": 9
+   }
   }
  },
  {
@@ -386,13 +516,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 1
-  },
-  "examples": {
-   "ok": true,
-   "rows": 3
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 1
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 57
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 131
+   },
+   "examples": {
+    "ok": true,
+    "rows": 3
+   }
   }
  },
  {
@@ -412,13 +552,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -438,13 +588,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 2
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 2
+   }
   }
  },
  {
@@ -464,13 +624,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 2
-  },
-  "examples": {
-   "ok": true,
-   "rows": 5
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 2
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 3
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 4
+   },
+   "examples": {
+    "ok": true,
+    "rows": 5
+   }
   }
  },
  {
@@ -490,13 +660,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 2
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 2
+   }
   }
  },
  {
@@ -516,13 +696,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -542,13 +732,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -568,13 +768,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 66
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -594,13 +804,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": false,
-   "error": "Binder Error: column \"unnest\" must appear in the GROUP BY clause or must be part of an aggregate function."
-  },
-  "examples": {
-   "ok": false,
-   "error": "Binder Error: column \"unnest\" must appear in the GROUP BY clause or must be part of an aggregate function."
+  "results": {
+   "sample": {
+    "ok": false,
+    "error": "Binder Error: column \"unnest\" must appear in the GROUP BY clause or must be part of an aggregate function."
+   },
+   "pr7": {
+    "ok": false,
+    "error": "Binder Error: column \"unnest\" must appear in the GROUP BY clause or must be part of an aggregate function."
+   },
+   "pr5": {
+    "ok": false,
+    "error": "Binder Error: column \"unnest\" must appear in the GROUP BY clause or must be part of an aggregate function."
+   },
+   "examples": {
+    "ok": false,
+    "error": "Binder Error: column \"unnest\" must appear in the GROUP BY clause or must be part of an aggregate function."
+   }
   },
   "note": "Doesn't run in DuckDB as published. In the GROUP BY, ContractCommitmentId matches both the SELECT alias built from JSON_VALUE(CA, ...) and the CC.ContractCommitmentId column. DuckDB takes the table column, so the JSON_VALUE expression in the SELECT list is left ungrouped. (Standard SQL doesn't allow SELECT aliases in GROUP BY at all.) Whether BigQuery accepts it hasn't been checked here."
  },
@@ -621,13 +841,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 10691
-  },
-  "examples": {
-   "ok": true,
-   "rows": 16
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 10691
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 424
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 612
+   },
+   "examples": {
+    "ok": true,
+    "rows": 16
+   }
   }
  },
  {
@@ -647,13 +877,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 99
-  },
-  "examples": {
-   "ok": true,
-   "rows": 24
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 99
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 48
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 27
+   },
+   "examples": {
+    "ok": true,
+    "rows": 24
+   }
   }
  },
  {
@@ -673,13 +913,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 9
-  },
-  "examples": {
-   "ok": true,
-   "rows": 19
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 9
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 4
+   },
+   "examples": {
+    "ok": true,
+    "rows": 19
+   }
   }
  },
  {
@@ -699,13 +949,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 10
-  },
-  "examples": {
-   "ok": true,
-   "rows": 11
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 10
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 57
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 211
+   },
+   "examples": {
+    "ok": true,
+    "rows": 11
+   }
   }
  },
  {
@@ -725,13 +985,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 9
-  },
-  "examples": {
-   "ok": true,
-   "rows": 39
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 9
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 3
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 4
+   },
+   "examples": {
+    "ok": true,
+    "rows": 39
+   }
   }
  },
  {
@@ -755,13 +1025,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": false,
-   "error": "Binder Error: Referenced column \"x_CustomColumn\" not found in FROM clause!"
-  },
-  "examples": {
-   "ok": false,
-   "error": "Binder Error: Referenced column \"x_CustomColumn\" not found in FROM clause!"
+  "results": {
+   "sample": {
+    "ok": false,
+    "error": "Binder Error: Referenced column \"x_CustomColumn\" not found in FROM clause!"
+   },
+   "pr7": {
+    "ok": false,
+    "error": "Binder Error: Referenced column \"x_CustomColumn\" not found in FROM clause!"
+   },
+   "pr5": {
+    "ok": false,
+    "error": "Binder Error: Referenced column \"x_CustomColumn\" not found in FROM clause!"
+   },
+   "examples": {
+    "ok": false,
+    "error": "Binder Error: Referenced column \"x_CustomColumn\" not found in FROM clause!"
+   }
   },
   "note": "Illustrative: x_CustomColumn stands for any provider-defined custom column, so this query fails in any database. Replace it with an x_ column that exists to run it."
  },
@@ -782,13 +1062,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 428
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 787
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -808,13 +1098,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 428
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 787
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -834,13 +1134,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 428
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 787
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -860,13 +1170,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -886,13 +1206,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -916,13 +1246,23 @@
     "type": "text"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -933,13 +1273,23 @@
   "source": "specification/supported_features/data_generator_calculated_split_cost_allocation.md",
   "sql": "SELECT\n  ResourceId,\n  elements.allocated_ratio,\n  elements.usage_unit,\n  elements.usage_quantity\nFROM\n  CostAndUsage,\n  JSON_TABLE(\n    AllocatedMethodDetails,\n    '$.Elements[*]' COLUMNS (\n      allocated_ratio DECIMAL(10, 2) PATH '$.AllocatedRatio',\n      usage_unit VARCHAR(50) PATH '$.UsageUnit',\n      usage_quantity DECIMAL(10, 2) PATH '$.UsageQuantity'\n    )\n  ) AS elements",
   "params": [],
-  "sample": {
-   "ok": false,
-   "error": "Parser Error: syntax error at or near \"COLUMNS\""
-  },
-  "examples": {
-   "ok": false,
-   "error": "Parser Error: syntax error at or near \"COLUMNS\""
+  "results": {
+   "sample": {
+    "ok": false,
+    "error": "Parser Error: syntax error at or near \"COLUMNS\""
+   },
+   "pr7": {
+    "ok": false,
+    "error": "Parser Error: syntax error at or near \"COLUMNS\""
+   },
+   "pr5": {
+    "ok": false,
+    "error": "Parser Error: syntax error at or near \"COLUMNS\""
+   },
+   "examples": {
+    "ok": false,
+    "error": "Parser Error: syntax error at or near \"COLUMNS\""
+   }
   },
   "note": "Doesn't run in DuckDB as published. It uses JSON_TABLE(... COLUMNS (...)), standard SQL that DuckDB doesn't support. The specification's other JSON queries use BigQuery's JSON functions instead."
  },
@@ -951,13 +1301,23 @@
   "source": "specification/supported_features/data_granularity.md",
   "sql": "SELECT\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  BillingAccountId,\n  SubAccountId,\n  ServiceName,\n  ResourceId,\n  ResourceName,\n  SkuId,\n  ConsumedUnit,\n  BillingCurrency,\n  SUM(ConsumedQuantity),\n  SUM(ListCost),\n  SUM(BilledCost),\n  SUM(EffectiveCost)\nFROM CostAndUsage\nGROUP BY\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  BillingAccountId,\n  SubAccountId,\n  ServiceName,\n  ResourceId,\n  ResourceName,\n  SkuId,\n  ConsumedUnit,\n  BillingCurrency",
   "params": [],
-  "sample": {
-   "ok": true,
-   "rows": 97902
-  },
-  "examples": {
-   "ok": true,
-   "rows": 212
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 97902
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 2885
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 999
+   },
+   "examples": {
+    "ok": true,
+    "rows": 212
+   }
   }
  },
  {
@@ -977,13 +1337,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 922
-  },
-  "examples": {
-   "ok": true,
-   "rows": 55
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 922
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 212
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 91
+   },
+   "examples": {
+    "ok": true,
+    "rows": 55
+   }
   }
  },
  {
@@ -1003,13 +1373,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 222
-  },
-  "examples": {
-   "ok": true,
-   "rows": 176
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 222
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 509
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 211
+   },
+   "examples": {
+    "ok": true,
+    "rows": 176
+   }
   }
  },
  {
@@ -1029,13 +1409,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 2099
-  },
-  "examples": {
-   "ok": true,
-   "rows": 54
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 2099
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 96
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 683
+   },
+   "examples": {
+    "ok": true,
+    "rows": 54
+   }
   }
  },
  {
@@ -1051,13 +1441,23 @@
     "type": "text"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 1
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 1
+   }
   }
  },
  {
@@ -1077,13 +1477,23 @@
     "type": "text"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 2
-  },
-  "examples": {
-   "ok": true,
-   "rows": 2
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 2
+   }
   }
  },
  {
@@ -1099,13 +1509,23 @@
     "type": "text"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 1
-  },
-  "examples": {
-   "ok": true,
-   "rows": 1
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 1
+   }
   }
  },
  {
@@ -1121,13 +1541,23 @@
     "type": "text"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 1
-  },
-  "examples": {
-   "ok": true,
-   "rows": 1
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 1
+   }
   }
  },
  {
@@ -1147,13 +1577,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 424
-  },
-  "examples": {
-   "ok": true,
-   "rows": 7
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 424
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 40
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 62
+   },
+   "examples": {
+    "ok": true,
+    "rows": 7
+   }
   }
  },
  {
@@ -1164,13 +1604,23 @@
   "source": "specification/supported_features/marketplace_purchases.md",
   "sql": "SELECT\n  ServiceProviderName,\n  InvoiceIssuerName,\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE ServiceProviderName = '<Example SaaS Provider>'\n  AND InvoiceIssuerName = '<Example CSP Marketplace>'\nGROUP BY\n  ServiceProviderName,\n  InvoiceIssuerName,\n  BillingPeriodStart,\n  BillingPeriodEnd",
   "params": [],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -1181,13 +1631,23 @@
   "source": "specification/supported_features/marketplace_purchases.md",
   "sql": "SELECT\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  ResourceId,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE InvoiceIssuerName = '<Example CSP Marketplace>'\nGROUP BY\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  ResourceId",
   "params": [],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -1207,13 +1667,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 131
-  },
-  "examples": {
-   "ok": true,
-   "rows": 43
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 131
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 24
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 27
+   },
+   "examples": {
+    "ok": true,
+    "rows": 43
+   }
   }
  },
  {
@@ -1241,13 +1711,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 10
-  },
-  "examples": {
-   "ok": true,
-   "rows": 10
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 10
+   }
   }
  },
  {
@@ -1291,13 +1771,23 @@
     "type": "text"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 1
-  },
-  "examples": {
-   "ok": true,
-   "rows": 1
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 1
+   }
   }
  },
  {
@@ -1317,13 +1807,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -1367,13 +1867,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 8
-  },
-  "examples": {
-   "ok": true,
-   "rows": 8
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 8
+   }
   }
  },
  {
@@ -1401,13 +1911,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -1435,13 +1955,23 @@
     "type": "text"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -1469,13 +1999,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 2
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 2
+   }
   }
  },
  {
@@ -1495,13 +2035,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 54040
-  },
-  "examples": {
-   "ok": true,
-   "rows": 143
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 54040
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 1656
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 787
+   },
+   "examples": {
+    "ok": true,
+    "rows": 143
+   }
   }
  },
  {
@@ -1521,13 +2071,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 11
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 11
+   }
   }
  },
  {
@@ -1547,13 +2107,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 11
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 11
+   }
   }
  },
  {
@@ -1573,13 +2143,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 113
-  },
-  "examples": {
-   "ok": true,
-   "rows": 41
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 113
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 24
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 27
+   },
+   "examples": {
+    "ok": true,
+    "rows": 41
+   }
   }
  },
  {
@@ -1603,13 +2183,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 1
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 1
+   }
   }
  },
  {
@@ -1633,13 +2223,23 @@
     "type": "timestamp"
    }
   ],
-  "sample": {
-   "ok": true,
-   "rows": 0
-  },
-  "examples": {
-   "ok": true,
-   "rows": 24
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 24
+   }
   }
  },
  {
@@ -1650,13 +2250,23 @@
   "source": "supporting_content/appendix/version_migration_guidance.md",
   "sql": "SELECT ProviderName, SUM(BilledCost) AS TotalCost\nFROM focus_data\nGROUP BY ProviderName",
   "params": [],
-  "sample": {
-   "ok": true,
-   "rows": 4
-  },
-  "examples": {
-   "ok": true,
-   "rows": 4
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 4
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 3
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 4
+   },
+   "examples": {
+    "ok": true,
+    "rows": 4
+   }
   }
  },
  {
@@ -1667,13 +2277,23 @@
   "source": "supporting_content/appendix/version_migration_guidance.md",
   "sql": "SELECT ServiceProviderName, SUM(BilledCost) AS TotalCost\nFROM focus_data\nGROUP BY ServiceProviderName",
   "params": [],
-  "sample": {
-   "ok": true,
-   "rows": 6
-  },
-  "examples": {
-   "ok": true,
-   "rows": 11
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 6
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 3
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 4
+   },
+   "examples": {
+    "ok": true,
+    "rows": 11
+   }
   }
  },
  {
@@ -1684,13 +2304,23 @@
   "source": "supporting_content/appendix/version_migration_guidance.md",
   "sql": "SELECT \n    ProviderName, \n    PublisherName, \n    InvoiceIssuerName, \n    SUM(BilledCost) AS TotalCost\nFROM focus_data\nGROUP BY ProviderName, PublisherName, InvoiceIssuerName",
   "params": [],
-  "sample": {
-   "ok": true,
-   "rows": 9
-  },
-  "examples": {
-   "ok": true,
-   "rows": 14
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 9
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 3
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 4
+   },
+   "examples": {
+    "ok": true,
+    "rows": 14
+   }
   }
  },
  {
@@ -1701,13 +2331,23 @@
   "source": "supporting_content/appendix/version_migration_guidance.md",
   "sql": "SELECT \n    ServiceProviderName, \n    HostProviderName, \n    InvoiceIssuerName, \n    SUM(BilledCost) AS TotalCost\nFROM focus_data\nGROUP BY ServiceProviderName, HostProviderName, InvoiceIssuerName",
   "params": [],
-  "sample": {
-   "ok": true,
-   "rows": 8
-  },
-  "examples": {
-   "ok": true,
-   "rows": 18
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 8
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 3
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 4
+   },
+   "examples": {
+    "ok": true,
+    "rows": 18
+   }
   }
  },
  {
@@ -1718,13 +2358,23 @@
   "source": "supporting_content/appendix/version_migration_guidance.md",
   "sql": "SELECT \n    ProviderName,\n    PublisherName, \n    SUM(BilledCost) AS TotalCost\nFROM focus_data\nWHERE ProviderName != PublisherName\nGROUP BY ProviderName, PublisherName",
   "params": [],
-  "sample": {
-   "ok": true,
-   "rows": 5
-  },
-  "examples": {
-   "ok": true,
-   "rows": 0
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 5
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 2
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 0
+   }
   }
  },
  {
@@ -1735,13 +2385,23 @@
   "source": "supporting_content/appendix/version_migration_guidance.md",
   "sql": "SELECT \n    ServiceProviderName,\n    HostProviderName, \n    SUM(BilledCost) AS TotalCost\nFROM focus_data\nWHERE ServiceProviderName != HostProviderName\nGROUP BY ServiceProviderName, HostProviderName",
   "params": [],
-  "sample": {
-   "ok": true,
-   "rows": 2
-  },
-  "examples": {
-   "ok": true,
-   "rows": 2
+  "results": {
+   "sample": {
+    "ok": true,
+    "rows": 2
+   },
+   "pr7": {
+    "ok": true,
+    "rows": 0
+   },
+   "pr5": {
+    "ok": true,
+    "rows": 0
+   },
+   "examples": {
+    "ok": true,
+    "rows": 2
+   }
   }
  }
 ]

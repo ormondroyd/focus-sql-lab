@@ -6,7 +6,8 @@ Everything in this folder is derived from FOCUS project material and is used und
 > Copyright (c) Joint Development Foundation Projects, LLC, FinOps Open Cost and Usage Specification (FOCUS)
 > Series and its contributors.
 
-- `data/`: FOCUS-Sample-Data and the specification's worked examples, cleaned and stored as Parquet
+- `data/`: FOCUS-Sample-Data (the accepted 1.0 sample, and the samples proposed in its open pull requests #5 and #7)
+  and the specification's worked examples, typed and stored as Parquet
 - `spec-queries.json`: the specification's example queries, verbatim, with a suggested value for each `?` input
 - `model.json`: datasets, columns and relationships from the specification
 
