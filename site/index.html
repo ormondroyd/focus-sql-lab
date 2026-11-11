@@ -372,9 +372,10 @@ async function setDataset(t, why = '') {
 function renderTables() {
   const order = ['cau_sample', 'cau_examples', 'SkuPrice', 'InvoiceDetail', 'ContractCommitment', 'BillingPeriod', 'CorrectionExamples'];
   const views = `<details class="table"><summary><span>CostAndUsage</span><span class="rows">view</span></summary>
-    <p>Points to the dataset chosen above. Every spec query uses this name.</p></details>
+    <p>Points to the dataset chosen above. The spec's example queries use this name, apart from the migration guide's.</p></details>
     <details class="table"><summary><span>focus_data</span><span class="rows">view</span></summary>
-    <p>Another name for CostAndUsage, used by the spec's migration guide.</p></details>`;
+    <p>Another name for CostAndUsage, created by this lab. It is not a FOCUS dataset: the spec's version migration
+    guide names its table focus_data in its 6 example queries, so this view lets them run unchanged.</p></details>`;
   $('tables').innerHTML = views + order.filter((t) => manifest.tables[t]).map((t) => {
     const m = manifest.tables[t];
     const cols = m.columns.map((c) =>
