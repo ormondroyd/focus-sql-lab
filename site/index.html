@@ -1165,7 +1165,7 @@ async function fillNote(colId, token) {
   const box = $('col-note');
   const n = notes && notes.columns[colId];
   if (token !== detailToken || !box || !n) return;
-  box.innerHTML = `<h4>The debate behind it <span class="tag lab" title="${escapeHtml(notes.about)}">written by the lab</span></h4>
+  box.innerHTML = `<h4>The debate behind it</h4>
     <div class="note-box">
     ${n.sections.map(([h, p]) => `<h5>${escapeHtml(h)}</h5><p>${linkRefs(p)}</p>`).join('')}
     <p class="hint">Threads read: ${n.threads.map((t) => `<a href="${ISSUE_URL}${t}" target="_blank" rel="noopener">#${t}</a>`).join(', ')}</p></div>`;
