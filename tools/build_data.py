@@ -114,7 +114,13 @@ lost = check_casts("raw_real", "cau_real", [c for c in cols if c.lower() in TYPE
 # 1.0 -> 1.5 provider mapping from the spec's version migration guidance
 con.execute("ALTER TABLE cau_real ADD COLUMN ServiceProviderName VARCHAR")
 con.execute("ALTER TABLE cau_real ADD COLUMN HostProviderName VARCHAR")
-con.execute("UPDATE cau_real SET ServiceProviderName = COALESCE(PublisherName, ProviderName), HostProviderName = ProviderName")
+# Direct purchase (publisher blank, or the provider itself, or the invoicing entity): service provider = CSP.
+# Otherwise it's a marketplace purchase: service provider = the publisher (e.g. Red Hat, Datadog on AWS).
+con.execute("""UPDATE cau_real SET
+    ServiceProviderName = CASE WHEN PublisherName IS NULL OR PublisherName = ProviderName
+                                    OR PublisherName = InvoiceIssuerName THEN ProviderName
+                               ELSE PublisherName END,
+    HostProviderName = ProviderName""")
 add_missing("cau_real", "CostAndUsage")
 con.execute("ALTER TABLE cau_real ADD COLUMN x_Dataset VARCHAR DEFAULT 'FOCUS-Sample-Data 1.0 (anonymised real)'")
 print("cau_real rows:", con.execute("SELECT count(*) FROM cau_real").fetchone()[0], "cast losses:", lost)

@@ -145,6 +145,27 @@ for md in SOURCES:
             "examples": ex,
         })
 
+NOTES = {
+    "contract_commitments-3": "Fails in DuckDB as published. GROUP BY ContractCommitmentId binds to the "
+        "CC.ContractCommitmentId column, not the SELECT alias built from JSON_VALUE(CA, ...), so that "
+        "expression is not grouped. Grouping by the expression itself fixes it.",
+    "custom_columns-1": "Illustrative only: x_CustomColumn stands for any provider-specific column. "
+        "Replace it with a real x_ column to run it.",
+    "data_generator_calculated_split_cost_allocation-7": "Uses JSON_TABLE(... COLUMNS (...)), SQL-standard "
+        "syntax that neither BigQuery nor DuckDB supports, although the spec presents its examples as BigQuery SQL. "
+        "In DuckDB, unnest the JSON array with json_extract and read each field with ->>.",
+}
+for e in examples:
+    if e["id"] in NOTES:
+        e["note"] = NOTES[e["id"]]
+
+practice = json.loads((pathlib.Path(__file__).parent / "practice.json").read_text())
+for p in practice:
+    p.update({"feature": "Practice on real data", "source": None, "params": [], "transpiled": False,
+              "real": run(p["sql"], "cau_real"), "examples": run(p["sql"], "cau_examples")})
+    print("practice", p["id"], "real:", p["real"], "examples:", p["examples"])
+examples = practice + examples
+
 OUT.write_text(json.dumps(examples, indent=1))
 ok_real = sum(e["real"]["ok"] for e in examples)
 ok_ex = sum(e["examples"]["ok"] for e in examples)

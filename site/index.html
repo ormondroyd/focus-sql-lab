@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FOCUS SQL Lab</title>
+<meta name="description" content="Run SQL against real FOCUS billing data in your browser.">
+<style>
+  :root {
+    --bg: #f7f7f5; --panel: #ffffff; --fg: #1d1d1b; --muted: #6b6b66; --line: #e2e1dc;
+    --accent: #1f5fbf; --accent-fg: #ffffff; --code-bg: #fbfbfa;
+    --warn-bg: #fff6e0; --warn-line: #e8c773; --err-bg: #fdecec; --err-fg: #9b1c1c;
+    --ok: #1d7a46; --row-alt: #fafaf8;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161615; --panel: #1f1f1d; --fg: #ecebe6; --muted: #9c9b95; --line: #34332f;
+      --accent: #6aa0ff; --accent-fg: #0d1626; --code-bg: #1a1a18;
+      --warn-bg: #2e2714; --warn-line: #7a6326; --err-bg: #331a1a; --err-fg: #ffb4b4;
+      --ok: #6fd39b; --row-alt: #232321;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  header h1 { margin: 0; font-size: 17px; letter-spacing: -0.01em; }
+  header .sub { color: var(--muted); font-size: 13px; }
+  #status { margin-left: auto; font-size: 13px; color: var(--muted); }
+  #status.ready { color: var(--ok); }
+  .layout { display: grid; grid-template-columns: 290px minmax(0, 1fr); min-height: calc(100vh - 50px); }
+  aside { border-right: 1px solid var(--line); background: var(--panel); padding: 14px 14px 24px;
+    overflow-y: auto; max-height: calc(100vh - 50px); position: sticky; top: 0; }
+  main { padding: 14px 16px 32px; min-width: 0; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+    margin: 18px 0 8px; font-weight: 600; }
+  aside section:first-child h2 { margin-top: 0; }
+  label.field { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  select, button, textarea { font: inherit; color: inherit; }
+  select { width: 100%; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px;
+    background: var(--panel); }
+  .hint { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+  details.table { border-top: 1px solid var(--line); padding: 6px 0; }
+  details.table summary { cursor: pointer; display: flex; justify-content: space-between; gap: 8px;
+    list-style: none; font-family: var(--mono); font-size: 13px; }
+  details.table summary::-webkit-details-marker { display: none; }
+  details.table summary .rows { color: var(--muted); font-family: inherit; font-size: 12px; white-space: nowrap; }
+  details.table p { font-size: 12px; color: var(--muted); margin: 6px 0; }
+  .cols { list-style: none; margin: 0; padding: 0; max-height: 260px; overflow-y: auto; }
+  .cols li { display: flex; justify-content: space-between; gap: 8px; padding: 1px 4px; border-radius: 4px;
+    font-family: var(--mono); font-size: 12px; cursor: pointer; }
+  .cols li:hover { background: var(--row-alt); }
+  .cols li span:last-child { color: var(--muted); font-size: 11px; }
+  .notes { font-size: 12px; color: var(--muted); }
+  .notes summary { cursor: pointer; color: var(--fg); font-size: 13px; }
+  .notes ul { padding-left: 18px; margin: 6px 0; }
+  .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .toolbar select { flex: 1; min-width: 0; }
+  .info { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
+    margin-bottom: 10px; font-size: 13px; }
+  .info .crumb { color: var(--muted); font-size: 12px; }
+  .info .title { font-weight: 600; margin: 2px 0 4px; }
+  .info p { margin: 4px 0; }
+  .info .note { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 6px;
+    padding: 6px 8px; margin-top: 6px; }
+  .info .meta { color: var(--muted); font-size: 12px; margin-top: 6px; }
+  .info a { color: var(--accent); }
+  textarea#editor { width: 100%; min-height: 240px; resize: vertical; padding: 10px 12px;
+    font-family: var(--mono); font-size: 13px; line-height: 1.5; tab-size: 2;
+    border: 1px solid var(--line); border-radius: 8px; background: var(--code-bg); }
+  textarea#editor:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .actions { display: flex; align-items: center; gap: 10px; margin: 8px 0 12px; flex-wrap: wrap; }
+  button { padding: 7px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel);
+    cursor: pointer; }
+  button.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .kbd { font-size: 12px; color: var(--muted); }
+  #meta { font-size: 13px; color: var(--muted); margin-left: auto; }
+  #error { background: var(--err-bg); color: var(--err-fg); border-radius: 8px; padding: 10px 12px;
+    font-family: var(--mono); font-size: 12px; white-space: pre-wrap; margin-bottom: 12px; }
+  .results { overflow: auto; max-height: 60vh; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+  table { border-collapse: collapse; font-size: 12.5px; width: max-content; min-width: 100%; }
+  th, td { padding: 5px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap;
+    max-width: 420px; overflow: hidden; text-overflow: ellipsis; }
+  th { position: sticky; top: 0; background: var(--panel); font-family: var(--mono); font-weight: 600;
+    font-size: 12px; z-index: 1; }
+  tbody tr:nth-child(even) td { background: var(--row-alt); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.null { color: var(--muted); font-style: italic; }
+  .empty { padding: 14px; color: var(--muted); }
+  footer { font-size: 12px; color: var(--muted); padding: 16px; border-top: 1px solid var(--line); }
+  footer a { color: inherit; }
+  @media (max-width: 760px) {
+    .layout { grid-template-columns: 1fr; }
+    aside { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--line); }
+    #meta { margin-left: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>FOCUS SQL Lab</h1>
+  <span class="sub">SQL on real FOCUS billing data, running in your browser</span>
+  <span id="status">Loading DuckDB…</span>
+</header>
+<div class="layout">
+  <aside>
+    <section>
+      <h2>Dataset</h2>
+      <label class="field" for="dataset"><code>CostAndUsage</code> points to</label>
+      <select id="dataset">
+        <option value="cau_real">Real sample, FOCUS 1.0 data with 1.5 names (100,000 rows)</option>
+        <option value="cau_examples">Spec 1.5 worked examples (493 rows)</option>
+      </select>
+      <p class="hint" id="dataset-hint"></p>
+    </section>
+    <section>
+      <h2>Tables</h2>
+      <div id="tables"><p class="hint">Loading…</p></div>
+    </section>
+    <section>
+      <h2>About the data</h2>
+      <details class="notes">
+        <summary>Sources and cleaning</summary>
+        <ul>
+          <li><b>cau_real</b> is anonymised real FOCUS 1.0 data (AWS, Microsoft, Oracle, a little Google) from the FinOps Foundation's FOCUS-Sample-Data. Costs are anonymised: read the method, not the money.</li>
+          <li>To let 1.5 queries run on it, every 1.5 column was added. Columns 1.0 doesn't have are NULL. <code>ServiceProviderName</code> and <code>HostProviderName</code> were derived from <code>ProviderName</code>, <code>PublisherName</code> and <code>InvoiceIssuerName</code> using the spec's migration guidance. The removed 1.0 columns are kept so you can practise migrating queries.</li>
+          <li>The sample writes missing values as the text <code>NULL</code>. These were loaded as real nulls.</li>
+          <li><b>cau_examples</b> and the other tables come from the specification's worked-example CSVs. Each file is a separate scenario, so filter by <code>x_ExampleFile</code> before you add anything up. Some files used the text <code>null</code> or currency text such as <code>$10,000.00</code> in Decimal columns. These were cleaned on load.</li>
+          <li>The spec's example queries were converted from BigQuery SQL to DuckDB SQL with sqlglot. <code>?</code> placeholders were filled with values from the data.</li>
+        </ul>
+      </details>
+    </section>
+  </aside>
+  <main>
+    <div class="toolbar">
+      <label class="field" for="examples" style="margin:0;white-space:nowrap">Examples</label>
+      <select id="examples" disabled><option>Loading…</option></select>
+    </div>
+    <div id="example-info" class="info" hidden></div>
+    <textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="SQL editor"></textarea>
+    <div class="actions">
+      <button id="run" class="primary" disabled>Run</button>
+      <span class="kbd">⌘ / Ctrl + Enter</span>
+      <button id="csv" disabled>Download CSV</button>
+      <span id="meta"></span>
+    </div>
+    <div id="error" hidden></div>
+    <div id="results" class="results" hidden></div>
+  </main>
+</div>
+<footer>
+  Data: <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data">FOCUS-Sample-Data</a> and the worked examples and example queries in the
+  <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec">FOCUS specification</a>, licensed under
+  <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Changes: data cleaned and typed, and queries converted to DuckDB SQL.
+  Powered by <a href="https://duckdb.org/docs/api/wasm/overview">DuckDB-WASM</a>. Not affiliated with the FinOps Foundation.
+</footer>
+
+<script type="module">
+import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.33.1-dev57.0/+esm';
+
+const $ = (id) => document.getElementById(id);
+const SPEC_URL = 'https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/blob/working_draft/';
+const SHOW_ROWS = 1000;
+const DATASET_LABEL = { cau_real: 'the real sample', cau_examples: 'the spec 1.5 examples' };
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch { /* storage unavailable */ } },
+};
+
+let db, conn, manifest, examples = [], last = null, busy = false;
+
+function setStatus(text, ready = false) {
+  $('status').textContent = text;
+  $('status').classList.toggle('ready', ready);
+}
+
+async function init() {
+  const bundle = await duckdb.selectBundle(duckdb.getJsDelivrBundles());
+  const workerUrl = URL.createObjectURL(
+    new Blob([`importScripts("${bundle.mainWorker}");`], { type: 'text/javascript' }));
+  db = new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING), new Worker(workerUrl));
+  await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+  URL.revokeObjectURL(workerUrl);
+  conn = await db.connect();
+
+  setStatus('Loading data…');
+  [manifest, examples] = await Promise.all([
+    fetch('data/manifest.json').then((r) => r.json()),
+    fetch('examples.json').then((r) => r.json()),
+  ]);
+  const names = Object.keys(manifest.tables);
+  const buffers = await Promise.all(names.map(async (t) => {
+    const r = await fetch('data/' + manifest.tables[t].file);
+    if (!r.ok) throw new Error(`Could not load ${manifest.tables[t].file} (${r.status})`);
+    return new Uint8Array(await r.arrayBuffer());
+  }));
+  for (let i = 0; i < names.length; i++) {
+    const { file } = manifest.tables[names[i]];
+    await db.registerFileBuffer(file, buffers[i]);
+    await conn.query(`CREATE TABLE "${names[i]}" AS SELECT * FROM read_parquet('${file}')`);
+  }
+  try { await conn.query(`SELECT '{"a":1}'::JSON ->> '$.a'`); } catch { /* json loads on first use */ }
+
+  const ds = manifest.tables[store.get('dataset')] ? store.get('dataset') : 'cau_real';
+  await setDataset(ds);
+  await conn.query('CREATE VIEW focus_data AS SELECT * FROM CostAndUsage'); // name used in the migration guide
+  renderTables();
+  renderExamples();
+
+  const saved = store.get('sql');
+  if (saved && saved.trim()) $('editor').value = saved;
+  else pickExample(examples[0].id);
+  $('run').disabled = false;
+  const total = names.reduce((n, t) => n + manifest.tables[t].rows, 0);
+  setStatus(`Ready · ${total.toLocaleString()} rows in ${names.length} tables`, true);
+  if (!saved) run();
+}
+
+async function setDataset(t, why = '') {
+  await conn.query(`CREATE OR REPLACE VIEW CostAndUsage AS SELECT * FROM "${t}"`);
+  $('dataset').value = t;
+  store.set('dataset', t);
+  $('dataset-hint').textContent = why ||
+    (t === 'cau_real' ? 'FOCUS 1.5-only columns, such as SkuPriceDetails, are NULL here.'
+                      : 'Each worked-example file is its own scenario. Filter by x_ExampleFile.');
+}
+
+function renderTables() {
+  const order = ['cau_real', 'cau_examples', 'SkuPrice', 'InvoiceDetail', 'ContractCommitment', 'CorrectionExamples'];
+  const views = `<details class="table"><summary><span>CostAndUsage</span><span class="rows">view</span></summary>
+    <p>Points to the dataset chosen above. Every spec query uses this name.</p></details>
+    <details class="table"><summary><span>focus_data</span><span class="rows">view</span></summary>
+    <p>Another name for CostAndUsage, used by the spec's migration guide.</p></details>`;
+  $('tables').innerHTML = views + order.filter((t) => manifest.tables[t]).map((t) => {
+    const m = manifest.tables[t];
+    const cols = m.columns.map((c) =>
+      `<li data-col="${c.name}" title="Insert ${c.name}"><span>${c.name}</span><span>${c.type.toLowerCase()}</span></li>`).join('');
+    return `<details class="table"><summary><span>${t}</span><span class="rows">${m.rows.toLocaleString()} rows</span></summary>
+      <p>${escapeHtml(m.description)}</p><ul class="cols">${cols}</ul></details>`;
+  }).join('');
+  $('tables').addEventListener('click', (e) => {
+    const li = e.target.closest('li[data-col]');
+    if (li) insertAtCursor(li.dataset.col);
+  });
+}
+
+function renderExamples() {
+  const groups = new Map();
+  for (const e of examples) {
+    if (!groups.has(e.feature)) groups.set(e.feature, []);
+    groups.get(e.feature).push(e);
+  }
+  const sel = $('examples');
+  sel.innerHTML = '<option value="">Pick an example query…</option>' + [...groups].map(([feature, list]) =>
+    `<optgroup label="${escapeHtml(feature)}">` + list.map((e) => {
+      const broken = !e.real.ok && !e.examples.ok;
+      return `<option value="${e.id}">${broken ? '⚠ ' : ''}${escapeHtml(e.title)}</option>`;
+    }).join('') + '</optgroup>').join('');
+  sel.disabled = false;
+  sel.addEventListener('change', () => { if (sel.value) pickExample(sel.value, true); });
+}
+
+async function pickExample(id, autoRun = false) {
+  const e = examples.find((x) => x.id === id);
+  if (!e) return;
+  $('examples').value = id;
+  $('editor').value = e.sql;
+  store.set('sql', e.sql);
+
+  let target = e.dataset || (e.real.rows > 0 ? 'cau_real' : e.examples.rows > 0 ? 'cau_examples' : null);
+  if (target && target !== $('dataset').value && /CostAndUsage|focus_data/.test(e.sql)) {
+    await setDataset(target, `Switched to ${DATASET_LABEL[target]}, because this query returns rows there.`);
+  }
+
+  const status = (r, label) => r.ok ? `${label}: ${r.rows} row${r.rows === 1 ? '' : 's'}` : `${label}: fails`;
+  const src = e.source ? ` · <a href="${SPEC_URL}${e.source}" target="_blank" rel="noopener">spec source</a>` : '';
+  const params = e.params && e.params.length
+    ? `<div class="meta">Placeholders filled with: <code>${e.params.map(escapeHtml).join('</code>, <code>')}</code></div>` : '';
+  $('example-info').innerHTML = `
+    <div class="crumb">${escapeHtml(e.feature)}${src}</div>
+    <div class="title">${escapeHtml(e.title)}</div>
+    ${e.intro ? `<p>${escapeHtml(e.intro)}</p>` : ''}
+    ${e.note ? `<div class="note">${escapeHtml(e.note)}</div>` : ''}
+    ${params}
+    <div class="meta">Tested · ${status(e.real, 'real sample')} · ${status(e.examples, '1.5 examples')}</div>`;
+  $('example-info').hidden = false;
+  if (autoRun) run();
+}
+
+async function run() {
+  const sql = $('editor').value;
+  if (!sql.trim() || busy || !conn) return;
+  busy = true;
+  $('run').disabled = true;
+  $('error').hidden = true;
+  $('meta').textContent = 'Running…';
+  const t0 = performance.now();
+  try {
+    const res = await conn.query(sql);
+    renderResult(res, performance.now() - t0);
+  } catch (err) {
+    last = null;
+    $('csv').disabled = true;
+    $('results').hidden = true;
+    $('meta').textContent = '';
+    $('error').textContent = String(err && err.message ? err.message : err);
+    $('error').hidden = false;
+  } finally {
+    busy = false;
+    $('run').disabled = false;
+  }
+}
+
+function isNumericType(t) { return /^(Int|Uint|Float|Decimal)/.test(String(t)); }
+
+function fmt(v, field) {
+  if (v === null || v === undefined) return null;
+  const t = String(field.type);
+  if (/^(Timestamp|Date)/.test(t)) {
+    const d = new Date(typeof v === 'bigint' ? Number(v) : v);
+    return isNaN(d) ? String(v) : d.toISOString().replace('T', ' ').replace(/\.000Z$|Z$/, '').replace(/ 00:00:00$/, /^Date/.test(t) ? '' : ' 00:00:00');
+  }
+  if (/^Decimal/.test(t)) {
+    const scale = field.type.scale || 0;
+    let s = String(v), neg = s.startsWith('-');
+    if (neg) s = s.slice(1);
+    s = s.padStart(scale + 1, '0');
+    return (neg ? '-' : '') + (scale ? s.slice(0, -scale) + '.' + s.slice(-scale) : s);
+  }
+  if (typeof v === 'bigint') return v.toString();
+  if (typeof v === 'number') return Number.isInteger(v) ? String(v) : String(+v.toPrecision(12));
+  if (typeof v === 'object') {
+    const plain = typeof v.toJSON === 'function' ? v.toJSON() : v;
+    return JSON.stringify(plain, (k, x) => (typeof x === 'bigint' ? x.toString() : x));
+  }
+  return String(v);
+}
+
+function renderResult(res, ms) {
+  const fields = res.schema.fields;
+  const rows = res.toArray();
+  last = { fields, rows };
+  const time = ms < 1000 ? `${Math.round(ms)} ms` : `${(ms / 1000).toFixed(1)} s`;
+  $('meta').textContent = `${rows.length.toLocaleString()} row${rows.length === 1 ? '' : 's'} · ${time}` +
+    (rows.length > SHOW_ROWS ? ` · showing first ${SHOW_ROWS.toLocaleString()}` : '');
+  $('csv').disabled = rows.length === 0;
+  if (!fields.length) { $('results').innerHTML = '<div class="empty">Done.</div>'; $('results').hidden = false; return; }
+  const num = fields.map((f) => isNumericType(f.type));
+  const head = '<tr>' + fields.map((f) => `<th title="${escapeHtml(String(f.type))}">${escapeHtml(f.name)}</th>`).join('') + '</tr>';
+  const body = rows.slice(0, SHOW_ROWS).map((r) => '<tr>' + fields.map((f, i) => {
+    const s = fmt(r[f.name], f);
+    if (s === null) return '<td class="null">null</td>';
+    return `<td class="${num[i] ? 'num' : ''}" title="${escapeHtml(s.length > 60 ? s : '')}">${escapeHtml(s)}</td>`;
+  }).join('') + '</tr>').join('');
+  $('results').innerHTML = rows.length
+    ? `<table><thead>${head}</thead><tbody>${body}</tbody></table>`
+    : `<table><thead>${head}</thead></table><div class="empty">No rows.</div>`;
+  $('results').hidden = false;
+}
+
+function downloadCsv() {
+  if (!last) return;
+  const q = (s) => (s === null ? '' : /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s);
+  const lines = [last.fields.map((f) => q(f.name)).join(',')];
+  for (const r of last.rows) lines.push(last.fields.map((f) => q(fmt(r[f.name], f))).join(','));
+  const url = URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/csv' }));
+  const a = Object.assign(document.createElement('a'), { href: url, download: 'focus-sql-result.csv' });
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function insertAtCursor(text) {
+  const ed = $('editor');
+  const { selectionStart: s, selectionEnd: e, value } = ed;
+  ed.value = value.slice(0, s) + text + value.slice(e);
+  ed.selectionStart = ed.selectionEnd = s + text.length;
+  ed.focus();
+  store.set('sql', ed.value);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+$('run').addEventListener('click', run);
+$('csv').addEventListener('click', downloadCsv);
+$('dataset').addEventListener('change', async () => { await setDataset($('dataset').value); run(); });
+$('editor').addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); run(); }
+  else if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); insertAtCursor('  '); }
+});
+let saveTimer;
+$('editor').addEventListener('input', () => {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => store.set('sql', $('editor').value), 400);
+});
+
+init().catch((err) => {
+  console.error(err);
+  setStatus('Failed to start');
+  $('error').textContent = 'Could not start DuckDB or load the data: ' + (err && err.message ? err.message : err);
+  $('error').hidden = false;
+});
+</script>
+</body>
+</html>
