@@ -1,6 +1,6 @@
 # Backlog
 
-The next things to build, roughly in order. Each item says what done looks like.
+The next things to build.
 
 ## 1. Refresh automatically
 
