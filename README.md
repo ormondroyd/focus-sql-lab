@@ -59,6 +59,10 @@ Everything the lab made is labelled on the page:
   each FOCUS_Spec issue and pull request in the history that has three or more comments or reviews, written by Claude
   from each thread. Threads with less discussion show only their own description.
 
+## What's next
+
+See [BACKLOG.md](BACKLOG.md) for the next things to build.
+
 ## Repository layout
 
 Everything under `site/focus/` is derived from FOCUS project material (CC BY 4.0). Everything else is original to
