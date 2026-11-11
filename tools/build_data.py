@@ -3,7 +3,7 @@
 Usage: python -I build_data.py <FOCUS_Spec clone> <raw data dir> <output dir>
 
 Tables
-  cau_real            FOCUS-Sample-Data 1.0 (anonymised real billing, 100k rows),
+  cau_sample            FOCUS-Sample-Data 1.0 (anonymised, 100k rows),
                       typed and given FOCUS 1.5 column names where a mapping exists
   cau_examples        FOCUS 1.5 worked-example Cost and Usage rows from the spec
   ContractCommitment, InvoiceDetail, SkuPrice   1.5 worked examples
@@ -101,29 +101,29 @@ def add_missing(table, dataset):
 
 manifest = {"tables": {}}
 
-# ---- Real data: FOCUS-Sample-Data 1.0, anonymised ---------------------------------
+# ---- Sample data: FOCUS-Sample-Data 1.0, anonymised ---------------------------------
 raw_csv = RAW / "focus_sample_100000.csv.gz"
 con.execute(
-    f"CREATE TABLE raw_real AS SELECT * FROM read_csv('{raw_csv}', all_varchar=true, "
+    f"CREATE TABLE raw_sample AS SELECT * FROM read_csv('{raw_csv}', all_varchar=true, "
     f"nullstr='NULL', header=true, quote='\"', escape='\"', max_line_size=10000000)"
 )
-parts, cols = typed_select("raw_real", "CostAndUsage")
+parts, cols = typed_select("raw_sample", "CostAndUsage")
 parts = [p if p != '"Id"' else '"Id" AS x_SampleRowId' for p in parts]
-con.execute(f"CREATE TABLE cau_real AS SELECT {', '.join(parts)} FROM raw_real")
-lost = check_casts("raw_real", "cau_real", [c for c in cols if c.lower() in TYPES["CostAndUsage"]])
+con.execute(f"CREATE TABLE cau_sample AS SELECT {', '.join(parts)} FROM raw_sample")
+lost = check_casts("raw_sample", "cau_sample", [c for c in cols if c.lower() in TYPES["CostAndUsage"]])
 # 1.0 -> 1.5 provider mapping from the spec's version migration guidance
-con.execute("ALTER TABLE cau_real ADD COLUMN ServiceProviderName VARCHAR")
-con.execute("ALTER TABLE cau_real ADD COLUMN HostProviderName VARCHAR")
+con.execute("ALTER TABLE cau_sample ADD COLUMN ServiceProviderName VARCHAR")
+con.execute("ALTER TABLE cau_sample ADD COLUMN HostProviderName VARCHAR")
 # Direct purchase (publisher blank, or the provider itself, or the invoicing entity): service provider = CSP.
 # Otherwise it's a marketplace purchase: service provider = the publisher (e.g. Red Hat, Datadog on AWS).
-con.execute("""UPDATE cau_real SET
+con.execute("""UPDATE cau_sample SET
     ServiceProviderName = CASE WHEN PublisherName IS NULL OR PublisherName = ProviderName
                                     OR PublisherName = InvoiceIssuerName THEN ProviderName
                                ELSE PublisherName END,
     HostProviderName = ProviderName""")
-add_missing("cau_real", "CostAndUsage")
-con.execute("ALTER TABLE cau_real ADD COLUMN x_Dataset VARCHAR DEFAULT 'FOCUS-Sample-Data 1.0 (anonymised real)'")
-print("cau_real rows:", con.execute("SELECT count(*) FROM cau_real").fetchone()[0], "cast losses:", lost)
+add_missing("cau_sample", "CostAndUsage")
+con.execute("ALTER TABLE cau_sample ADD COLUMN x_Dataset VARCHAR DEFAULT 'FOCUS-Sample-Data 1.0 (anonymised)'")
+print("cau_sample rows:", con.execute("SELECT count(*) FROM cau_sample").fetchone()[0], "cast losses:", lost)
 
 # ---- 1.5 worked examples from the spec --------------------------------------------
 DATA = SPEC / "specification/data"
@@ -158,7 +158,7 @@ for table, (dataset, files) in groups.items():
 
 # ---- Write Parquet + manifest --------------------------------------------------------
 DESCRIPTIONS = {
-    "cau_real": "Anonymised real FOCUS 1.0 billing data (AWS, Microsoft, Oracle), 100,000 rows from "
+    "cau_sample": "Anonymised FOCUS 1.0 data (AWS, Microsoft, Oracle), 100,000 rows from "
                 "FinOps Foundation FOCUS-Sample-Data, with FOCUS 1.5 column names added. 1.5-only columns are NULL.",
     "cau_examples": "FOCUS 1.5 worked-example Cost and Usage rows from the specification (AI tokens, prompt caching, "
                     "commitments, SaaS). Each scenario is separate: filter by x_ExampleFile before summing.",
@@ -167,7 +167,7 @@ DESCRIPTIONS = {
     "SkuPrice": "FOCUS 1.5 SKU Price (preview) worked examples.",
     "CorrectionExamples": "FOCUS correction-handling worked examples (original, delta, ledger, replacement files).",
 }
-for table in ["cau_real", "cau_examples", "ContractCommitment", "InvoiceDetail", "SkuPrice", "CorrectionExamples"]:
+for table in ["cau_sample", "cau_examples", "ContractCommitment", "InvoiceDetail", "SkuPrice", "CorrectionExamples"]:
     path = OUT / f"{table}.parquet"
     con.execute(f"COPY {table} TO '{path}' (FORMAT parquet, COMPRESSION zstd, ROW_GROUP_SIZE 20000)")
     columns = [{"name": r[0], "type": r[1]} for r in con.execute(f"DESCRIBE {table}").fetchall()]

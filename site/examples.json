@@ -4,11 +4,11 @@
   "title": "Spend by provider and service category",
   "intro": "Start here. Billed cost is what the invoice says; effective cost spreads commitment purchases across the usage they cover.",
   "sql": "SELECT\n  ServiceProviderName,\n  ServiceCategory,\n  round(sum(BilledCost), 2)    AS BilledCost,\n  round(sum(EffectiveCost), 2) AS EffectiveCost,\n  count(*)                     AS Rows\nFROM CostAndUsage\nGROUP BY ALL\nORDER BY EffectiveCost DESC;",
-  "feature": "Practice on real data",
+  "feature": "Practice queries",
   "source": null,
   "params": [],
   "transpiled": false,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 36
   },
@@ -22,11 +22,11 @@
   "title": "What kinds of charge are in the bill?",
   "intro": "ChargeCategory is a closed list: Usage, Purchase, Tax, Credit, Adjustment. Look for values that should not be there.",
   "sql": "SELECT\n  ServiceProviderName,\n  ChargeCategory,\n  ChargeClass,\n  count(*)                  AS Rows,\n  round(sum(BilledCost), 2) AS BilledCost\nFROM CostAndUsage\nGROUP BY ALL\nORDER BY ServiceProviderName, ChargeCategory;",
-  "feature": "Practice on real data",
+  "feature": "Practice queries",
   "source": null,
   "params": [],
   "transpiled": false,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 10
   },
@@ -40,11 +40,11 @@
   "title": "Effective savings rate by provider",
   "intro": "ESR = 1 - effective cost / list cost, on usage. Correction rows (ChargeClass = 'Correction') are excluded. The sample's costs are anonymised, so read the method, not the number.",
   "sql": "SELECT\n  ServiceProviderName,\n  round(sum(ListCost), 2)      AS ListCost,\n  round(sum(EffectiveCost), 2) AS EffectiveCost,\n  round(1 - sum(EffectiveCost) / nullif(sum(ListCost), 0), 4) AS EffectiveSavingsRate\nFROM CostAndUsage\nWHERE ChargeCategory = 'Usage'\n  AND ChargeClass IS NULL\nGROUP BY ALL\nORDER BY ListCost DESC;",
-  "feature": "Practice on real data",
+  "feature": "Practice queries",
   "source": null,
   "params": [],
   "transpiled": false,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 5
   },
@@ -58,11 +58,11 @@
   "title": "Commitment discount utilisation",
   "intro": "Used vs Unused commitment, by type. Utilisation = used effective cost / (used + unused).",
   "sql": "SELECT\n  CommitmentDiscountType,\n  round(sum(EffectiveCost) FILTER (WHERE CommitmentDiscountStatus = 'Used'), 2)   AS UsedCost,\n  round(sum(EffectiveCost) FILTER (WHERE CommitmentDiscountStatus = 'Unused'), 2) AS UnusedCost,\n  round(sum(EffectiveCost) FILTER (WHERE CommitmentDiscountStatus = 'Used')\n        / nullif(sum(EffectiveCost), 0), 4)                                       AS Utilisation\nFROM CostAndUsage\nWHERE CommitmentDiscountId IS NOT NULL\n  AND ChargeCategory = 'Usage'\nGROUP BY ALL;",
-  "feature": "Practice on real data",
+  "feature": "Practice queries",
   "source": null,
   "params": [],
   "transpiled": false,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 2
   },
@@ -76,11 +76,11 @@
   "title": "Tag keys in use (allocation hygiene)",
   "intro": "Every tag key and how much cost carries it. Spot the near-duplicates that break allocation.",
   "sql": "SELECT\n  k                            AS TagKey,\n  count(*)                     AS Rows,\n  round(sum(EffectiveCost), 2) AS EffectiveCost\nFROM CostAndUsage, unnest(json_keys(Tags)) AS t(k)\nWHERE Tags IS NOT NULL\nGROUP BY ALL\nORDER BY Rows DESC;",
-  "feature": "Practice on real data",
+  "feature": "Practice queries",
   "source": null,
   "params": [],
   "transpiled": false,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 82
   },
@@ -94,11 +94,11 @@
   "title": "Allocation coverage: share of cost with an application tag",
   "intro": "The classic allocation KPI: what share of cost can be attributed to an owner?",
   "sql": "SELECT\n  ServiceProviderName,\n  round(sum(EffectiveCost), 2) AS EffectiveCost,\n  round(sum(EffectiveCost) FILTER (WHERE Tags ->> '$.application' IS NOT NULL)\n        / nullif(sum(EffectiveCost), 0), 4) AS ApplicationTaggedShare\nFROM CostAndUsage\nWHERE ChargeCategory = 'Usage'\nGROUP BY ALL\nORDER BY EffectiveCost DESC;",
-  "feature": "Practice on real data",
+  "feature": "Practice queries",
   "source": null,
   "params": [],
   "transpiled": false,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 5
   },
@@ -112,11 +112,11 @@
   "title": "Daily cost trend",
   "intro": "Cost per day by provider, from ChargePeriodStart.",
   "sql": "SELECT\n  date_trunc('day', ChargePeriodStart) AS Day,\n  ServiceProviderName,\n  round(sum(EffectiveCost), 2)         AS EffectiveCost\nFROM CostAndUsage\nGROUP BY ALL\nORDER BY Day, ServiceProviderName;",
-  "feature": "Practice on real data",
+  "feature": "Practice queries",
   "source": null,
   "params": [],
   "transpiled": false,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 93
   },
@@ -130,11 +130,11 @@
   "title": "Top 10 resources by effective cost",
   "intro": "Where the money goes, resource by resource.",
   "sql": "SELECT\n  ResourceId,\n  ResourceName,\n  ServiceName,\n  round(sum(EffectiveCost), 4) AS EffectiveCost\nFROM CostAndUsage\nWHERE ResourceId IS NOT NULL\nGROUP BY ALL\nORDER BY EffectiveCost DESC\nLIMIT 10;",
-  "feature": "Practice on real data",
+  "feature": "Practice queries",
   "source": null,
   "params": [],
   "transpiled": false,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 10
   },
@@ -148,11 +148,11 @@
   "title": "Marketplace purchases (service provider is not the host)",
   "intro": "FOCUS 1.3+ separates who sells the service from who hosts it. In this sample, Red Hat and Datadog are bought through AWS.",
   "sql": "SELECT\n  HostProviderName,\n  ServiceProviderName,\n  InvoiceIssuerName,\n  ServiceName,\n  ChargeCategory,\n  round(sum(BilledCost), 2) AS BilledCost,\n  count(*)                  AS Rows\nFROM CostAndUsage\nWHERE ServiceProviderName <> HostProviderName\nGROUP BY ALL\nORDER BY BilledCost DESC;",
-  "feature": "Practice on real data",
+  "feature": "Practice queries",
   "source": null,
   "params": [],
   "transpiled": false,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 2
   },
@@ -166,11 +166,11 @@
   "title": "Data quality checks a validator would make",
   "intro": "Rows that break simple FOCUS rules. Each count should be zero in conformant data.",
   "sql": "SELECT 'ChargeCategory outside the allowed values' AS Check,\n       count(*) AS Rows\nFROM CostAndUsage\nWHERE ChargeCategory NOT IN ('Usage', 'Purchase', 'Tax', 'Credit', 'Adjustment')\nUNION ALL\nSELECT 'ChargePeriodEnd not after ChargePeriodStart', count(*)\nFROM CostAndUsage WHERE ChargePeriodEnd <= ChargePeriodStart\nUNION ALL\nSELECT 'Charge period outside its billing period', count(*)\nFROM CostAndUsage\nWHERE ChargePeriodStart < BillingPeriodStart OR ChargePeriodEnd > BillingPeriodEnd\nUNION ALL\nSELECT 'Usage row with no ConsumedQuantity', count(*)\nFROM CostAndUsage WHERE ChargeCategory = 'Usage' AND ConsumedQuantity IS NULL\nUNION ALL\nSELECT 'Tag key with leading or trailing spaces', count(*)\nFROM CostAndUsage, unnest(json_keys(Tags)) AS t(k) WHERE k <> trim(k);",
-  "feature": "Practice on real data",
+  "feature": "Practice queries",
   "source": null,
   "params": [],
   "transpiled": false,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 5
   },
@@ -185,11 +185,11 @@
   "intro": "FOCUS 1.5 puts model identity and token type in SkuPriceDetails. Switch the dataset to the 1.5 examples to see rows.",
   "dataset": "cau_examples",
   "sql": "SELECT\n  SkuPriceDetails ->> '$.ModelId'          AS ModelId,\n  SkuPriceDetails ->> '$.TokenDirection'   AS TokenDirection,\n  SkuPriceDetails ->> '$.TokenCacheAction' AS TokenCacheAction,\n  sum(ConsumedQuantity)                    AS Tokens,\n  round(sum(EffectiveCost), 4)             AS EffectiveCost,\n  round(sum(EffectiveCost) * 1e6 / nullif(sum(ConsumedQuantity), 0), 4) AS CostPerMillionTokens\nFROM CostAndUsage\nWHERE ConsumedUnit = 'Tokens'\nGROUP BY ALL\nORDER BY ModelId, TokenDirection, TokenCacheAction;",
-  "feature": "Practice on real data",
+  "feature": "Practice queries",
   "source": null,
   "params": [],
   "transpiled": false,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -211,7 +211,7 @@
   "original_sql": "SELECT\n  BillingAccountId,\n  BillingAccountName,\n  BillingAccountType,\n  SubAccountId,\n  SubAccountName,\n  SubAccountType,\n  BillingCurrency,\n  SUM(BilledCost)\nFROM CostAndUsage\nWHERE BillingPeriodStart >= ? AND BillingPeriodEnd < ?\nGROUP BY\n  BillingAccountId,\n  BillingAccountName,\n  BillingAccountType,\n  SubAccountId,\n  SubAccountName,\n  SubAccountType,\n  BillingCurrency",
   "sql": "SELECT\n  BillingAccountId,\n  BillingAccountName,\n  BillingAccountType,\n  SubAccountId,\n  SubAccountName,\n  SubAccountType,\n  BillingCurrency,\n  SUM(BilledCost)\nFROM CostAndUsage\nWHERE\n  BillingPeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND BillingPeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  BillingAccountId,\n  BillingAccountName,\n  BillingAccountType,\n  SubAccountId,\n  SubAccountName,\n  SubAccountType,\n  BillingCurrency",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 106
   },
@@ -233,7 +233,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  JSON_VALUE(SkuPriceDetails, '$.ModelDeveloper') AS ModelDeveloper,\n  JSON_VALUE(SkuPriceDetails, '$.ModelId') AS ModelId,\n  SkuId,\n  SkuPriceId,\n  SkuMeter,\n  JSON_VALUE(SkuPriceDetails, '$.TokenDirection') AS TokenDirection,\n  JSON_VALUE(SkuPriceDetails, '$.TokenCacheAction') AS TokenCacheAction,\n  BillingCurrency,\n  PricingUnit,\n  SUM(ConsumedQuantity) AS TotalTokens,\n  SUM(PricingQuantity) AS TotalPricingQuantity,\n  SUM(EffectiveCost) AS TotalEffectiveCost,\n  SUM(EffectiveCost) * 1000000 / NULLIF(SUM(ConsumedQuantity), 0) AS EffectiveCostPerMillionTokens\nFROM CostAndUsage\nWHERE ChargeCategory='Usage'\n  AND ServiceCategory='AI and Machine Learning'\n  AND ConsumedUnit='Tokens'\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd <= ?\nGROUP BY\n  ServiceProviderName,\n  JSON_VALUE(SkuPriceDetails, '$.ModelDeveloper'),\n  JSON_VALUE(SkuPriceDetails, '$.ModelId'),\n  SkuId,\n  SkuPriceId,\n  SkuMeter,\n  JSON_VALUE(SkuPriceDetails, '$.TokenDirection'),\n  JSON_VALUE(SkuPriceDetails, '$.TokenCacheAction'),\n  BillingCurrency,\n  PricingUnit",
   "sql": "SELECT\n  ServiceProviderName,\n  JSON_VALUE(SkuPriceDetails, '$.ModelDeveloper') ->> '$' AS ModelDeveloper,\n  JSON_VALUE(SkuPriceDetails, '$.ModelId') ->> '$' AS ModelId,\n  SkuId,\n  SkuPriceId,\n  SkuMeter,\n  JSON_VALUE(SkuPriceDetails, '$.TokenDirection') ->> '$' AS TokenDirection,\n  JSON_VALUE(SkuPriceDetails, '$.TokenCacheAction') ->> '$' AS TokenCacheAction,\n  BillingCurrency,\n  PricingUnit,\n  SUM(ConsumedQuantity) AS TotalTokens,\n  SUM(PricingQuantity) AS TotalPricingQuantity,\n  SUM(EffectiveCost) AS TotalEffectiveCost,\n  SUM(EffectiveCost) * 1000000 / NULLIF(SUM(ConsumedQuantity), 0) AS EffectiveCostPerMillionTokens\nFROM CostAndUsage\nWHERE\n  ChargeCategory = 'Usage'\n  AND ServiceCategory = 'AI and Machine Learning'\n  AND ConsumedUnit = 'Tokens'\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  ServiceProviderName,\n  JSON_VALUE(SkuPriceDetails, '$.ModelDeveloper') ->> '$',\n  JSON_VALUE(SkuPriceDetails, '$.ModelId') ->> '$',\n  SkuId,\n  SkuPriceId,\n  SkuMeter,\n  JSON_VALUE(SkuPriceDetails, '$.TokenDirection') ->> '$',\n  JSON_VALUE(SkuPriceDetails, '$.TokenCacheAction') ->> '$',\n  BillingCurrency,\n  PricingUnit",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -255,7 +255,7 @@
   "original_sql": "SELECT\n  ChargePeriodStart,\n  InvoiceIssuerName,\n  ServiceProviderName,\n  ServiceName,\n  ServiceSubcategory,\n  JSON_VALUE(SkuPriceDetails, '$.ModelDeveloper') AS ModelDeveloper,\n  JSON_VALUE(SkuPriceDetails, '$.ModelId') AS ModelId,\n  JSON_VALUE(SkuPriceDetails, '$.TokenDirection') AS TokenDirection,\n  JSON_VALUE(SkuPriceDetails, '$.TokenCacheAction') AS TokenCacheAction,\n  SUM(ConsumedQuantity) AS TotalTokens\nFROM CostAndUsage\nWHERE ChargeCategory='Usage'\n  AND ServiceCategory='AI and Machine Learning'\n  AND ConsumedUnit='Tokens'\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd <= ?\nGROUP BY\n  ChargePeriodStart,\n  InvoiceIssuerName,\n  ServiceProviderName,\n  ServiceName,\n  ServiceSubcategory,\n  JSON_VALUE(SkuPriceDetails, '$.ModelDeveloper'),\n  JSON_VALUE(SkuPriceDetails, '$.ModelId'),\n  JSON_VALUE(SkuPriceDetails, '$.TokenDirection'),\n  JSON_VALUE(SkuPriceDetails, '$.TokenCacheAction')",
   "sql": "SELECT\n  ChargePeriodStart,\n  InvoiceIssuerName,\n  ServiceProviderName,\n  ServiceName,\n  ServiceSubcategory,\n  JSON_VALUE(SkuPriceDetails, '$.ModelDeveloper') ->> '$' AS ModelDeveloper,\n  JSON_VALUE(SkuPriceDetails, '$.ModelId') ->> '$' AS ModelId,\n  JSON_VALUE(SkuPriceDetails, '$.TokenDirection') ->> '$' AS TokenDirection,\n  JSON_VALUE(SkuPriceDetails, '$.TokenCacheAction') ->> '$' AS TokenCacheAction,\n  SUM(ConsumedQuantity) AS TotalTokens\nFROM CostAndUsage\nWHERE\n  ChargeCategory = 'Usage'\n  AND ServiceCategory = 'AI and Machine Learning'\n  AND ConsumedUnit = 'Tokens'\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  ChargePeriodStart,\n  InvoiceIssuerName,\n  ServiceProviderName,\n  ServiceName,\n  ServiceSubcategory,\n  JSON_VALUE(SkuPriceDetails, '$.ModelDeveloper') ->> '$',\n  JSON_VALUE(SkuPriceDetails, '$.ModelId') ->> '$',\n  JSON_VALUE(SkuPriceDetails, '$.TokenDirection') ->> '$',\n  JSON_VALUE(SkuPriceDetails, '$.TokenCacheAction') ->> '$'",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -274,7 +274,7 @@
   "original_sql": "SELECT\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  InvoiceId,\n  BillingCurrency,\n  SUM(BilledCost)\nFROM CostAndUsage\nGROUP BY\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  InvoiceId,\n  BillingCurrency",
   "sql": "SELECT\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  InvoiceId,\n  BillingCurrency,\n  SUM(BilledCost)\nFROM CostAndUsage\nGROUP BY\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  InvoiceId,\n  BillingCurrency",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 5
   },
@@ -298,7 +298,7 @@
   "original_sql": "SELECT\n  SkuId,\n  SkuPriceId,\n  SkuPriceDescription,\n  CommitmentDiscountCategory,\n  PricingUnit,\n  QuantityTierMinimum,\n  QuantityTierMaximum,\n  PricingCurrency,\n  PricingCurrencyCategory,\n  UnitPrice\nFROM SkuPrice\nWHERE ServiceProviderName = ?\n  AND PricingServiceName = ?\n  AND ChargeCategory = 'Usage'\n  AND UnitPriceType = 'List'\n  AND (SkuPriceEffectiveStart IS NULL OR SkuPriceEffectiveStart <= ?)\n  AND (SkuPriceEffectiveEnd IS NULL OR SkuPriceEffectiveEnd > ?)\nORDER BY SkuId, UnitPrice",
   "sql": "SELECT\n  SkuId,\n  SkuPriceId,\n  SkuPriceDescription,\n  CommitmentDiscountCategory,\n  PricingUnit,\n  QuantityTierMinimum,\n  QuantityTierMaximum,\n  PricingCurrency,\n  PricingCurrencyCategory,\n  UnitPrice\nFROM SkuPrice\nWHERE\n  ServiceProviderName = 'Aura Web'\n  AND PricingServiceName = 'Aura Web Compute'\n  AND ChargeCategory = 'Usage'\n  AND UnitPriceType = 'List'\n  AND (\n    SkuPriceEffectiveStart IS NULL\n    OR SkuPriceEffectiveStart <= CAST('2026-03-01 00:00:00' AS TIMESTAMP)\n  )\n  AND (\n    SkuPriceEffectiveEnd IS NULL\n    OR SkuPriceEffectiveEnd > CAST('2026-03-01 00:00:00' AS TIMESTAMP)\n  )\nORDER BY\n  SkuId NULLS FIRST,\n  UnitPrice NULLS FIRST",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 17
   },
@@ -322,7 +322,7 @@
   "original_sql": "WITH PlannedUsage (ServiceProviderName, SkuPriceId, PlannedQuantity, PlannedDate) AS (\n  VALUES (?, ?, ?, ?)\n)\nSELECT\n  PU.ServiceProviderName,\n  PU.SkuPriceId,\n  PU.PlannedDate,\n  SP.SkuPriceDescription,\n  SP.PricingUnit,\n  SP.QuantityTierMinimum,\n  SP.QuantityTierMaximum,\n  PU.PlannedQuantity,\n  SP.UnitPrice,\n  SP.PricingCurrency,\n  SP.PricingCurrencyCategory,\n  PU.PlannedQuantity * SP.UnitPrice AS EstimatedPricingCurrencyCost\nFROM PlannedUsage PU\nLEFT JOIN SkuPrice SP\n  ON SP.ServiceProviderName = PU.ServiceProviderName\n  AND SP.SkuPriceId = PU.SkuPriceId\n  AND SP.UnitPriceType = 'List'\n  AND (SP.SkuPriceEffectiveStart IS NULL OR SP.SkuPriceEffectiveStart <= PU.PlannedDate)\n  AND (SP.SkuPriceEffectiveEnd IS NULL OR SP.SkuPriceEffectiveEnd > PU.PlannedDate)\nORDER BY SP.PricingCurrencyCategory, SP.PricingCurrency, EstimatedPricingCurrencyCost DESC",
   "sql": "WITH PlannedUsage(ServiceProviderName, SkuPriceId, PlannedQuantity, PlannedDate) AS (\n  VALUES(\n    'Aura Web',\n    'AURAWEB-COMPUTE-VM-STD-8X32-AURAWEB-COMPUTE-RESERVATION-VM-STD-1YR-ALL-UPFRONT',\n    720,\n    CAST('2026-03-01 00:00:00' AS TIMESTAMP)\n  )\n)\nSELECT\n  PU.ServiceProviderName,\n  PU.SkuPriceId,\n  PU.PlannedDate,\n  SP.SkuPriceDescription,\n  SP.PricingUnit,\n  SP.QuantityTierMinimum,\n  SP.QuantityTierMaximum,\n  PU.PlannedQuantity,\n  SP.UnitPrice,\n  SP.PricingCurrency,\n  SP.PricingCurrencyCategory,\n  PU.PlannedQuantity * SP.UnitPrice AS EstimatedPricingCurrencyCost\nFROM PlannedUsage AS PU\nLEFT JOIN SkuPrice AS SP\n  ON SP.ServiceProviderName = PU.ServiceProviderName\n  AND SP.SkuPriceId = PU.SkuPriceId\n  AND SP.UnitPriceType = 'List'\n  AND (\n    SP.SkuPriceEffectiveStart IS NULL OR SP.SkuPriceEffectiveStart <= PU.PlannedDate\n  )\n  AND (\n    SP.SkuPriceEffectiveEnd IS NULL OR SP.SkuPriceEffectiveEnd > PU.PlannedDate\n  )\nORDER BY\n  SP.PricingCurrencyCategory NULLS FIRST,\n  SP.PricingCurrency NULLS FIRST,\n  EstimatedPricingCurrencyCost DESC",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 2
   },
@@ -346,7 +346,7 @@
   "original_sql": "SELECT\n  SkuPriceId,\n  ContractId,\n  UnitPriceType,\n  SkuPriceDescription,\n  UnitPrice,\n  PricingCurrency,\n  SkuPriceEligibility\nFROM SkuPrice\nWHERE ServiceProviderName = ?\n  AND (SkuPriceEffectiveStart IS NULL OR SkuPriceEffectiveStart <= ?)\n  AND (SkuPriceEffectiveEnd IS NULL OR SkuPriceEffectiveEnd > ?)\n  AND (\n    JSON_VALUE(SkuPriceEligibility, '$.IsGlobalScope') = 'true'\n    OR JSON_VALUE(SkuPriceEligibility, '$.IsComplexScope') = 'true'\n    OR EXISTS (\n      SELECT 1\n      FROM UNNEST(JSON_EXTRACT_ARRAY(SkuPriceEligibility, '$.Inclusions')) AS INC\n      WHERE JSON_VALUE(INC, '$.Dimension') = 'BillingAccountId'\n        AND JSON_VALUE(INC, '$.Operator') = 'In'\n        AND (\n          ? IN UNNEST(JSON_VALUE_ARRAY(INC, '$.Values'))\n          OR '*' IN UNNEST(JSON_VALUE_ARRAY(INC, '$.Values'))\n        )\n    )\n  )\nORDER BY SkuPriceId, ContractId, UnitPriceType",
   "sql": "SELECT\n  SkuPriceId,\n  ContractId,\n  UnitPriceType,\n  SkuPriceDescription,\n  UnitPrice,\n  PricingCurrency,\n  SkuPriceEligibility\nFROM SkuPrice\nWHERE\n  ServiceProviderName = 'Aura Web'\n  AND (\n    SkuPriceEffectiveStart IS NULL\n    OR SkuPriceEffectiveStart <= CAST('2026-03-01 00:00:00' AS TIMESTAMP)\n  )\n  AND (\n    SkuPriceEffectiveEnd IS NULL\n    OR SkuPriceEffectiveEnd > CAST('2026-03-01 00:00:00' AS TIMESTAMP)\n  )\n  AND (\n    (\n      JSON_VALUE(SkuPriceEligibility, '$.IsGlobalScope') ->> '$'\n    ) = 'true'\n    OR (\n      JSON_VALUE(SkuPriceEligibility, '$.IsComplexScope') ->> '$'\n    ) = 'true'\n    OR EXISTS(\n      SELECT\n        1\n      FROM UNNEST(CAST(SkuPriceEligibility -> '$.Inclusions' AS JSON[])) AS _t0(INC)\n      WHERE\n        (\n          JSON_VALUE(INC, '$.Dimension') ->> '$'\n        ) = 'BillingAccountId'\n        AND (\n          JSON_VALUE(INC, '$.Operator') ->> '$'\n        ) = 'In'\n        AND (\n          CASE\n            WHEN CAST(INC -> '$.Values' AS TEXT[]) IS NULL\n            OR ARRAY_LENGTH(CAST(INC -> '$.Values' AS TEXT[])) = 0\n            THEN FALSE\n            WHEN ARRAY_CONTAINS(CAST(INC -> '$.Values' AS TEXT[]), 'ACCT-123456789012')\n            THEN TRUE\n            WHEN 'ACCT-123456789012' IS NULL\n            OR ARRAY_LENGTH(CAST(INC -> '$.Values' AS TEXT[])) <> LIST_COUNT(CAST(INC -> '$.Values' AS TEXT[]))\n            THEN NULL\n            ELSE FALSE\n          END\n          OR CASE\n            WHEN CAST(INC -> '$.Values' AS TEXT[]) IS NULL\n            OR ARRAY_LENGTH(CAST(INC -> '$.Values' AS TEXT[])) = 0\n            THEN FALSE\n            WHEN ARRAY_CONTAINS(CAST(INC -> '$.Values' AS TEXT[]), '*')\n            THEN TRUE\n            WHEN '*' IS NULL\n            OR ARRAY_LENGTH(CAST(INC -> '$.Values' AS TEXT[])) <> LIST_COUNT(CAST(INC -> '$.Values' AS TEXT[]))\n            THEN NULL\n            ELSE FALSE\n          END\n        )\n    )\n  )\nORDER BY\n  SkuPriceId NULLS FIRST,\n  ContractId NULLS FIRST,\n  UnitPriceType NULLS FIRST",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 52
   },
@@ -369,7 +369,7 @@
   "original_sql": "SELECT\n  ChargeCategory,\n  PricingUnit,\n  PricingCurrency,\n  PricingCurrencyCategory,\n  COUNT(*) AS SkuPriceCount,\n  MIN(UnitPrice) AS LowestPublicUnitPrice,\n  MAX(UnitPrice) AS HighestPublicUnitPrice\nFROM SkuPrice\nWHERE ServiceProviderName = ?\n  AND UnitPriceType = 'List'\n  AND (SkuPriceEffectiveStart IS NULL OR SkuPriceEffectiveStart <= ?)\n  AND (SkuPriceEffectiveEnd IS NULL OR SkuPriceEffectiveEnd > ?)\nGROUP BY ChargeCategory, PricingUnit, PricingCurrency, PricingCurrencyCategory\nORDER BY ChargeCategory, PricingUnit",
   "sql": "SELECT\n  ChargeCategory,\n  PricingUnit,\n  PricingCurrency,\n  PricingCurrencyCategory,\n  COUNT(*) AS SkuPriceCount,\n  MIN(UnitPrice) AS LowestPublicUnitPrice,\n  MAX(UnitPrice) AS HighestPublicUnitPrice\nFROM SkuPrice\nWHERE\n  ServiceProviderName = 'Aura Web'\n  AND UnitPriceType = 'List'\n  AND (\n    SkuPriceEffectiveStart IS NULL\n    OR SkuPriceEffectiveStart <= CAST('2026-03-01 00:00:00' AS TIMESTAMP)\n  )\n  AND (\n    SkuPriceEffectiveEnd IS NULL\n    OR SkuPriceEffectiveEnd > CAST('2026-03-01 00:00:00' AS TIMESTAMP)\n  )\nGROUP BY\n  ChargeCategory,\n  PricingUnit,\n  PricingCurrency,\n  PricingCurrencyCategory\nORDER BY\n  ChargeCategory NULLS FIRST,\n  PricingUnit NULLS FIRST",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 8
   },
@@ -392,7 +392,7 @@
   "original_sql": "SELECT\n  SkuId,\n  SkuPriceId,\n  SkuPriceDescription,\n  UnitPrice,\n  PricingCurrency,\n  SkuPriceEffectiveStart,\n  SkuPriceEffectiveEnd,\n  SkuPriceCreated,\n  SkuPriceLastUpdated\nFROM SkuPrice\nWHERE ServiceProviderName = ?\n  AND UnitPriceType = 'List'\n  AND (SkuPriceEffectiveStart > ? OR SkuPriceEffectiveEnd > ?)\nORDER BY SkuPriceEffectiveStart, SkuPriceEffectiveEnd",
   "sql": "SELECT\n  SkuId,\n  SkuPriceId,\n  SkuPriceDescription,\n  UnitPrice,\n  PricingCurrency,\n  SkuPriceEffectiveStart,\n  SkuPriceEffectiveEnd,\n  SkuPriceCreated,\n  SkuPriceLastUpdated\nFROM SkuPrice\nWHERE\n  ServiceProviderName = 'Aura Web'\n  AND UnitPriceType = 'List'\n  AND (\n    SkuPriceEffectiveStart > CAST('2026-03-01 00:00:00' AS TIMESTAMP)\n    OR SkuPriceEffectiveEnd > CAST('2026-03-01 00:00:00' AS TIMESTAMP)\n  )\nORDER BY\n  SkuPriceEffectiveStart NULLS FIRST,\n  SkuPriceEffectiveEnd NULLS FIRST",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 12
   },
@@ -416,7 +416,7 @@
   "original_sql": "SELECT\n  SkuId,\n  SkuPriceId,\n  PricingRegionId,\n  PricingUnit,\n  QuantityTierMinimum,\n  QuantityTierMaximum,\n  PricingCurrency,\n  UnitPrice\nFROM SkuPrice\nWHERE ServiceProviderName = ?\n  AND PricingServiceName = ?\n  AND ChargeCategory = 'Usage'\n  AND UnitPriceType = 'List'\n  AND (SkuPriceEffectiveStart IS NULL OR SkuPriceEffectiveStart <= ?)\n  AND (SkuPriceEffectiveEnd IS NULL OR SkuPriceEffectiveEnd > ?)\nORDER BY SkuId, PricingCurrency, UnitPrice",
   "sql": "SELECT\n  SkuId,\n  SkuPriceId,\n  PricingRegionId,\n  PricingUnit,\n  QuantityTierMinimum,\n  QuantityTierMaximum,\n  PricingCurrency,\n  UnitPrice\nFROM SkuPrice\nWHERE\n  ServiceProviderName = 'Aura Web'\n  AND PricingServiceName = 'Aura Web Compute'\n  AND ChargeCategory = 'Usage'\n  AND UnitPriceType = 'List'\n  AND (\n    SkuPriceEffectiveStart IS NULL\n    OR SkuPriceEffectiveStart <= CAST('2026-03-01 00:00:00' AS TIMESTAMP)\n  )\n  AND (\n    SkuPriceEffectiveEnd IS NULL\n    OR SkuPriceEffectiveEnd > CAST('2026-03-01 00:00:00' AS TIMESTAMP)\n  )\nORDER BY\n  SkuId NULLS FIRST,\n  PricingCurrency NULLS FIRST,\n  UnitPrice NULLS FIRST",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 17
   },
@@ -438,7 +438,7 @@
   "original_sql": "SELECT\n  MIN(ChargePeriodStart) AS ChargePeriodStart,\n  MAX(ChargePeriodEnd) AS ChargePeriodEnd,\n  ServiceProviderName,\n  BillingAccountId,\n  CommitmentDiscountId,\n  CommitmentDiscountType,\n  CommitmentDiscountUnit,\n  CommitmentDiscountQuantity,\n  ChargeFrequency,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE ChargePeriodStart >= ? AND ChargePeriodEnd < ?\n  AND ChargeCategory = 'Purchase'\n  AND CommitmentDiscountId IS NOT NULL\nGROUP BY\n  ServiceProviderName,\n  BillingAccountId,\n  CommitmentDiscountId,\n  CommitmentDiscountType,\n  CommitmentDiscountUnit,\n  CommitmentDiscountQuantity,\n  ChargeFrequency",
   "sql": "SELECT\n  MIN(ChargePeriodStart) AS ChargePeriodStart,\n  MAX(ChargePeriodEnd) AS ChargePeriodEnd,\n  ServiceProviderName,\n  BillingAccountId,\n  CommitmentDiscountId,\n  CommitmentDiscountType,\n  CommitmentDiscountUnit,\n  CommitmentDiscountQuantity,\n  ChargeFrequency,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE\n  ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargeCategory = 'Purchase'\n  AND NOT CommitmentDiscountId IS NULL\nGROUP BY\n  ServiceProviderName,\n  BillingAccountId,\n  CommitmentDiscountId,\n  CommitmentDiscountType,\n  CommitmentDiscountUnit,\n  CommitmentDiscountQuantity,\n  ChargeFrequency",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 2
   },
@@ -460,7 +460,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  BillingAccountId,\n  ChargeCategory,\n  ServiceCategory,\n  ServiceName,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE BillingPeriodStart >= ? AND BillingPeriodEnd < ?\n  AND ChargeClass = 'Correction'\nGROUP BY\n  ServiceProviderName,\n  BillingAccountId,\n  ChargeCategory,\n  ServiceCategory,\n  ServiceName",
   "sql": "SELECT\n  ServiceProviderName,\n  BillingAccountId,\n  ChargeCategory,\n  ServiceCategory,\n  ServiceName,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE\n  BillingPeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND BillingPeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargeClass = 'Correction'\nGROUP BY\n  ServiceProviderName,\n  BillingAccountId,\n  ChargeCategory,\n  ServiceCategory,\n  ServiceName",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -482,7 +482,7 @@
   "original_sql": "SELECT\n  BillingPeriodStart,\n  CommitmentDiscountId,\n  CommitmentDiscountName,\n  CommitmentDiscountType,\n  ChargeFrequency,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE BillingPeriodStart  >= ? AND BillingPeriodStart < ?\n  AND ChargeFrequency = 'Recurring'\n  AND CommitmentDiscountId IS NOT NULL\nGROUP BY\n  BillingPeriodStart,\n  CommitmentDiscountId,\n  CommitmentDiscountName,\n  CommitmentDiscountType,\n  ChargeFrequency",
   "sql": "SELECT\n  BillingPeriodStart,\n  CommitmentDiscountId,\n  CommitmentDiscountName,\n  CommitmentDiscountType,\n  ChargeFrequency,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE\n  BillingPeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND BillingPeriodStart < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargeFrequency = 'Recurring'\n  AND NOT CommitmentDiscountId IS NULL\nGROUP BY\n  BillingPeriodStart,\n  CommitmentDiscountId,\n  CommitmentDiscountName,\n  CommitmentDiscountType,\n  ChargeFrequency",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 2
   },
@@ -504,7 +504,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  BillingAccountId,\n  CommitmentDiscountId,\n  CommitmentDiscountType,\n  CommitmentDiscountStatus,\n  SUM(BilledCost) AS TotalBilledCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE ChargePeriodStart >= ? AND ChargePeriodEnd < ?\n  AND CommitmentDiscountStatus = 'Unused'\nGROUP BY\n  ServiceProviderName,\n  BillingAccountId,\n  CommitmentDiscountId,\n  CommitmentDiscountType,\n  CommitmentDiscountStatus",
   "sql": "SELECT\n  ServiceProviderName,\n  BillingAccountId,\n  CommitmentDiscountId,\n  CommitmentDiscountType,\n  CommitmentDiscountStatus,\n  SUM(BilledCost) AS TotalBilledCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE\n  ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND CommitmentDiscountStatus = 'Unused'\nGROUP BY\n  ServiceProviderName,\n  BillingAccountId,\n  CommitmentDiscountId,\n  CommitmentDiscountType,\n  CommitmentDiscountStatus",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 1
   },
@@ -526,7 +526,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  BillingAccountId,\n  CapacityReservationId,\n  CapacityReservationStatus,\n  SUM(BilledCost) AS TotalBilledCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE ChargePeriodStart >= ? AND ChargePeriodEnd < ?\n  AND CapacityReservationStatus = 'Unused'\nGROUP BY\n  ServiceProviderName,\n  BillingAccountId,\n  CapacityReservationId,\n  CapacityReservationStatus",
   "sql": "SELECT\n  ServiceProviderName,\n  BillingAccountId,\n  CapacityReservationId,\n  CapacityReservationStatus,\n  SUM(BilledCost) AS TotalBilledCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE\n  ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND CapacityReservationStatus = 'Unused'\nGROUP BY\n  ServiceProviderName,\n  BillingAccountId,\n  CapacityReservationId,\n  CapacityReservationStatus",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -548,7 +548,7 @@
   "original_sql": "SELECT\n  CU.ServiceProviderName,\n  CU.ServiceName,\n  JSON_VALUE(CP, '$.ProgramType') AS EligibleProgramType,\n  SUM(CU.BilledCost) AS EligibleUncoveredCost\nFROM CostAndUsage CU\nCROSS JOIN\n  UNNEST(JSON_EXTRACT_ARRAY(CU.CommitmentProgramEligibilityDetails, '$.CommitmentPrograms')) AS CP\nWHERE CU.ChargePeriodStart >= ? AND CU.ChargePeriodEnd < ?\n  AND CU.ChargeCategory = 'Usage'\n  AND CU.CommitmentDiscountId IS NULL\n  AND CU.CommitmentProgramEligibilityDetails IS NOT NULL\n  -- Replace with provider-specific discount-bearing program types\n  AND JSON_VALUE(CP, '$.ProgramType') IN ('Flexible Spend Plan', 'Resource Reservation')\nGROUP BY\n  CU.ServiceProviderName,\n  CU.ServiceName,\n  JSON_VALUE(CP, '$.ProgramType')\nORDER BY EligibleUncoveredCost DESC",
   "sql": "SELECT\n  CU.ServiceProviderName,\n  CU.ServiceName,\n  JSON_VALUE(CP, '$.ProgramType') ->> '$' AS EligibleProgramType,\n  SUM(CU.BilledCost) AS EligibleUncoveredCost\nFROM CostAndUsage AS CU\nCROSS JOIN UNNEST(CAST(CU.CommitmentProgramEligibilityDetails -> '$.CommitmentPrograms' AS JSON[])) AS _t0(CP)\nWHERE\n  CU.ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND CU.ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND CU.ChargeCategory = 'Usage'\n  AND CU.CommitmentDiscountId IS NULL\n  AND NOT CU.CommitmentProgramEligibilityDetails IS NULL\n  AND /* Replace with provider-specific discount-bearing program types */ (\n    JSON_VALUE(CP, '$.ProgramType') ->> '$'\n  ) IN ('Flexible Spend Plan', 'Resource Reservation')\nGROUP BY\n  CU.ServiceProviderName,\n  CU.ServiceName,\n  JSON_VALUE(CP, '$.ProgramType') ->> '$'\nORDER BY\n  EligibleUncoveredCost DESC",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -570,7 +570,7 @@
   "original_sql": "WITH CommitmentDiscountEligible AS (\n  SELECT\n    CU.ServiceProviderName,\n    CU.EffectiveCost,\n    CU.CommitmentDiscountId\n  FROM CostAndUsage CU\n  WHERE CU.ChargePeriodStart >= ? AND CU.ChargePeriodEnd < ?\n    AND CU.ChargeCategory = 'Usage'\n    -- Exclude unused commitment rows; keep rows without a commitment discount\n    AND (CU.CommitmentDiscountStatus IS NULL OR CU.CommitmentDiscountStatus != 'Unused')\n    AND (\n      -- Include covered rows in the denominator\n      CU.CommitmentDiscountId IS NOT NULL\n      -- If uncovered, check if the JSON array contains an eligible program type\n      OR EXISTS (\n        SELECT 1\n        FROM UNNEST(JSON_EXTRACT_ARRAY(CU.CommitmentProgramEligibilityDetails, '$.CommitmentPrograms')) AS CP\n        WHERE JSON_VALUE(CP, '$.ProgramType') IN ('Flexible Spend Plan', 'Resource Reservation')\n      )\n    )\n)\nSELECT\n  ServiceProviderName,\n  SUM(CASE WHEN CommitmentDiscountId IS NOT NULL THEN EffectiveCost ELSE 0 END) AS CoveredCost,\n  SUM(EffectiveCost) AS EligibleCost,\n  SUM(CASE WHEN CommitmentDiscountId IS NOT NULL THEN EffectiveCost ELSE 0 END)\n    / NULLIF(SUM(EffectiveCost), 0) AS CommitmentCoverageRate\nFROM CommitmentDiscountEligible\nGROUP BY ServiceProviderName",
   "sql": "WITH CommitmentDiscountEligible AS (\n  SELECT\n    CU.ServiceProviderName,\n    CU.EffectiveCost,\n    CU.CommitmentDiscountId\n  FROM CostAndUsage AS CU\n  WHERE\n    CU.ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n    AND CU.ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n    AND CU.ChargeCategory = 'Usage'\n    AND /* Exclude unused commitment rows; keep rows without a commitment discount */ (\n      CU.CommitmentDiscountStatus IS NULL OR CU.CommitmentDiscountStatus <> 'Unused'\n    )\n    AND (\n      NOT CU.CommitmentDiscountId /* Include covered rows in the denominator */ IS NULL\n      OR /* If uncovered, check if the JSON array contains an eligible program type */ EXISTS(\n        SELECT\n          1\n        FROM UNNEST(CAST(CU.CommitmentProgramEligibilityDetails -> '$.CommitmentPrograms' AS JSON[])) AS _t0(CP)\n        WHERE\n          (\n            JSON_VALUE(CP, '$.ProgramType') ->> '$'\n          ) IN ('Flexible Spend Plan', 'Resource Reservation')\n      )\n    )\n)\nSELECT\n  ServiceProviderName,\n  SUM(CASE WHEN NOT CommitmentDiscountId IS NULL THEN EffectiveCost ELSE 0 END) AS CoveredCost,\n  SUM(EffectiveCost) AS EligibleCost,\n  SUM(CASE WHEN NOT CommitmentDiscountId IS NULL THEN EffectiveCost ELSE 0 END) / NULLIF(SUM(EffectiveCost), 0) AS CommitmentCoverageRate\nFROM CommitmentDiscountEligible\nGROUP BY\n  ServiceProviderName",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 2
   },
@@ -592,7 +592,7 @@
   "original_sql": "WITH CommitmentDiscountEligible AS (\n  SELECT\n    CU.ServiceProviderName,\n    JSON_VALUE(CP, '$.ProgramType') AS ProgramType,\n    CU.EffectiveCost,\n    -- EffectiveCost = BilledCost for uncovered rows; used here for ratio consistency\n    CASE WHEN CU.CommitmentDiscountId IS NULL THEN CU.EffectiveCost ELSE 0 END AS UncoveredCost\n  FROM CostAndUsage CU\n  CROSS JOIN\n    UNNEST(JSON_EXTRACT_ARRAY(CU.CommitmentProgramEligibilityDetails, '$.CommitmentPrograms')) AS CP\n  WHERE CU.ChargePeriodStart >= ? AND CU.ChargePeriodEnd < ?\n    AND CU.ChargeCategory = 'Usage'\n    AND CU.CommitmentProgramEligibilityDetails IS NOT NULL\n    -- Replace with provider-specific discount-bearing program types\n    AND JSON_VALUE(CP, '$.ProgramType') IN ('Flexible Spend Plan', 'Resource Reservation')\n)\nSELECT\n  ServiceProviderName,\n  ProgramType AS EligibleProgramType,\n  SUM(EffectiveCost) AS EligibleCost,\n  SUM(UncoveredCost) AS UncoveredEligibleCost,\n  SUM(UncoveredCost) / NULLIF(SUM(EffectiveCost), 0) AS UncoveredRate\nFROM CommitmentDiscountEligible\nGROUP BY ServiceProviderName, ProgramType\nORDER BY UncoveredEligibleCost DESC",
   "sql": "WITH CommitmentDiscountEligible AS (\n  SELECT\n    CU.ServiceProviderName,\n    JSON_VALUE(CP, '$.ProgramType') ->> '$' AS ProgramType,\n    CU.EffectiveCost,\n    CASE WHEN CU.CommitmentDiscountId IS NULL THEN CU.EffectiveCost ELSE 0 END AS UncoveredCost /* EffectiveCost = BilledCost for uncovered rows; used here for ratio consistency */\n  FROM CostAndUsage AS CU\n  CROSS JOIN UNNEST(CAST(CU.CommitmentProgramEligibilityDetails -> '$.CommitmentPrograms' AS JSON[])) AS _t0(CP)\n  WHERE\n    CU.ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n    AND CU.ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n    AND CU.ChargeCategory = 'Usage'\n    AND NOT CU.CommitmentProgramEligibilityDetails IS NULL\n    AND /* Replace with provider-specific discount-bearing program types */ (\n      JSON_VALUE(CP, '$.ProgramType') ->> '$'\n    ) IN ('Flexible Spend Plan', 'Resource Reservation')\n)\nSELECT\n  ServiceProviderName,\n  ProgramType AS EligibleProgramType,\n  SUM(EffectiveCost) AS EligibleCost,\n  SUM(UncoveredCost) AS UncoveredEligibleCost,\n  SUM(UncoveredCost) / NULLIF(SUM(EffectiveCost), 0) AS UncoveredRate\nFROM CommitmentDiscountEligible\nGROUP BY\n  ServiceProviderName,\n  ProgramType\nORDER BY\n  UncoveredEligibleCost DESC",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -614,7 +614,7 @@
   "original_sql": "SELECT\n  CU.ServiceProviderName,\n  CU.ServiceName,\n  JSON_VALUE(CP, '$.ProgramType') AS EligibleProgramType,\n  CU.CapacityReservationId,\n  CU.CapacityReservationStatus,\n  SUM(CU.BilledCost) AS BilledCost,\n  COUNT(*) AS RowCount\nFROM CostAndUsage CU\nCROSS JOIN\n  UNNEST(JSON_EXTRACT_ARRAY(CU.CommitmentProgramEligibilityDetails, '$.CommitmentPrograms')) AS CP\nWHERE CU.ChargePeriodStart >= ? AND CU.ChargePeriodEnd < ?\n  AND CU.ChargeCategory = 'Usage'\n  AND CU.CommitmentProgramEligibilityDetails IS NOT NULL\n  AND JSON_VALUE(CP, '$.ProgramType') IN ('Advance Resource Commitment', 'Zonal Resource Commitment')\nGROUP BY\n  CU.ServiceProviderName,\n  CU.ServiceName,\n  JSON_VALUE(CP, '$.ProgramType'),\n  CU.CapacityReservationId,\n  CU.CapacityReservationStatus\nORDER BY BilledCost DESC",
   "sql": "SELECT\n  CU.ServiceProviderName,\n  CU.ServiceName,\n  JSON_VALUE(CP, '$.ProgramType') ->> '$' AS EligibleProgramType,\n  CU.CapacityReservationId,\n  CU.CapacityReservationStatus,\n  SUM(CU.BilledCost) AS BilledCost,\n  COUNT(*) AS RowCount\nFROM CostAndUsage AS CU\nCROSS JOIN UNNEST(CAST(CU.CommitmentProgramEligibilityDetails -> '$.CommitmentPrograms' AS JSON[])) AS _t0(CP)\nWHERE\n  CU.ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND CU.ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND CU.ChargeCategory = 'Usage'\n  AND NOT CU.CommitmentProgramEligibilityDetails IS NULL\n  AND (\n    JSON_VALUE(CP, '$.ProgramType') ->> '$'\n  ) IN ('Advance Resource Commitment', 'Zonal Resource Commitment')\nGROUP BY\n  CU.ServiceProviderName,\n  CU.ServiceName,\n  JSON_VALUE(CP, '$.ProgramType') ->> '$',\n  CU.CapacityReservationId,\n  CU.CapacityReservationStatus\nORDER BY\n  BilledCost DESC",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -636,7 +636,7 @@
   "original_sql": "SELECT\n  MIN(CU.ChargePeriodStart) AS ChargePeriodStart,\n  MAX(CU.ChargePeriodEnd) AS ChargePeriodEnd,\n  CU.ServiceProviderName,\n  JSON_VALUE(CA, '$.ContractCommitmentId') AS ContractCommitmentId,\n  SUM(CAST(JSON_VALUE(CA, '$.ContractCommitmentAppliedCost') AS FLOAT64)) AS ContractCommitmentAppliedCost\nFROM CostAndUsage CU\nCROSS JOIN\n  UNNEST(JSON_EXTRACT_ARRAY(CU.ContractApplied, '$.Elements')) AS CA\nWHERE JSON_VALUE(CA, '$.ContractCommitmentAppliedCost') IS NOT NULL\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd < ?\n  AND ChargeCategory = 'Purchase'\nGROUP BY ServiceProviderName, ContractCommitmentId\nORDER BY ServiceProviderName, ContractCommitmentId",
   "sql": "SELECT\n  MIN(CU.ChargePeriodStart) AS ChargePeriodStart,\n  MAX(CU.ChargePeriodEnd) AS ChargePeriodEnd,\n  CU.ServiceProviderName,\n  JSON_VALUE(CA, '$.ContractCommitmentId') ->> '$' AS ContractCommitmentId,\n  SUM(CAST(JSON_VALUE(CA, '$.ContractCommitmentAppliedCost') ->> '$' AS DOUBLE)) AS ContractCommitmentAppliedCost\nFROM CostAndUsage AS CU\nCROSS JOIN UNNEST(CAST(CU.ContractApplied -> '$.Elements' AS JSON[])) AS _t0(CA)\nWHERE\n  NOT (\n    JSON_VALUE(CA, '$.ContractCommitmentAppliedCost') ->> '$'\n  ) IS NULL\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargeCategory = 'Purchase'\nGROUP BY\n  ServiceProviderName,\n  ContractCommitmentId\nORDER BY\n  ServiceProviderName NULLS FIRST,\n  ContractCommitmentId NULLS FIRST",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -658,7 +658,7 @@
   "original_sql": "SELECT\n  MIN(CU.ChargePeriodStart) AS ChargePeriodStart,\n  MAX(CU.ChargePeriodEnd) AS ChargePeriodEnd,\n  CU.ServiceProviderName,\n  JSON_VALUE(CA, '$.ContractCommitmentId') AS ContractCommitmentId,\n  SUM(CAST(JSON_VALUE(CA, '$.ContractCommitmentAppliedCost') AS FLOAT64)) AS ContractCommitmentAppliedCost\nFROM CostAndUsage CU\nCROSS JOIN\n  UNNEST(JSON_EXTRACT_ARRAY(CU.ContractApplied, '$.Elements')) AS CA\nWHERE JSON_VALUE(CA, '$.ContractCommitmentAppliedCost') IS NOT NULL\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd < ?\n  AND ChargeCategory = 'Usage'\nGROUP BY ServiceProviderName, ContractCommitmentId\nORDER BY ServiceProviderName, ContractCommitmentId",
   "sql": "SELECT\n  MIN(CU.ChargePeriodStart) AS ChargePeriodStart,\n  MAX(CU.ChargePeriodEnd) AS ChargePeriodEnd,\n  CU.ServiceProviderName,\n  JSON_VALUE(CA, '$.ContractCommitmentId') ->> '$' AS ContractCommitmentId,\n  SUM(CAST(JSON_VALUE(CA, '$.ContractCommitmentAppliedCost') ->> '$' AS DOUBLE)) AS ContractCommitmentAppliedCost\nFROM CostAndUsage AS CU\nCROSS JOIN UNNEST(CAST(CU.ContractApplied -> '$.Elements' AS JSON[])) AS _t0(CA)\nWHERE\n  NOT (\n    JSON_VALUE(CA, '$.ContractCommitmentAppliedCost') ->> '$'\n  ) IS NULL\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargeCategory = 'Usage'\nGROUP BY\n  ServiceProviderName,\n  ContractCommitmentId\nORDER BY\n  ServiceProviderName NULLS FIRST,\n  ContractCommitmentId NULLS FIRST",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -680,7 +680,7 @@
   "original_sql": "SELECT\n  MIN(CU.ChargePeriodStart) AS ChargePeriodStart,\n  MAX(CU.ChargePeriodEnd) AS ChargePeriodEnd,\n  CU.ServiceProviderName,\n  CC.ContractId,\n  JSON_VALUE(CA, '$.ContractCommitmentId') AS ContractCommitmentId,\n  CC.ContractCommitmentCategory,\n  CC.ContractCommitmentType,\n  CC.ContractCommitmentPeriodStart,\n  CC.ContractCommitmentPeriodEnd,\n  CC.BillingCurrency,\n  CC.ContractCommitmentCost,\n  CC.ContractCommitmentQuantity,\n  CC.ContractCommitmentUnit,\n  SUM(CAST(JSON_VALUE(CA, '$.ContractCommitmentAppliedCost') AS FLOAT64)) AS ContractCommitmentAppliedCost\nFROM CostAndUsage CU\nCROSS JOIN\n  UNNEST(JSON_EXTRACT_ARRAY(CU.ContractApplied, '$.Elements')) AS CA\nINNER JOIN\n  ContractCommitment CC\nON\n  JSON_VALUE(CA, '$.ContractCommitmentId') = CC.ContractCommitmentId\nWHERE JSON_VALUE(CA, '$.ContractCommitmentAppliedCost') IS NOT NULL\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd < ?\n  AND ChargeCategory = 'Usage'\nGROUP BY\n  CU.ServiceProviderName,\n  CC.ContractId,\n  ContractCommitmentId,\n  CC.ContractCommitmentCategory,\n  CC.ContractCommitmentType,\n  CC.ContractCommitmentPeriodStart,\n  CC.ContractCommitmentPeriodEnd,\n  CC.BillingCurrency,\n  CC.ContractCommitmentCost,\n  CC.ContractCommitmentQuantity,\n  CC.ContractCommitmentUnit\nORDER BY\n  CU.ServiceProviderName,\n  CC.ContractCommitmentCategory,\n  ContractCommitmentId",
   "sql": "SELECT\n  MIN(CU.ChargePeriodStart) AS ChargePeriodStart,\n  MAX(CU.ChargePeriodEnd) AS ChargePeriodEnd,\n  CU.ServiceProviderName,\n  CC.ContractId,\n  JSON_VALUE(CA, '$.ContractCommitmentId') ->> '$' AS ContractCommitmentId,\n  CC.ContractCommitmentCategory,\n  CC.ContractCommitmentType,\n  CC.ContractCommitmentPeriodStart,\n  CC.ContractCommitmentPeriodEnd,\n  CC.BillingCurrency,\n  CC.ContractCommitmentCost,\n  CC.ContractCommitmentQuantity,\n  CC.ContractCommitmentUnit,\n  SUM(CAST(JSON_VALUE(CA, '$.ContractCommitmentAppliedCost') ->> '$' AS DOUBLE)) AS ContractCommitmentAppliedCost\nFROM CostAndUsage AS CU\nCROSS JOIN UNNEST(CAST(CU.ContractApplied -> '$.Elements' AS JSON[])) AS _t0(CA)\nINNER JOIN ContractCommitment AS CC\n  ON (\n    JSON_VALUE(CA, '$.ContractCommitmentId') ->> '$'\n  ) = CC.ContractCommitmentId\nWHERE\n  NOT (\n    JSON_VALUE(CA, '$.ContractCommitmentAppliedCost') ->> '$'\n  ) IS NULL\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargeCategory = 'Usage'\nGROUP BY\n  CU.ServiceProviderName,\n  CC.ContractId,\n  ContractCommitmentId,\n  CC.ContractCommitmentCategory,\n  CC.ContractCommitmentType,\n  CC.ContractCommitmentPeriodStart,\n  CC.ContractCommitmentPeriodEnd,\n  CC.BillingCurrency,\n  CC.ContractCommitmentCost,\n  CC.ContractCommitmentQuantity,\n  CC.ContractCommitmentUnit\nORDER BY\n  CU.ServiceProviderName NULLS FIRST,\n  CC.ContractCommitmentCategory NULLS FIRST,\n  ContractCommitmentId NULLS FIRST",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": false,
    "error": "Binder Error: column \"CA\" must appear in the GROUP BY clause or must be part of an aggregate function."
   },
@@ -703,7 +703,7 @@
   "original_sql": "SELECT\n  Tags,\n  ConsumedUnit,\n  SUM(BilledCost),\n  SUM(EffectiveCost),\n  SUM(ConsumedQuantity)\nFROM CostAndUsage\nWHERE BillingPeriodStart >= ? AND BillingPeriodEnd < ?\nGROUP BY\n  Tags,\n  ConsumedUnit",
   "sql": "SELECT\n  Tags,\n  ConsumedUnit,\n  SUM(BilledCost),\n  SUM(EffectiveCost),\n  SUM(ConsumedQuantity)\nFROM CostAndUsage\nWHERE\n  BillingPeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND BillingPeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  Tags,\n  ConsumedUnit",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 10691
   },
@@ -725,7 +725,7 @@
   "original_sql": "WITH AggregatedData AS (\n  SELECT\n    ServiceProviderName,\n    BillingAccountId,\n    BillingAccountName,\n    BillingCurrency,\n    ServiceName,\n    SUM(EffectiveCost) AS TotalEffectiveCost,\n    SUM(BilledCost) AS TotalBilledCost,\n    SUM(CASE\n          WHEN ChargeCategory = 'Usage' AND BilledCost = 0 AND EffectiveCost != 0\n          THEN 0\n          ELSE ContractedCost\n        END) AS TotalContractedCost,\n    SUM(CASE\n          WHEN ChargeCategory = 'Usage' AND BilledCost = 0 AND EffectiveCost != 0\n          THEN 0\n          ELSE ListCost\n        END) AS TotalListCost\n  FROM CostAndUsage\n  WHERE BillingPeriodStart >= ?\n    AND BillingPeriodEnd < ?\n    AND ChargeClass IS NULL\n  GROUP BY\n    ServiceProviderName,\n    BillingAccountId,\n    BillingAccountName,\n    BillingCurrency,\n    ServiceName\n)\nSELECT ServiceProviderName,\n    BillingAccountId,\n    BillingAccountName,\n    BillingCurrency,\n    ServiceName,\n    TotalEffectiveCost,\n    TotalBilledCost,\n    TotalListCost,\n    (1 - TotalContractedCost / NULLIF(TotalListCost, 0)) * 100 AS ContractedDiscount,\n    (1 - TotalEffectiveCost / NULLIF(TotalListCost, 0)) * 100 AS EffectiveDiscount\nFROM AggregatedData",
   "sql": "WITH AggregatedData AS (\n  SELECT\n    ServiceProviderName,\n    BillingAccountId,\n    BillingAccountName,\n    BillingCurrency,\n    ServiceName,\n    SUM(EffectiveCost) AS TotalEffectiveCost,\n    SUM(BilledCost) AS TotalBilledCost,\n    SUM(\n      CASE\n        WHEN ChargeCategory = 'Usage' AND BilledCost = 0 AND EffectiveCost <> 0\n        THEN 0\n        ELSE ContractedCost\n      END\n    ) AS TotalContractedCost,\n    SUM(\n      CASE\n        WHEN ChargeCategory = 'Usage' AND BilledCost = 0 AND EffectiveCost <> 0\n        THEN 0\n        ELSE ListCost\n      END\n    ) AS TotalListCost\n  FROM CostAndUsage\n  WHERE\n    BillingPeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n    AND BillingPeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n    AND ChargeClass IS NULL\n  GROUP BY\n    ServiceProviderName,\n    BillingAccountId,\n    BillingAccountName,\n    BillingCurrency,\n    ServiceName\n)\nSELECT\n  ServiceProviderName,\n  BillingAccountId,\n  BillingAccountName,\n  BillingCurrency,\n  ServiceName,\n  TotalEffectiveCost,\n  TotalBilledCost,\n  TotalListCost,\n  (\n    1 - TotalContractedCost / NULLIF(TotalListCost, 0)\n  ) * 100 AS ContractedDiscount,\n  (\n    1 - TotalEffectiveCost / NULLIF(TotalListCost, 0)\n  ) * 100 AS EffectiveDiscount\nFROM AggregatedData",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 99
   },
@@ -747,7 +747,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  InvoiceIssuerName,\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  SUM(BilledCost) AS TotalBilledCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost,\n  SUM(EffectiveCost) - SUM(BilledCost) AS CostBasisDifference\nFROM CostAndUsage\nWHERE BillingPeriodStart >= ? AND BillingPeriodEnd < ?\nGROUP BY\n  ServiceProviderName,\n  InvoiceIssuerName,\n  BillingPeriodStart,\n  BillingPeriodEnd\nHAVING ABS(SUM(EffectiveCost) - SUM(BilledCost)) > 0.01",
   "sql": "SELECT\n  ServiceProviderName,\n  InvoiceIssuerName,\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  SUM(BilledCost) AS TotalBilledCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost,\n  SUM(EffectiveCost) - SUM(BilledCost) AS CostBasisDifference\nFROM CostAndUsage\nWHERE\n  BillingPeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND BillingPeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  ServiceProviderName,\n  InvoiceIssuerName,\n  BillingPeriodStart,\n  BillingPeriodEnd\nHAVING\n  ABS(SUM(EffectiveCost) - SUM(BilledCost)) > 0.01",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 9
   },
@@ -769,7 +769,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  BillingCurrency,\n  CommitmentDiscountId,\n  MIN(ChargePeriodStart) AS ChargePeriodStart,\n  MAX(ChargePeriodEnd) AS ChargePeriodEnd,\n  SUM(CASE WHEN CommitmentDiscountStatus = 'Used' THEN ContractedCost ELSE 0 END) AS TotalContractedCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost,\n  SUM(CASE WHEN CommitmentDiscountStatus = 'Used' THEN ContractedCost ELSE 0 END) - SUM(EffectiveCost) AS CommitmentDiscountSavings\nFROM CostAndUsage\nWHERE ChargePeriodStart >= ? AND ChargePeriodEnd < ?\n  AND ChargeCategory = 'Usage'\n  AND CommitmentDiscountId IS NOT NULL\nGROUP BY\n  ServiceProviderName,\n  BillingCurrency,\n  CommitmentDiscountId",
   "sql": "SELECT\n  ServiceProviderName,\n  BillingCurrency,\n  CommitmentDiscountId,\n  MIN(ChargePeriodStart) AS ChargePeriodStart,\n  MAX(ChargePeriodEnd) AS ChargePeriodEnd,\n  SUM(CASE WHEN CommitmentDiscountStatus = 'Used' THEN ContractedCost ELSE 0 END) AS TotalContractedCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost,\n  SUM(CASE WHEN CommitmentDiscountStatus = 'Used' THEN ContractedCost ELSE 0 END) - SUM(EffectiveCost) AS CommitmentDiscountSavings\nFROM CostAndUsage\nWHERE\n  ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargeCategory = 'Usage'\n  AND NOT CommitmentDiscountId IS NULL\nGROUP BY\n  ServiceProviderName,\n  BillingCurrency,\n  CommitmentDiscountId",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 10
   },
@@ -791,7 +791,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  BillingCurrency,\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  CASE\n    WHEN ChargePeriodStart >= BillingPeriodStart AND ChargePeriodEnd <= BillingPeriodEnd\n    THEN 'Within Billing Period'\n    ELSE 'Outside Billing Period'\n  END AS ChargePeriodAlignment,\n  MIN(ChargePeriodStart) AS EarliestChargePeriodStart,\n  MAX(ChargePeriodEnd) AS LatestChargePeriodEnd,\n  SUM(BilledCost) AS TotalBilledCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE BillingPeriodStart >= ? AND BillingPeriodEnd < ?\nGROUP BY\n  ServiceProviderName,\n  BillingCurrency,\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  CASE\n    WHEN ChargePeriodStart >= BillingPeriodStart AND ChargePeriodEnd <= BillingPeriodEnd\n    THEN 'Within Billing Period'\n    ELSE 'Outside Billing Period'\n  END",
   "sql": "SELECT\n  ServiceProviderName,\n  BillingCurrency,\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  CASE\n    WHEN ChargePeriodStart >= BillingPeriodStart AND ChargePeriodEnd <= BillingPeriodEnd\n    THEN 'Within Billing Period'\n    ELSE 'Outside Billing Period'\n  END AS ChargePeriodAlignment,\n  MIN(ChargePeriodStart) AS EarliestChargePeriodStart,\n  MAX(ChargePeriodEnd) AS LatestChargePeriodEnd,\n  SUM(BilledCost) AS TotalBilledCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE\n  BillingPeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND BillingPeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  ServiceProviderName,\n  BillingCurrency,\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  CASE\n    WHEN ChargePeriodStart >= BillingPeriodStart AND ChargePeriodEnd <= BillingPeriodEnd\n    THEN 'Within Billing Period'\n    ELSE 'Outside Billing Period'\n  END",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 9
   },
@@ -814,7 +814,7 @@
   "original_sql": "SELECT\n  BillingPeriodStart,\n  x_CustomColumn,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE ServiceName = ?\n  AND BillingPeriodStart >= ? AND BillingPeriodStart < ?\nGROUP BY\n  BillingPeriodStart,\n  x_CustomColumn\nORDER BY TotalBilledCost DESC",
   "sql": "SELECT\n  BillingPeriodStart,\n  x_CustomColumn,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE\n  ServiceName = 'Aura Web Compute'\n  AND BillingPeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND BillingPeriodStart < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  BillingPeriodStart,\n  x_CustomColumn\nORDER BY\n  TotalBilledCost DESC",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": false,
    "error": "Binder Error: Referenced column \"x_CustomColumn\" not found in FROM clause!"
   },
@@ -822,7 +822,7 @@
    "ok": false,
    "error": "Binder Error: Referenced column \"x_CustomColumn\" not found in FROM clause!"
   },
-  "note": "Illustrative only: x_CustomColumn stands for any provider-specific column. Replace it with a real x_ column to run it."
+  "note": "Illustrative only: x_CustomColumn stands for any provider-specific column. Replace it with an x_ column that exists to run it."
  },
  {
   "id": "data_generator_calculated_split_cost_allocation-1",
@@ -837,7 +837,7 @@
   "original_sql": "SELECT\n  DISTINCT ResourceId\nFROM CostAndUsage\nWHERE ChargeCategory='Usage'\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd <= ?\n  AND AllocatedMethodId IS NOT NULL",
   "sql": "SELECT DISTINCT\n  ResourceId\nFROM CostAndUsage\nWHERE\n  ChargeCategory = 'Usage'\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND NOT AllocatedMethodId IS NULL",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -859,7 +859,7 @@
   "original_sql": "SELECT\n  ResourceId,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE ChargeCategory='Usage'\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd <= ?\n  AND AllocatedMethodId IS NOT NULL\nGROUP BY\n  ResourceId",
   "sql": "SELECT\n  ResourceId,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE\n  ChargeCategory = 'Usage'\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND NOT AllocatedMethodId IS NULL\nGROUP BY\n  ResourceId",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -881,7 +881,7 @@
   "original_sql": "SELECT\n  AllocatedResourceId,\n  AllocatedResourceName,\n  ServiceName,\n  ServiceCategory,\n  ServiceProviderName,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE ChargeCategory='Usage'\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd <= ?\n  AND AllocatedMethodId IS NOT NULL\nGROUP BY\n  AllocatedResourceId,\n  AllocatedResourceName,\n  ServiceName,\n  ServiceCategory,\n  ServiceProviderName",
   "sql": "SELECT\n  AllocatedResourceId,\n  AllocatedResourceName,\n  ServiceName,\n  ServiceCategory,\n  ServiceProviderName,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE\n  ChargeCategory = 'Usage'\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND NOT AllocatedMethodId IS NULL\nGROUP BY\n  AllocatedResourceId,\n  AllocatedResourceName,\n  ServiceName,\n  ServiceCategory,\n  ServiceProviderName",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -903,7 +903,7 @@
   "original_sql": "SELECT\n  AllocatedServiceName,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE ChargeCategory='Usage'\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd <= ?\n  AND AllocatedMethodId IS NOT NULL\n  AND AllocatedServiceName IS NOT NULL\nGROUP BY\n  AllocatedServiceName",
   "sql": "SELECT\n  AllocatedServiceName,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE\n  ChargeCategory = 'Usage'\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND NOT AllocatedMethodId IS NULL\n  AND NOT AllocatedServiceName IS NULL\nGROUP BY\n  AllocatedServiceName",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -925,7 +925,7 @@
   "original_sql": "SELECT\n  ResourceId,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE ChargeCategory='Usage'\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd <= ?\n  AND AllocatedMethodId IS NOT NULL AND AllocatedResourceId IS NULL\nGROUP BY\n  ResourceId",
   "sql": "SELECT\n  ResourceId,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE\n  ChargeCategory = 'Usage'\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND NOT AllocatedMethodId IS NULL\n  AND AllocatedResourceId IS NULL\nGROUP BY\n  ResourceId",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -948,7 +948,7 @@
   "original_sql": "SELECT\n  ResourceId,\n  COALESCE(AllocatedResourceId, 'Unallocated') AS AllocatedResourceId,\n  BillingCurrency,\n  SUM(BilledCost) AS TotalBilledCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE ChargeCategory='Usage'\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd <= ?\n  AND ResourceId = ?\n  AND AllocatedMethodId IS NOT NULL\nGROUP BY\n  ResourceId,\n  COALESCE(AllocatedResourceId, 'Unallocated'),\n  BillingCurrency",
   "sql": "SELECT\n  ResourceId,\n  COALESCE(AllocatedResourceId, 'Unallocated') AS AllocatedResourceId,\n  BillingCurrency,\n  SUM(BilledCost) AS TotalBilledCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE\n  ChargeCategory = 'Usage'\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND ResourceId = 'auraweb:flexspend::ACCT-123456789012:flexspendplan/fsp-abc123def456'\n  AND NOT AllocatedMethodId IS NULL\nGROUP BY\n  ResourceId,\n  COALESCE(AllocatedResourceId, 'Unallocated'),\n  BillingCurrency",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -967,7 +967,7 @@
   "original_sql": "SELECT\n  ResourceId,\n  elements.allocated_ratio,\n  elements.usage_unit,\n  elements.usage_quantity\nFROM\n  CostAndUsage,\n  JSON_TABLE(\n    AllocatedMethodDetails,\n    '$.Elements[*]' COLUMNS (\n      allocated_ratio DECIMAL(10, 2) PATH '$.AllocatedRatio',\n      usage_unit VARCHAR(50) PATH '$.UsageUnit',\n      usage_quantity DECIMAL(10, 2) PATH '$.UsageQuantity'\n    )\n  ) AS elements",
   "sql": "SELECT\n  ResourceId,\n  elements.allocated_ratio,\n  elements.usage_unit,\n  elements.usage_quantity\nFROM CostAndUsage\nCROSS JOIN JSON_TABLE(AllocatedMethodDetails, '$.Elements[*]' COLUMNS(\n  allocated_ratio DECIMAL(10, 2) PATH '$.AllocatedRatio',\n  usage_unit TEXT(50) PATH '$.UsageUnit',\n  usage_quantity DECIMAL(10, 2) PATH '$.UsageQuantity'\n)) AS elements",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": false,
    "error": "Parser Error: syntax error at or near \"COLUMNS\""
   },
@@ -987,7 +987,7 @@
   "original_sql": "SELECT\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  BillingAccountId,\n  SubAccountId,\n  ServiceName,\n  ResourceId,\n  ResourceName,\n  SkuId,\n  ConsumedUnit,\n  BillingCurrency,\n  SUM(ConsumedQuantity),\n  SUM(ListCost),\n  SUM(BilledCost),\n  SUM(EffectiveCost)\nFROM CostAndUsage\nGROUP BY\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  BillingAccountId,\n  SubAccountId,\n  ServiceName,\n  ResourceId,\n  ResourceName,\n  SkuId,\n  ConsumedUnit,\n  BillingCurrency",
   "sql": "SELECT\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  BillingAccountId,\n  SubAccountId,\n  ServiceName,\n  ResourceId,\n  ResourceName,\n  SkuId,\n  ConsumedUnit,\n  BillingCurrency,\n  SUM(ConsumedQuantity),\n  SUM(ListCost),\n  SUM(BilledCost),\n  SUM(EffectiveCost)\nFROM CostAndUsage\nGROUP BY\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  BillingAccountId,\n  SubAccountId,\n  ServiceName,\n  ResourceId,\n  ResourceName,\n  SkuId,\n  ConsumedUnit,\n  BillingCurrency",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 97902
   },
@@ -1009,7 +1009,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  ServiceCategory,\n  ServiceName,\n  RegionId,\n  RegionName,\n  PricingUnit,\n  SUM(EffectiveCost) AS TotalEffectiveCost,\n  SUM(PricingQuantity) AS TotalPricingQuantity\nFROM CostAndUsage\nWHERE BillingPeriodStart >= ? AND BillingPeriodEnd < ?\nGROUP BY\n  ServiceProviderName,\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  ServiceCategory,\n  ServiceName,\n  RegionId,\n  RegionName,\n  PricingUnit",
   "sql": "SELECT\n  ServiceProviderName,\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  ServiceCategory,\n  ServiceName,\n  RegionId,\n  RegionName,\n  PricingUnit,\n  SUM(EffectiveCost) AS TotalEffectiveCost,\n  SUM(PricingQuantity) AS TotalPricingQuantity\nFROM CostAndUsage\nWHERE\n  BillingPeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND BillingPeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  ServiceProviderName,\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  ServiceCategory,\n  ServiceName,\n  RegionId,\n  RegionName,\n  PricingUnit",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 922
   },
@@ -1031,7 +1031,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  CommitmentDiscountId,\n  CommitmentDiscountStatus,\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE ChargePeriodStart >= ? AND ChargePeriodEnd < ?\n  AND CommitmentDiscountId IS NOT NULL\n  AND ChargeCategory = 'Usage'\nGROUP BY\n  ServiceProviderName,\n  CommitmentDiscountId,\n  CommitmentDiscountStatus,\n  ChargePeriodStart,\n  ChargePeriodEnd",
   "sql": "SELECT\n  ServiceProviderName,\n  CommitmentDiscountId,\n  CommitmentDiscountStatus,\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE\n  ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND NOT CommitmentDiscountId IS NULL\n  AND ChargeCategory = 'Usage'\nGROUP BY\n  ServiceProviderName,\n  CommitmentDiscountId,\n  CommitmentDiscountStatus,\n  ChargePeriodStart,\n  ChargePeriodEnd",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 222
   },
@@ -1053,7 +1053,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  BillingCurrency,\n  ServiceName,\n  SkuId,\n  ConsumedUnit,\n  PricingUnit,\n  SUM(ConsumedQuantity) AS TotalConsumedQuantity,\n  SUM(PricingQuantity) AS TotalPricingQuantity,\n  SUM(EffectiveCost) AS TotalEffectiveCost,\n  SUM(EffectiveCost) / NULLIF(SUM(ConsumedQuantity), 0) AS EffectiveCostPerConsumedUnit,\n  SUM(EffectiveCost) / NULLIF(SUM(PricingQuantity), 0) AS EffectiveCostPerPricingUnit\nFROM CostAndUsage\nWHERE ChargePeriodStart >= ? AND ChargePeriodEnd < ?\n  AND ChargeCategory = 'Usage'\n  AND ConsumedQuantity IS NOT NULL\nGROUP BY\n  ServiceProviderName,\n  BillingCurrency,\n  ServiceName,\n  SkuId,\n  ConsumedUnit,\n  PricingUnit",
   "sql": "SELECT\n  ServiceProviderName,\n  BillingCurrency,\n  ServiceName,\n  SkuId,\n  ConsumedUnit,\n  PricingUnit,\n  SUM(ConsumedQuantity) AS TotalConsumedQuantity,\n  SUM(PricingQuantity) AS TotalPricingQuantity,\n  SUM(EffectiveCost) AS TotalEffectiveCost,\n  SUM(EffectiveCost) / NULLIF(SUM(ConsumedQuantity), 0) AS EffectiveCostPerConsumedUnit,\n  SUM(EffectiveCost) / NULLIF(SUM(PricingQuantity), 0) AS EffectiveCostPerPricingUnit\nFROM CostAndUsage\nWHERE\n  ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargeCategory = 'Usage'\n  AND NOT ConsumedQuantity IS NULL\nGROUP BY\n  ServiceProviderName,\n  BillingCurrency,\n  ServiceName,\n  SkuId,\n  ConsumedUnit,\n  PricingUnit",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 2099
   },
@@ -1074,7 +1074,7 @@
   "original_sql": "SELECT\n  COALESCE(ID.InvoiceId, CU.InvoiceId) AS InvoiceId,\n  ID.TotalBilledCost_InvoiceDetail,\n  CU.TotalBilledCost_CostAndUsage,\n  (COALESCE(ID.TotalBilledCost_InvoiceDetail, 0) - COALESCE(CU.TotalBilledCost_CostAndUsage, 0)) AS Variance\nFROM (\n  SELECT\n    InvoiceId,\n    SUM(BilledCost) AS TotalBilledCost_InvoiceDetail\n  FROM InvoiceDetail\n  WHERE ChargeCategory != 'Tax'\n  GROUP BY InvoiceId\n) ID\nFULL OUTER JOIN (\n  SELECT\n    InvoiceId,\n    SUM(BilledCost) AS TotalBilledCost_CostAndUsage\n  FROM CostAndUsage\n  WHERE ChargeCategory != 'Tax'\n  GROUP BY InvoiceId\n) CU ON ID.InvoiceId = CU.InvoiceId\nWHERE COALESCE(ID.InvoiceId, CU.InvoiceId) = ?",
   "sql": "SELECT\n  COALESCE(ID.InvoiceId, CU.InvoiceId) AS InvoiceId,\n  ID.TotalBilledCost_InvoiceDetail,\n  CU.TotalBilledCost_CostAndUsage,\n  (\n    COALESCE(ID.TotalBilledCost_InvoiceDetail, 0) - COALESCE(CU.TotalBilledCost_CostAndUsage, 0)\n  ) AS Variance\nFROM (\n  SELECT\n    InvoiceId,\n    SUM(BilledCost) AS TotalBilledCost_InvoiceDetail\n  FROM InvoiceDetail\n  WHERE\n    ChargeCategory <> 'Tax'\n  GROUP BY\n    InvoiceId\n) AS ID\nFULL OUTER JOIN (\n  SELECT\n    InvoiceId,\n    SUM(BilledCost) AS TotalBilledCost_CostAndUsage\n  FROM CostAndUsage\n  WHERE\n    ChargeCategory <> 'Tax'\n  GROUP BY\n    InvoiceId\n) AS CU\n  ON ID.InvoiceId = CU.InvoiceId\nWHERE\n  COALESCE(ID.InvoiceId, CU.InvoiceId) = 'INV-AURAWEB-2026-001'",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -1096,7 +1096,7 @@
   "original_sql": "SELECT\n  ID.InvoiceIssuerName,\n  ID.InvoiceId,\n  ID.InvoiceDetailId,\n  ID.InvoiceIssueStatus,\n  ID.BillingCurrency,\n  ID.BilledCost AS BilledCost_InvoiceDetail,\n  CU.TotalBilledCost_CostAndUsage,\n  (ID.BilledCost - COALESCE(CU.TotalBilledCost_CostAndUsage, 0)) AS Variance\nFROM InvoiceDetail ID\nLEFT JOIN (\n  SELECT\n    InvoiceIssuerName,\n    InvoiceId,\n    InvoiceDetailId,\n    SUM(BilledCost) AS TotalBilledCost_CostAndUsage\n  FROM CostAndUsage\n  GROUP BY InvoiceIssuerName, InvoiceId, InvoiceDetailId\n) CU ON ID.InvoiceIssuerName = CU.InvoiceIssuerName\n  AND ID.InvoiceId = CU.InvoiceId\n  AND ID.InvoiceDetailId = CU.InvoiceDetailId\nWHERE ID.InvoiceIssuerName = ?\n  AND ID.InvoiceId = ?\n  AND ID.ChargeCategory != 'Tax'\nORDER BY ID.InvoiceDetailId",
   "sql": "SELECT\n  ID.InvoiceIssuerName,\n  ID.InvoiceId,\n  ID.InvoiceDetailId,\n  ID.InvoiceIssueStatus,\n  ID.BillingCurrency,\n  ID.BilledCost AS BilledCost_InvoiceDetail,\n  CU.TotalBilledCost_CostAndUsage,\n  (\n    ID.BilledCost - COALESCE(CU.TotalBilledCost_CostAndUsage, 0)\n  ) AS Variance\nFROM InvoiceDetail AS ID\nLEFT JOIN (\n  SELECT\n    InvoiceIssuerName,\n    InvoiceId,\n    InvoiceDetailId,\n    SUM(BilledCost) AS TotalBilledCost_CostAndUsage\n  FROM CostAndUsage\n  GROUP BY\n    InvoiceIssuerName,\n    InvoiceId,\n    InvoiceDetailId\n) AS CU\n  ON ID.InvoiceIssuerName = CU.InvoiceIssuerName\n  AND ID.InvoiceId = CU.InvoiceId\n  AND ID.InvoiceDetailId = CU.InvoiceDetailId\nWHERE\n  ID.InvoiceIssuerName = 'Aura Web'\n  AND ID.InvoiceId = 'AUIN25-1286479'\n  AND ID.ChargeCategory <> 'Tax'\nORDER BY\n  ID.InvoiceDetailId NULLS FIRST",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 2
   },
@@ -1117,7 +1117,7 @@
   "original_sql": "SELECT\n  PaymentCurrencyInvoiceDetailId,\n  BillingCurrency,\n  PaymentCurrency,\n  SUM(BilledCost) AS TotalBilled_BillingCurrency,\n  SUM(PaymentCurrencyBilledCost) AS TotalBilled_PaymentCurrency,\n  -- Calculate effective exchange rate for the group\n  SUM(PaymentCurrencyBilledCost) / NULLIF(SUM(BilledCost), 0) AS EffectiveExchangeRate\nFROM InvoiceDetail\nWHERE InvoiceId = ?\nGROUP BY PaymentCurrencyInvoiceDetailId, BillingCurrency, PaymentCurrency\nORDER BY PaymentCurrencyInvoiceDetailId",
   "sql": "SELECT\n  PaymentCurrencyInvoiceDetailId,\n  BillingCurrency,\n  PaymentCurrency,\n  SUM(BilledCost) AS TotalBilled_BillingCurrency,\n  SUM(PaymentCurrencyBilledCost) AS TotalBilled_PaymentCurrency,\n  SUM(PaymentCurrencyBilledCost) /* Calculate effective exchange rate for the group */ / NULLIF(SUM(BilledCost), 0) AS EffectiveExchangeRate\nFROM InvoiceDetail\nWHERE\n  InvoiceId = 'AUIN25-1286479'\nGROUP BY\n  PaymentCurrencyInvoiceDetailId,\n  BillingCurrency,\n  PaymentCurrency\nORDER BY\n  PaymentCurrencyInvoiceDetailId NULLS FIRST",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 1
   },
@@ -1138,7 +1138,7 @@
   "original_sql": "SELECT\n  InvoiceId,\n  SUM(CASE WHEN ChargeCategory = 'Tax' THEN BilledCost ELSE 0 END) AS TotalTaxAmount,\n  SUM(CASE WHEN ChargeCategory != 'Tax' THEN BilledCost ELSE 0 END) AS TotalServiceAmount,\n  SUM(BilledCost) AS GrandTotalPayable\nFROM InvoiceDetail\nWHERE InvoiceId = ?\nGROUP BY InvoiceId",
   "sql": "SELECT\n  InvoiceId,\n  SUM(CASE WHEN ChargeCategory = 'Tax' THEN BilledCost ELSE 0 END) AS TotalTaxAmount,\n  SUM(CASE WHEN ChargeCategory <> 'Tax' THEN BilledCost ELSE 0 END) AS TotalServiceAmount,\n  SUM(BilledCost) AS GrandTotalPayable\nFROM InvoiceDetail\nWHERE\n  InvoiceId = 'AUIN25-1286479'\nGROUP BY\n  InvoiceId",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 1
   },
@@ -1160,7 +1160,7 @@
   "original_sql": "SELECT\n  RegionId,\n  RegionName,\n  AvailabilityZone,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE ChargePeriodStart >= ? AND ChargePeriodEnd <= ?\nGROUP BY\n  RegionId,\n  RegionName,\n  AvailabilityZone",
   "sql": "SELECT\n  RegionId,\n  RegionName,\n  AvailabilityZone,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE\n  ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  RegionId,\n  RegionName,\n  AvailabilityZone",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 424
   },
@@ -1179,7 +1179,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  InvoiceIssuerName,\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE ServiceProviderName = '<Example SaaS Provider>'\n  AND InvoiceIssuerName = '<Example CSP Marketplace>'\nGROUP BY\n  ServiceProviderName,\n  InvoiceIssuerName,\n  BillingPeriodStart,\n  BillingPeriodEnd",
   "sql": "SELECT\n  ServiceProviderName,\n  InvoiceIssuerName,\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE\n  ServiceProviderName = '<Example SaaS Provider>'\n  AND InvoiceIssuerName = '<Example CSP Marketplace>'\nGROUP BY\n  ServiceProviderName,\n  InvoiceIssuerName,\n  BillingPeriodStart,\n  BillingPeriodEnd",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -1198,7 +1198,7 @@
   "original_sql": "SELECT\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  ResourceId,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE InvoiceIssuerName = '<Example CSP Marketplace>'\nGROUP BY\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  ResourceId",
   "sql": "SELECT\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  ResourceId,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE\n  InvoiceIssuerName = '<Example CSP Marketplace>'\nGROUP BY\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  ResourceId",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -1220,7 +1220,7 @@
   "original_sql": "SELECT\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  ServiceProviderName,\n  InvoiceIssuerName,\n  HostProviderName,\n  ServiceName,\n  BillingCurrency,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE BillingPeriodStart >= ? and BillingPeriodEnd < ?\nGROUP BY\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  ServiceProviderName,\n  InvoiceIssuerName,\n  HostProviderName,\n  ServiceName,\n  BillingCurrency",
   "sql": "SELECT\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  ServiceProviderName,\n  InvoiceIssuerName,\n  HostProviderName,\n  ServiceName,\n  BillingCurrency,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE\n  BillingPeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND BillingPeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  ServiceProviderName,\n  InvoiceIssuerName,\n  HostProviderName,\n  ServiceName,\n  BillingCurrency",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 131
   },
@@ -1244,7 +1244,7 @@
   "original_sql": "WITH Review AS (\n  SELECT\n    ? AS ServiceProviderName,\n    ? AS PricingServiceName,\n    ? AS ContractId,\n    ? AS PointInTime\n),\nPublicPrices AS (\n  SELECT\n    SP.ServiceProviderName,\n    SP.SkuPriceId,\n    SP.PricingCurrency,\n    SP.UnitPrice\n  FROM SkuPrice SP\n  INNER JOIN Review R\n    ON SP.ServiceProviderName = R.ServiceProviderName\n    AND SP.PricingServiceName = R.PricingServiceName\n    AND (SP.SkuPriceEffectiveStart IS NULL OR SP.SkuPriceEffectiveStart <= R.PointInTime)\n    AND (SP.SkuPriceEffectiveEnd IS NULL OR SP.SkuPriceEffectiveEnd > R.PointInTime)\n  WHERE SP.UnitPriceType = 'List'\n),\nContractedPrices AS (\n  SELECT\n    SP.ServiceProviderName,\n    SP.ContractId,\n    SP.SkuPriceId,\n    SP.PricingUnit,\n    SP.PricingCurrency,\n    SP.QuantityTierMinimum,\n    SP.QuantityTierMaximum,\n    SP.UnitPrice\n  FROM SkuPrice SP\n  INNER JOIN Review R\n    ON SP.ServiceProviderName = R.ServiceProviderName\n    AND SP.PricingServiceName = R.PricingServiceName\n    AND SP.ContractId = R.ContractId\n    AND (SP.SkuPriceEffectiveStart IS NULL OR SP.SkuPriceEffectiveStart <= R.PointInTime)\n    AND (SP.SkuPriceEffectiveEnd IS NULL OR SP.SkuPriceEffectiveEnd > R.PointInTime)\n  WHERE SP.ChargeCategory = 'Usage'\n    AND SP.UnitPriceType = 'Contracted'\n)\nSELECT\n  CP.ServiceProviderName,\n  CP.ContractId,\n  CP.SkuPriceId,\n  CP.PricingUnit,\n  CP.PricingCurrency,\n  CP.QuantityTierMinimum,\n  CP.QuantityTierMaximum,\n  PP.UnitPrice AS PublicUnitPrice,\n  CP.UnitPrice AS ContractedUnitPrice,\n  PP.UnitPrice - CP.UnitPrice AS UnitPriceReduction,\n  (PP.UnitPrice - CP.UnitPrice) / NULLIF(PP.UnitPrice, 0) AS DiscountRate\nFROM ContractedPrices CP\nLEFT JOIN PublicPrices PP\n  ON PP.ServiceProviderName = CP.ServiceProviderName\n  AND PP.SkuPriceId = CP.SkuPriceId\n  AND PP.PricingCurrency = CP.PricingCurrency\nORDER BY DiscountRate DESC",
   "sql": "WITH Review AS (\n  SELECT\n    'Aura Web' AS ServiceProviderName,\n    'Aura Web Compute' AS PricingServiceName,\n    'auraweb:contract::ACCT-123456789012:agreements/ctr-7f3a91b2c4d5' AS ContractId,\n    CAST('2026-03-01 00:00:00' AS TIMESTAMP) AS PointInTime\n), PublicPrices AS (\n  SELECT\n    SP.ServiceProviderName,\n    SP.SkuPriceId,\n    SP.PricingCurrency,\n    SP.UnitPrice\n  FROM SkuPrice AS SP\n  INNER JOIN Review AS R\n    ON SP.ServiceProviderName = R.ServiceProviderName\n    AND SP.PricingServiceName = R.PricingServiceName\n    AND (\n      SP.SkuPriceEffectiveStart IS NULL OR SP.SkuPriceEffectiveStart <= R.PointInTime\n    )\n    AND (\n      SP.SkuPriceEffectiveEnd IS NULL OR SP.SkuPriceEffectiveEnd > R.PointInTime\n    )\n  WHERE\n    SP.UnitPriceType = 'List'\n), ContractedPrices AS (\n  SELECT\n    SP.ServiceProviderName,\n    SP.ContractId,\n    SP.SkuPriceId,\n    SP.PricingUnit,\n    SP.PricingCurrency,\n    SP.QuantityTierMinimum,\n    SP.QuantityTierMaximum,\n    SP.UnitPrice\n  FROM SkuPrice AS SP\n  INNER JOIN Review AS R\n    ON SP.ServiceProviderName = R.ServiceProviderName\n    AND SP.PricingServiceName = R.PricingServiceName\n    AND SP.ContractId = R.ContractId\n    AND (\n      SP.SkuPriceEffectiveStart IS NULL OR SP.SkuPriceEffectiveStart <= R.PointInTime\n    )\n    AND (\n      SP.SkuPriceEffectiveEnd IS NULL OR SP.SkuPriceEffectiveEnd > R.PointInTime\n    )\n  WHERE\n    SP.ChargeCategory = 'Usage' AND SP.UnitPriceType = 'Contracted'\n)\nSELECT\n  CP.ServiceProviderName,\n  CP.ContractId,\n  CP.SkuPriceId,\n  CP.PricingUnit,\n  CP.PricingCurrency,\n  CP.QuantityTierMinimum,\n  CP.QuantityTierMaximum,\n  PP.UnitPrice AS PublicUnitPrice,\n  CP.UnitPrice AS ContractedUnitPrice,\n  PP.UnitPrice - CP.UnitPrice AS UnitPriceReduction,\n  (\n    PP.UnitPrice - CP.UnitPrice\n  ) / NULLIF(PP.UnitPrice, 0) AS DiscountRate\nFROM ContractedPrices AS CP\nLEFT JOIN PublicPrices AS PP\n  ON PP.ServiceProviderName = CP.ServiceProviderName\n  AND PP.SkuPriceId = CP.SkuPriceId\n  AND PP.PricingCurrency = CP.PricingCurrency\nORDER BY\n  DiscountRate DESC",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 10
   },
@@ -1272,7 +1272,7 @@
   "original_sql": "WITH Comparison (ServiceProviderName, SkuId, PricingRegionId, PricingUnit, PricingCurrency, Quantity, PointInTime, ContractId) AS (\n  VALUES (?, ?, ?, ?, ?, ?, ?, ?)\n),\nPublicTier AS (\n  SELECT\n    C.ServiceProviderName,\n    C.SkuId,\n    C.PricingRegionId,\n    C.PricingUnit,\n    C.PricingCurrency,\n    C.Quantity,\n    C.PointInTime,\n    C.ContractId,\n    SP.SkuPriceId,\n    SP.QuantityTierMinimum,\n    SP.QuantityTierMaximum,\n    SP.UnitPrice\n  FROM SkuPrice SP\n  INNER JOIN Comparison C\n    ON SP.ServiceProviderName = C.ServiceProviderName\n    AND SP.SkuId = C.SkuId\n    AND (SP.PricingRegionId = C.PricingRegionId OR (SP.PricingRegionId IS NULL AND C.PricingRegionId IS NULL))\n    AND SP.PricingUnit = C.PricingUnit\n    AND SP.PricingCurrency = C.PricingCurrency\n    AND C.Quantity > SP.QuantityTierMinimum\n    AND (SP.QuantityTierMaximum IS NULL OR C.Quantity <= SP.QuantityTierMaximum)\n    AND (SP.SkuPriceEffectiveStart IS NULL OR SP.SkuPriceEffectiveStart <= C.PointInTime)\n    AND (SP.SkuPriceEffectiveEnd IS NULL OR SP.SkuPriceEffectiveEnd > C.PointInTime)\n  WHERE SP.ChargeCategory = 'Usage'\n    AND SP.UnitPriceType = 'List'\n    AND (SP.QuantityTierMinimum > 0 OR SP.QuantityTierMaximum IS NOT NULL)\n),\nContractedTier AS (\n  SELECT\n    C.ServiceProviderName,\n    C.SkuId,\n    C.PricingRegionId,\n    C.PricingUnit,\n    C.PricingCurrency,\n    C.Quantity,\n    C.PointInTime,\n    C.ContractId,\n    SP.SkuPriceId,\n    SP.QuantityTierMinimum,\n    SP.QuantityTierMaximum,\n    SP.UnitPrice\n  FROM SkuPrice SP\n  INNER JOIN Comparison C\n    ON SP.ServiceProviderName = C.ServiceProviderName\n    AND SP.SkuId = C.SkuId\n    AND (SP.PricingRegionId = C.PricingRegionId OR (SP.PricingRegionId IS NULL AND C.PricingRegionId IS NULL))\n    AND SP.PricingUnit = C.PricingUnit\n    AND SP.PricingCurrency = C.PricingCurrency\n    AND SP.ContractId = C.ContractId\n    AND C.Quantity > SP.QuantityTierMinimum\n    AND (SP.QuantityTierMaximum IS NULL OR C.Quantity <= SP.QuantityTierMaximum)\n    AND (SP.SkuPriceEffectiveStart IS NULL OR SP.SkuPriceEffectiveStart <= C.PointInTime)\n    AND (SP.SkuPriceEffectiveEnd IS NULL OR SP.SkuPriceEffectiveEnd > C.PointInTime)\n  WHERE SP.ChargeCategory = 'Usage'\n    AND SP.UnitPriceType = 'Contracted'\n)\nSELECT DISTINCT\n  PT.ServiceProviderName,\n  PT.SkuId,\n  PT.PricingRegionId,\n  PT.PricingUnit,\n  PT.PricingCurrency,\n  PT.Quantity,\n  PT.PointInTime,\n  PT.ContractId,\n  PT.SkuPriceId AS PublicSkuPriceId,\n  PT.QuantityTierMinimum AS PublicTierMinimum,\n  PT.QuantityTierMaximum AS PublicTierMaximum,\n  PT.UnitPrice AS PublicUnitPrice,\n  CT.SkuPriceId AS ContractedSkuPriceId,\n  CT.QuantityTierMinimum AS ContractedTierMinimum,\n  CT.QuantityTierMaximum AS ContractedTierMaximum,\n  CT.UnitPrice AS ContractedUnitPrice,\n  PT.UnitPrice - CT.UnitPrice AS UnitPriceReduction\nFROM PublicTier PT\nLEFT JOIN ContractedTier CT\n  ON CT.ServiceProviderName = PT.ServiceProviderName\n  AND CT.SkuId = PT.SkuId\n  AND (CT.PricingRegionId = PT.PricingRegionId OR (CT.PricingRegionId IS NULL AND PT.PricingRegionId IS NULL))\n  AND CT.PricingUnit = PT.PricingUnit\n  AND CT.PricingCurrency = PT.PricingCurrency\n  AND CT.Quantity = PT.Quantity\n  AND CT.PointInTime = PT.PointInTime\n  AND CT.ContractId = PT.ContractId",
   "sql": "WITH Comparison(ServiceProviderName, SkuId, PricingRegionId, PricingUnit, PricingCurrency, Quantity, PointInTime, ContractId) AS (\n  VALUES(\n    'Aura Web',\n    'AURAWEB-STORAGE-OBJECT-STD',\n    'us-east-1',\n    'GB-Months',\n    'USD',\n    100000,\n    CAST('2026-03-01 00:00:00' AS TIMESTAMP),\n    'auraweb:contract::ACCT-123456789012:agreements/ctr-7f3a91b2c4d5'\n  )\n), PublicTier AS (\n  SELECT\n    C.ServiceProviderName,\n    C.SkuId,\n    C.PricingRegionId,\n    C.PricingUnit,\n    C.PricingCurrency,\n    C.Quantity,\n    C.PointInTime,\n    C.ContractId,\n    SP.SkuPriceId,\n    SP.QuantityTierMinimum,\n    SP.QuantityTierMaximum,\n    SP.UnitPrice\n  FROM SkuPrice AS SP\n  INNER JOIN Comparison AS C\n    ON SP.ServiceProviderName = C.ServiceProviderName\n    AND SP.SkuId = C.SkuId\n    AND (\n      SP.PricingRegionId = C.PricingRegionId\n      OR (\n        SP.PricingRegionId IS NULL AND C.PricingRegionId IS NULL\n      )\n    )\n    AND SP.PricingUnit = C.PricingUnit\n    AND SP.PricingCurrency = C.PricingCurrency\n    AND C.Quantity > SP.QuantityTierMinimum\n    AND (\n      SP.QuantityTierMaximum IS NULL OR C.Quantity <= SP.QuantityTierMaximum\n    )\n    AND (\n      SP.SkuPriceEffectiveStart IS NULL OR SP.SkuPriceEffectiveStart <= C.PointInTime\n    )\n    AND (\n      SP.SkuPriceEffectiveEnd IS NULL OR SP.SkuPriceEffectiveEnd > C.PointInTime\n    )\n  WHERE\n    SP.ChargeCategory = 'Usage'\n    AND SP.UnitPriceType = 'List'\n    AND (\n      SP.QuantityTierMinimum > 0 OR NOT SP.QuantityTierMaximum IS NULL\n    )\n), ContractedTier AS (\n  SELECT\n    C.ServiceProviderName,\n    C.SkuId,\n    C.PricingRegionId,\n    C.PricingUnit,\n    C.PricingCurrency,\n    C.Quantity,\n    C.PointInTime,\n    C.ContractId,\n    SP.SkuPriceId,\n    SP.QuantityTierMinimum,\n    SP.QuantityTierMaximum,\n    SP.UnitPrice\n  FROM SkuPrice AS SP\n  INNER JOIN Comparison AS C\n    ON SP.ServiceProviderName = C.ServiceProviderName\n    AND SP.SkuId = C.SkuId\n    AND (\n      SP.PricingRegionId = C.PricingRegionId\n      OR (\n        SP.PricingRegionId IS NULL AND C.PricingRegionId IS NULL\n      )\n    )\n    AND SP.PricingUnit = C.PricingUnit\n    AND SP.PricingCurrency = C.PricingCurrency\n    AND SP.ContractId = C.ContractId\n    AND C.Quantity > SP.QuantityTierMinimum\n    AND (\n      SP.QuantityTierMaximum IS NULL OR C.Quantity <= SP.QuantityTierMaximum\n    )\n    AND (\n      SP.SkuPriceEffectiveStart IS NULL OR SP.SkuPriceEffectiveStart <= C.PointInTime\n    )\n    AND (\n      SP.SkuPriceEffectiveEnd IS NULL OR SP.SkuPriceEffectiveEnd > C.PointInTime\n    )\n  WHERE\n    SP.ChargeCategory = 'Usage' AND SP.UnitPriceType = 'Contracted'\n)\nSELECT DISTINCT\n  PT.ServiceProviderName,\n  PT.SkuId,\n  PT.PricingRegionId,\n  PT.PricingUnit,\n  PT.PricingCurrency,\n  PT.Quantity,\n  PT.PointInTime,\n  PT.ContractId,\n  PT.SkuPriceId AS PublicSkuPriceId,\n  PT.QuantityTierMinimum AS PublicTierMinimum,\n  PT.QuantityTierMaximum AS PublicTierMaximum,\n  PT.UnitPrice AS PublicUnitPrice,\n  CT.SkuPriceId AS ContractedSkuPriceId,\n  CT.QuantityTierMinimum AS ContractedTierMinimum,\n  CT.QuantityTierMaximum AS ContractedTierMaximum,\n  CT.UnitPrice AS ContractedUnitPrice,\n  PT.UnitPrice - CT.UnitPrice AS UnitPriceReduction\nFROM PublicTier AS PT\nLEFT JOIN ContractedTier AS CT\n  ON CT.ServiceProviderName = PT.ServiceProviderName\n  AND CT.SkuId = PT.SkuId\n  AND (\n    CT.PricingRegionId = PT.PricingRegionId\n    OR (\n      CT.PricingRegionId IS NULL AND PT.PricingRegionId IS NULL\n    )\n  )\n  AND CT.PricingUnit = PT.PricingUnit\n  AND CT.PricingCurrency = PT.PricingCurrency\n  AND CT.Quantity = PT.Quantity\n  AND CT.PointInTime = PT.PointInTime\n  AND CT.ContractId = PT.ContractId",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 1
   },
@@ -1294,7 +1294,7 @@
   "original_sql": "WITH ChargeTierSet AS (\n  SELECT\n    CU.ServiceProviderName,\n    SP.SkuId,\n    SP.PricingRegionId,\n    SP.PricingUnit,\n    CU.BillingCurrency,\n    CU.ChargePeriodStart,\n    CU.PricingQuantity,\n    CU.EffectiveCost\n  FROM CostAndUsage CU\n  INNER JOIN SkuPrice SP\n    ON SP.ServiceProviderName = CU.ServiceProviderName\n    AND SP.SkuPriceId = CU.SkuPriceId\n    AND SP.PricingCurrency = CU.BillingCurrency\n    AND SP.UnitPriceType = 'List'\n    AND SP.ChargeCategory = 'Usage'\n    AND (SP.QuantityTierMinimum > 0 OR SP.QuantityTierMaximum IS NOT NULL)\n    AND (SP.SkuPriceEffectiveStart IS NULL OR CU.ChargePeriodStart >= SP.SkuPriceEffectiveStart)\n    AND (SP.SkuPriceEffectiveEnd IS NULL OR CU.ChargePeriodStart < SP.SkuPriceEffectiveEnd)\n  WHERE CU.ChargePeriodStart >= ? AND CU.ChargePeriodEnd <= ?\n    AND CU.ChargeCategory = 'Usage'\n),\nPeriodQuantity AS (\n  SELECT\n    ServiceProviderName,\n    SkuId,\n    PricingRegionId,\n    PricingUnit,\n    BillingCurrency,\n    MIN(ChargePeriodStart) AS EarliestChargePeriodStart,\n    SUM(PricingQuantity) AS TotalPricingQuantity,\n    SUM(EffectiveCost) AS TotalEffectiveCost\n  FROM ChargeTierSet\n  GROUP BY ServiceProviderName, SkuId, PricingRegionId, PricingUnit, BillingCurrency\n)\nSELECT\n  PQ.ServiceProviderName,\n  PQ.SkuId,\n  PQ.PricingRegionId,\n  PQ.PricingUnit,\n  PQ.BillingCurrency,\n  PQ.TotalPricingQuantity,\n  PQ.TotalEffectiveCost,\n  SP.SkuPriceId,\n  SP.ContractId,\n  SP.QuantityTierMinimum,\n  SP.QuantityTierMaximum,\n  SP.UnitPrice\nFROM PeriodQuantity PQ\nINNER JOIN SkuPrice SP\n  ON SP.ServiceProviderName = PQ.ServiceProviderName\n  AND SP.SkuId = PQ.SkuId\n  AND (SP.PricingRegionId = PQ.PricingRegionId OR (SP.PricingRegionId IS NULL AND PQ.PricingRegionId IS NULL))\n  AND SP.PricingUnit = PQ.PricingUnit\n  AND SP.PricingCurrency = PQ.BillingCurrency\n  AND SP.ChargeCategory = 'Usage'\n  AND (\n    SP.UnitPriceType = 'Contracted'\n    OR (SP.UnitPriceType = 'List' AND (SP.QuantityTierMinimum > 0 OR SP.QuantityTierMaximum IS NOT NULL))\n  )\n  AND PQ.TotalPricingQuantity > SP.QuantityTierMinimum\n  AND (SP.QuantityTierMaximum IS NULL OR PQ.TotalPricingQuantity <= SP.QuantityTierMaximum)\n  AND (SP.SkuPriceEffectiveStart IS NULL OR PQ.EarliestChargePeriodStart >= SP.SkuPriceEffectiveStart)\n  AND (SP.SkuPriceEffectiveEnd IS NULL OR PQ.EarliestChargePeriodStart < SP.SkuPriceEffectiveEnd)\nORDER BY PQ.TotalEffectiveCost DESC",
   "sql": "WITH ChargeTierSet AS (\n  SELECT\n    CU.ServiceProviderName,\n    SP.SkuId,\n    SP.PricingRegionId,\n    SP.PricingUnit,\n    CU.BillingCurrency,\n    CU.ChargePeriodStart,\n    CU.PricingQuantity,\n    CU.EffectiveCost\n  FROM CostAndUsage AS CU\n  INNER JOIN SkuPrice AS SP\n    ON SP.ServiceProviderName = CU.ServiceProviderName\n    AND SP.SkuPriceId = CU.SkuPriceId\n    AND SP.PricingCurrency = CU.BillingCurrency\n    AND SP.UnitPriceType = 'List'\n    AND SP.ChargeCategory = 'Usage'\n    AND (\n      SP.QuantityTierMinimum > 0 OR NOT SP.QuantityTierMaximum IS NULL\n    )\n    AND (\n      SP.SkuPriceEffectiveStart IS NULL\n      OR CU.ChargePeriodStart >= SP.SkuPriceEffectiveStart\n    )\n    AND (\n      SP.SkuPriceEffectiveEnd IS NULL OR CU.ChargePeriodStart < SP.SkuPriceEffectiveEnd\n    )\n  WHERE\n    CU.ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n    AND CU.ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n    AND CU.ChargeCategory = 'Usage'\n), PeriodQuantity AS (\n  SELECT\n    ServiceProviderName,\n    SkuId,\n    PricingRegionId,\n    PricingUnit,\n    BillingCurrency,\n    MIN(ChargePeriodStart) AS EarliestChargePeriodStart,\n    SUM(PricingQuantity) AS TotalPricingQuantity,\n    SUM(EffectiveCost) AS TotalEffectiveCost\n  FROM ChargeTierSet\n  GROUP BY\n    ServiceProviderName,\n    SkuId,\n    PricingRegionId,\n    PricingUnit,\n    BillingCurrency\n)\nSELECT\n  PQ.ServiceProviderName,\n  PQ.SkuId,\n  PQ.PricingRegionId,\n  PQ.PricingUnit,\n  PQ.BillingCurrency,\n  PQ.TotalPricingQuantity,\n  PQ.TotalEffectiveCost,\n  SP.SkuPriceId,\n  SP.ContractId,\n  SP.QuantityTierMinimum,\n  SP.QuantityTierMaximum,\n  SP.UnitPrice\nFROM PeriodQuantity AS PQ\nINNER JOIN SkuPrice AS SP\n  ON SP.ServiceProviderName = PQ.ServiceProviderName\n  AND SP.SkuId = PQ.SkuId\n  AND (\n    SP.PricingRegionId = PQ.PricingRegionId\n    OR (\n      SP.PricingRegionId IS NULL AND PQ.PricingRegionId IS NULL\n    )\n  )\n  AND SP.PricingUnit = PQ.PricingUnit\n  AND SP.PricingCurrency = PQ.BillingCurrency\n  AND SP.ChargeCategory = 'Usage'\n  AND (\n    SP.UnitPriceType = 'Contracted'\n    OR (\n      SP.UnitPriceType = 'List'\n      AND (\n        SP.QuantityTierMinimum > 0 OR NOT SP.QuantityTierMaximum IS NULL\n      )\n    )\n  )\n  AND PQ.TotalPricingQuantity > SP.QuantityTierMinimum\n  AND (\n    SP.QuantityTierMaximum IS NULL\n    OR PQ.TotalPricingQuantity <= SP.QuantityTierMaximum\n  )\n  AND (\n    SP.SkuPriceEffectiveStart IS NULL\n    OR PQ.EarliestChargePeriodStart >= SP.SkuPriceEffectiveStart\n  )\n  AND (\n    SP.SkuPriceEffectiveEnd IS NULL\n    OR PQ.EarliestChargePeriodStart < SP.SkuPriceEffectiveEnd\n  )\nORDER BY\n  PQ.TotalEffectiveCost DESC",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -1322,7 +1322,7 @@
   "original_sql": "WITH RequestedSkus (ServiceProviderName, SkuId) AS (\n    VALUES\n        -- (ServiceProviderName, SkuId)\n        (?, ?),\n        (?, ?),\n        (?, ?)\n),\nActiveTiers AS (\n    SELECT\n        SP.ServiceProviderName,\n        SP.SkuId,\n        SP.PricingRegionId,\n        SP.ContractId,\n        SP.UnitPriceType,\n        SP.PricingUnit,\n        SP.PricingCurrency,\n        SP.ChargeCategory,\n        SP.SkuPriceId,\n        SP.QuantityTierMinimum,\n        SP.QuantityTierMaximum,\n        SP.UnitPrice\n    FROM SkuPrice SP\n    WHERE EXISTS (\n        SELECT 1\n        FROM RequestedSkus RS\n        WHERE RS.ServiceProviderName = SP.ServiceProviderName\n          AND RS.SkuId = SP.SkuId\n    )\n      AND (SP.QuantityTierMinimum > 0 OR SP.QuantityTierMaximum IS NOT NULL)\n      AND (SP.SkuPriceEffectiveStart IS NULL OR SP.SkuPriceEffectiveStart <= ?)  -- point in time\n      AND (SP.SkuPriceEffectiveEnd IS NULL OR SP.SkuPriceEffectiveEnd > ?)       -- point in time\n)\nSELECT\n    CURRENT_TIER.ServiceProviderName,\n    CURRENT_TIER.SkuId,\n    CURRENT_TIER.PricingRegionId,\n    CURRENT_TIER.ContractId,\n    CURRENT_TIER.UnitPriceType,\n    CURRENT_TIER.PricingUnit,\n    CURRENT_TIER.PricingCurrency,\n    CURRENT_TIER.SkuPriceId AS CurrentSkuPriceId,\n    CURRENT_TIER.QuantityTierMinimum AS CurrentTierMinimum,\n    CURRENT_TIER.QuantityTierMaximum AS CurrentTierMaximum,\n    CURRENT_TIER.UnitPrice AS CurrentUnitPrice,\n    NEXT_TIER.SkuPriceId AS NextSkuPriceId,\n    NEXT_TIER.QuantityTierMaximum AS NextTierMaximum,\n    NEXT_TIER.UnitPrice AS NextUnitPrice,\n    CURRENT_TIER.UnitPrice - NEXT_TIER.UnitPrice AS UnitPriceReduction,\n    CURRENT_TIER.QuantityTierMaximum - CURRENT_TIER.QuantityTierMinimum AS TierWidth\nFROM ActiveTiers CURRENT_TIER\nINNER JOIN ActiveTiers NEXT_TIER\n    ON NEXT_TIER.ServiceProviderName = CURRENT_TIER.ServiceProviderName\n    AND NEXT_TIER.SkuId = CURRENT_TIER.SkuId\n    AND (\n        NEXT_TIER.PricingRegionId = CURRENT_TIER.PricingRegionId\n        OR (\n            NEXT_TIER.PricingRegionId IS NULL\n            AND CURRENT_TIER.PricingRegionId IS NULL\n        )\n    )\n    AND NEXT_TIER.PricingUnit = CURRENT_TIER.PricingUnit\n    AND NEXT_TIER.PricingCurrency = CURRENT_TIER.PricingCurrency\n    AND NEXT_TIER.ChargeCategory = CURRENT_TIER.ChargeCategory\n    AND (\n        NEXT_TIER.ContractId = CURRENT_TIER.ContractId\n        OR (\n            NEXT_TIER.ContractId IS NULL\n            AND CURRENT_TIER.ContractId IS NULL\n        )\n    )\n    AND NEXT_TIER.UnitPriceType = CURRENT_TIER.UnitPriceType\n    AND NEXT_TIER.QuantityTierMinimum = CURRENT_TIER.QuantityTierMaximum\nWHERE CURRENT_TIER.QuantityTierMaximum IS NOT NULL\nORDER BY\n    CURRENT_TIER.SkuId,\n    CURRENT_TIER.ContractId,\n    CURRENT_TIER.UnitPriceType,\n    CURRENT_TIER.QuantityTierMinimum",
   "sql": "WITH RequestedSkus (ServiceProviderName, SkuId) AS (\n    VALUES\n        -- (ServiceProviderName, SkuId)\n        ('Aura Web', 'AURAWEB-STORAGE-OBJECT-STD'),\n        ('Aura Web', 'AURAWEB-COMPUTE-VM-STD-8X32'),\n        ('Aura Web', 'AURAWEB-DATABASE-MANAGED-STD')\n),\nActiveTiers AS (\n    SELECT\n        SP.ServiceProviderName,\n        SP.SkuId,\n        SP.PricingRegionId,\n        SP.ContractId,\n        SP.UnitPriceType,\n        SP.PricingUnit,\n        SP.PricingCurrency,\n        SP.ChargeCategory,\n        SP.SkuPriceId,\n        SP.QuantityTierMinimum,\n        SP.QuantityTierMaximum,\n        SP.UnitPrice\n    FROM SkuPrice SP\n    WHERE EXISTS (\n        SELECT 1\n        FROM RequestedSkus RS\n        WHERE RS.ServiceProviderName = SP.ServiceProviderName\n          AND RS.SkuId = SP.SkuId\n    )\n      AND (SP.QuantityTierMinimum > 0 OR SP.QuantityTierMaximum IS NOT NULL)\n      AND (SP.SkuPriceEffectiveStart IS NULL OR SP.SkuPriceEffectiveStart <= DATETIME '2026-03-01 00:00:00')  -- point in time\n      AND (SP.SkuPriceEffectiveEnd IS NULL OR SP.SkuPriceEffectiveEnd > DATETIME '2026-03-01 00:00:00')       -- point in time\n)\nSELECT\n    CURRENT_TIER.ServiceProviderName,\n    CURRENT_TIER.SkuId,\n    CURRENT_TIER.PricingRegionId,\n    CURRENT_TIER.ContractId,\n    CURRENT_TIER.UnitPriceType,\n    CURRENT_TIER.PricingUnit,\n    CURRENT_TIER.PricingCurrency,\n    CURRENT_TIER.SkuPriceId AS CurrentSkuPriceId,\n    CURRENT_TIER.QuantityTierMinimum AS CurrentTierMinimum,\n    CURRENT_TIER.QuantityTierMaximum AS CurrentTierMaximum,\n    CURRENT_TIER.UnitPrice AS CurrentUnitPrice,\n    NEXT_TIER.SkuPriceId AS NextSkuPriceId,\n    NEXT_TIER.QuantityTierMaximum AS NextTierMaximum,\n    NEXT_TIER.UnitPrice AS NextUnitPrice,\n    CURRENT_TIER.UnitPrice - NEXT_TIER.UnitPrice AS UnitPriceReduction,\n    CURRENT_TIER.QuantityTierMaximum - CURRENT_TIER.QuantityTierMinimum AS TierWidth\nFROM ActiveTiers CURRENT_TIER\nINNER JOIN ActiveTiers NEXT_TIER\n    ON NEXT_TIER.ServiceProviderName = CURRENT_TIER.ServiceProviderName\n    AND NEXT_TIER.SkuId = CURRENT_TIER.SkuId\n    AND (\n        NEXT_TIER.PricingRegionId = CURRENT_TIER.PricingRegionId\n        OR (\n            NEXT_TIER.PricingRegionId IS NULL\n            AND CURRENT_TIER.PricingRegionId IS NULL\n        )\n    )\n    AND NEXT_TIER.PricingUnit = CURRENT_TIER.PricingUnit\n    AND NEXT_TIER.PricingCurrency = CURRENT_TIER.PricingCurrency\n    AND NEXT_TIER.ChargeCategory = CURRENT_TIER.ChargeCategory\n    AND (\n        NEXT_TIER.ContractId = CURRENT_TIER.ContractId\n        OR (\n            NEXT_TIER.ContractId IS NULL\n            AND CURRENT_TIER.ContractId IS NULL\n        )\n    )\n    AND NEXT_TIER.UnitPriceType = CURRENT_TIER.UnitPriceType\n    AND NEXT_TIER.QuantityTierMinimum = CURRENT_TIER.QuantityTierMaximum\nWHERE CURRENT_TIER.QuantityTierMaximum IS NOT NULL\nORDER BY\n    CURRENT_TIER.SkuId,\n    CURRENT_TIER.ContractId,\n    CURRENT_TIER.UnitPriceType,\n    CURRENT_TIER.QuantityTierMinimum",
   "transpiled": false,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 8
   },
@@ -1346,7 +1346,7 @@
   "original_sql": "SELECT\n  SkuId,\n  SkuPriceId,\n  ContractId,\n  UnitPriceType,\n  SkuPriceDescription,\n  CommitmentDiscountCategory,\n  PurchaseDurationType,\n  PurchasePaymentModel,\n  PricingUnit,\n  PricingCurrency,\n  UnitPrice\nFROM SkuPrice\nWHERE ServiceProviderName = ?\n  AND SkuId = ?\n  AND ChargeCategory = 'Purchase'\n  AND (SkuPriceEffectiveStart IS NULL OR SkuPriceEffectiveStart <= ?)\n  AND (SkuPriceEffectiveEnd IS NULL OR SkuPriceEffectiveEnd > ?)\nORDER BY PurchaseDurationType, PurchasePaymentModel, SkuPriceId, ContractId, UnitPriceType",
   "sql": "SELECT\n  SkuId,\n  SkuPriceId,\n  ContractId,\n  UnitPriceType,\n  SkuPriceDescription,\n  CommitmentDiscountCategory,\n  PurchaseDurationType,\n  PurchasePaymentModel,\n  PricingUnit,\n  PricingCurrency,\n  UnitPrice\nFROM SkuPrice\nWHERE\n  ServiceProviderName = 'Aura Web'\n  AND SkuId = 'AURAWEB-COMPUTE-VM-STD-8X32'\n  AND ChargeCategory = 'Purchase'\n  AND (\n    SkuPriceEffectiveStart IS NULL\n    OR SkuPriceEffectiveStart <= CAST('2026-03-01 00:00:00' AS TIMESTAMP)\n  )\n  AND (\n    SkuPriceEffectiveEnd IS NULL\n    OR SkuPriceEffectiveEnd > CAST('2026-03-01 00:00:00' AS TIMESTAMP)\n  )\nORDER BY\n  PurchaseDurationType NULLS FIRST,\n  PurchasePaymentModel NULLS FIRST,\n  SkuPriceId NULLS FIRST,\n  ContractId NULLS FIRST,\n  UnitPriceType NULLS FIRST",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -1370,7 +1370,7 @@
   "original_sql": "WITH ObservedUsage AS (\n  SELECT\n    ServiceProviderName,\n    SkuPriceId,\n    BillingCurrency,\n    MIN(ChargePeriodStart) AS EarliestChargePeriodStart,\n    SUM(PricingQuantity) AS TotalPricingQuantity,\n    SUM(EffectiveCost) AS TotalEffectiveCost\n  FROM CostAndUsage\n  WHERE ChargePeriodStart >= ? AND ChargePeriodEnd <= ?\n    AND ChargeCategory = 'Usage'\n    AND SkuPriceId IS NOT NULL\n    AND CommitmentDiscountId IS NULL\n  GROUP BY ServiceProviderName, SkuPriceId, BillingCurrency\n)\nSELECT\n  SP.ContractId,\n  OU.ServiceProviderName,\n  OU.SkuPriceId,\n  SP.PricingUnit,\n  OU.TotalPricingQuantity,\n  OU.TotalEffectiveCost,\n  SP.QuantityTierMinimum,\n  SP.QuantityTierMaximum,\n  SP.UnitPrice,\n  SP.PricingCurrency,\n  OU.TotalPricingQuantity * SP.UnitPrice AS ProjectedContractedAmount,\n  OU.TotalEffectiveCost - (OU.TotalPricingQuantity * SP.UnitPrice) AS ProjectedReduction\nFROM ObservedUsage OU\nINNER JOIN SkuPrice SP\n  ON SP.ServiceProviderName = OU.ServiceProviderName\n  AND SP.SkuPriceId = OU.SkuPriceId\n  AND SP.PricingCurrency = OU.BillingCurrency\n  AND (SP.SkuPriceEffectiveStart IS NULL OR OU.EarliestChargePeriodStart >= SP.SkuPriceEffectiveStart)\n  AND (SP.SkuPriceEffectiveEnd IS NULL OR OU.EarliestChargePeriodStart < SP.SkuPriceEffectiveEnd)\nWHERE SP.ServiceProviderName = ?\n  AND SP.ContractId = ?\n  AND SP.UnitPriceType = 'Contracted'\n  AND SP.ChargeCategory = 'Usage'\nORDER BY ProjectedReduction DESC",
   "sql": "WITH ObservedUsage AS (\n  SELECT\n    ServiceProviderName,\n    SkuPriceId,\n    BillingCurrency,\n    MIN(ChargePeriodStart) AS EarliestChargePeriodStart,\n    SUM(PricingQuantity) AS TotalPricingQuantity,\n    SUM(EffectiveCost) AS TotalEffectiveCost\n  FROM CostAndUsage\n  WHERE\n    ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n    AND ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\n    AND ChargeCategory = 'Usage'\n    AND NOT SkuPriceId IS NULL\n    AND CommitmentDiscountId IS NULL\n  GROUP BY\n    ServiceProviderName,\n    SkuPriceId,\n    BillingCurrency\n)\nSELECT\n  SP.ContractId,\n  OU.ServiceProviderName,\n  OU.SkuPriceId,\n  SP.PricingUnit,\n  OU.TotalPricingQuantity,\n  OU.TotalEffectiveCost,\n  SP.QuantityTierMinimum,\n  SP.QuantityTierMaximum,\n  SP.UnitPrice,\n  SP.PricingCurrency,\n  OU.TotalPricingQuantity * SP.UnitPrice AS ProjectedContractedAmount,\n  OU.TotalEffectiveCost - (\n    OU.TotalPricingQuantity * SP.UnitPrice\n  ) AS ProjectedReduction\nFROM ObservedUsage AS OU\nINNER JOIN SkuPrice AS SP\n  ON SP.ServiceProviderName = OU.ServiceProviderName\n  AND SP.SkuPriceId = OU.SkuPriceId\n  AND SP.PricingCurrency = OU.BillingCurrency\n  AND (\n    SP.SkuPriceEffectiveStart IS NULL\n    OR OU.EarliestChargePeriodStart >= SP.SkuPriceEffectiveStart\n  )\n  AND (\n    SP.SkuPriceEffectiveEnd IS NULL\n    OR OU.EarliestChargePeriodStart < SP.SkuPriceEffectiveEnd\n  )\nWHERE\n  SP.ServiceProviderName = 'Aura Web'\n  AND SP.ContractId = 'auraweb:contract::ACCT-123456789012:agreements/ctr-7f3a91b2c4d5'\n  AND SP.UnitPriceType = 'Contracted'\n  AND SP.ChargeCategory = 'Usage'\nORDER BY\n  ProjectedReduction DESC",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -1394,7 +1394,7 @@
   "original_sql": "WITH Comparison AS (\n  SELECT\n    ? AS ServiceProviderName,\n    ? AS ContractId,\n    ? AS RangeStart,\n    ? AS RangeEnd\n),\nCharges AS (\n  SELECT\n    CU.ServiceProviderName,\n    CU.BillingAccountId,\n    CU.ChargePeriodStart,\n    CU.SkuPriceId,\n    CU.PricingUnit,\n    CU.PricingQuantity,\n    CU.BillingCurrency,\n    CU.ListUnitPrice,\n    CU.ContractedUnitPrice\n  FROM CostAndUsage CU\n  INNER JOIN Comparison V\n    ON CU.ServiceProviderName = V.ServiceProviderName\n  WHERE CU.ChargePeriodStart >= V.RangeStart\n    AND CU.ChargePeriodEnd <= V.RangeEnd\n    AND CU.ChargeCategory = 'Usage'\n    AND CU.SkuPriceId IS NOT NULL\n),\nPrices AS (\n  SELECT\n    SP.ServiceProviderName,\n    SP.UnitPriceType,\n    SP.SkuPriceId,\n    SP.PricingCurrency,\n    SP.SkuPriceEffectiveStart,\n    SP.SkuPriceEffectiveEnd,\n    SP.UnitPrice\n  FROM SkuPrice SP\n  INNER JOIN Comparison V\n    ON SP.ServiceProviderName = V.ServiceProviderName\n    AND (SP.UnitPriceType = 'List' OR (SP.ContractId = V.ContractId AND SP.UnitPriceType = 'Contracted'))\n  WHERE SP.ChargeCategory = 'Usage'\n    AND SP.SkuPriceId IN (SELECT SkuPriceId FROM Charges)\n)\nSELECT\n  C.ServiceProviderName,\n  C.BillingAccountId,\n  C.ChargePeriodStart,\n  C.SkuPriceId,\n  C.PricingUnit,\n  C.PricingQuantity,\n  C.BillingCurrency,\n  C.ListUnitPrice,\n  PP.UnitPrice AS PublishedListUnitPrice,\n  C.ListUnitPrice - PP.UnitPrice AS ListUnitPriceDifference,\n  C.ContractedUnitPrice,\n  CP.UnitPrice AS PublishedContractedUnitPrice,\n  C.ContractedUnitPrice - CP.UnitPrice AS ContractedUnitPriceDifference,\n  C.PricingQuantity * (C.ContractedUnitPrice - CP.UnitPrice) AS ContractedCostDifference\nFROM Charges C\nLEFT JOIN Prices PP\n  ON PP.ServiceProviderName = C.ServiceProviderName\n  AND PP.SkuPriceId = C.SkuPriceId\n  AND PP.PricingCurrency = C.BillingCurrency\n  AND PP.UnitPriceType = 'List'\n  AND (PP.SkuPriceEffectiveStart IS NULL OR C.ChargePeriodStart >= PP.SkuPriceEffectiveStart)\n  AND (PP.SkuPriceEffectiveEnd IS NULL OR C.ChargePeriodStart < PP.SkuPriceEffectiveEnd)\nLEFT JOIN Prices CP\n  ON CP.ServiceProviderName = C.ServiceProviderName\n  AND CP.SkuPriceId = C.SkuPriceId\n  AND CP.PricingCurrency = C.BillingCurrency\n  AND CP.UnitPriceType = 'Contracted'\n  AND (CP.SkuPriceEffectiveStart IS NULL OR C.ChargePeriodStart >= CP.SkuPriceEffectiveStart)\n  AND (CP.SkuPriceEffectiveEnd IS NULL OR C.ChargePeriodStart < CP.SkuPriceEffectiveEnd)\nORDER BY ContractedCostDifference DESC NULLS LAST",
   "sql": "WITH Comparison AS (\n  SELECT\n    'Aura Web' AS ServiceProviderName,\n    'auraweb:contract::ACCT-123456789012:agreements/ctr-7f3a91b2c4d5' AS ContractId,\n    CAST('2000-01-01 00:00:00' AS TIMESTAMP) AS RangeStart,\n    CAST('2100-01-01 00:00:00' AS TIMESTAMP) AS RangeEnd\n), Charges AS (\n  SELECT\n    CU.ServiceProviderName,\n    CU.BillingAccountId,\n    CU.ChargePeriodStart,\n    CU.SkuPriceId,\n    CU.PricingUnit,\n    CU.PricingQuantity,\n    CU.BillingCurrency,\n    CU.ListUnitPrice,\n    CU.ContractedUnitPrice\n  FROM CostAndUsage AS CU\n  INNER JOIN Comparison AS V\n    ON CU.ServiceProviderName = V.ServiceProviderName\n  WHERE\n    CU.ChargePeriodStart >= V.RangeStart\n    AND CU.ChargePeriodEnd <= V.RangeEnd\n    AND CU.ChargeCategory = 'Usage'\n    AND NOT CU.SkuPriceId IS NULL\n), Prices AS (\n  SELECT\n    SP.ServiceProviderName,\n    SP.UnitPriceType,\n    SP.SkuPriceId,\n    SP.PricingCurrency,\n    SP.SkuPriceEffectiveStart,\n    SP.SkuPriceEffectiveEnd,\n    SP.UnitPrice\n  FROM SkuPrice AS SP\n  INNER JOIN Comparison AS V\n    ON SP.ServiceProviderName = V.ServiceProviderName\n    AND (\n      SP.UnitPriceType = 'List'\n      OR (\n        SP.ContractId = V.ContractId AND SP.UnitPriceType = 'Contracted'\n      )\n    )\n  WHERE\n    SP.ChargeCategory = 'Usage'\n    AND SP.SkuPriceId IN (\n      SELECT\n        SkuPriceId\n      FROM Charges\n    )\n)\nSELECT\n  C.ServiceProviderName,\n  C.BillingAccountId,\n  C.ChargePeriodStart,\n  C.SkuPriceId,\n  C.PricingUnit,\n  C.PricingQuantity,\n  C.BillingCurrency,\n  C.ListUnitPrice,\n  PP.UnitPrice AS PublishedListUnitPrice,\n  C.ListUnitPrice - PP.UnitPrice AS ListUnitPriceDifference,\n  C.ContractedUnitPrice,\n  CP.UnitPrice AS PublishedContractedUnitPrice,\n  C.ContractedUnitPrice - CP.UnitPrice AS ContractedUnitPriceDifference,\n  C.PricingQuantity * (\n    C.ContractedUnitPrice - CP.UnitPrice\n  ) AS ContractedCostDifference\nFROM Charges AS C\nLEFT JOIN Prices AS PP\n  ON PP.ServiceProviderName = C.ServiceProviderName\n  AND PP.SkuPriceId = C.SkuPriceId\n  AND PP.PricingCurrency = C.BillingCurrency\n  AND PP.UnitPriceType = 'List'\n  AND (\n    PP.SkuPriceEffectiveStart IS NULL\n    OR C.ChargePeriodStart >= PP.SkuPriceEffectiveStart\n  )\n  AND (\n    PP.SkuPriceEffectiveEnd IS NULL OR C.ChargePeriodStart < PP.SkuPriceEffectiveEnd\n  )\nLEFT JOIN Prices AS CP\n  ON CP.ServiceProviderName = C.ServiceProviderName\n  AND CP.SkuPriceId = C.SkuPriceId\n  AND CP.PricingCurrency = C.BillingCurrency\n  AND CP.UnitPriceType = 'Contracted'\n  AND (\n    CP.SkuPriceEffectiveStart IS NULL\n    OR C.ChargePeriodStart >= CP.SkuPriceEffectiveStart\n  )\n  AND (\n    CP.SkuPriceEffectiveEnd IS NULL OR C.ChargePeriodStart < CP.SkuPriceEffectiveEnd\n  )\nORDER BY\n  ContractedCostDifference DESC",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -1416,7 +1416,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  ServiceName,\n  ResourceId,\n  SkuId,\n  ConsumedUnit,\n  SUM(ConsumedQuantity) AS TotalQuantity\nFROM CostAndUsage\nWHERE ChargeCategory='Usage'\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd <= ?\nGROUP BY\n  ServiceProviderName,\n  ServiceName,\n  ResourceId,\n  SkuId,\n  ConsumedUnit",
   "sql": "SELECT\n  ServiceProviderName,\n  ServiceName,\n  ResourceId,\n  SkuId,\n  ConsumedUnit,\n  SUM(ConsumedQuantity) AS TotalQuantity\nFROM CostAndUsage\nWHERE\n  ChargeCategory = 'Usage'\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  ServiceProviderName,\n  ServiceName,\n  ResourceId,\n  SkuId,\n  ConsumedUnit",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 54040
   },
@@ -1438,7 +1438,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  JSON_VALUE(SkuPriceDetails, '$.ModelId') AS ModelId,\n  COALESCE(SUM(CASE WHEN JSON_VALUE(SkuPriceDetails, '$.TokenCacheAction') = 'Read'\n                    THEN ConsumedQuantity END), 0)\n    / NULLIF(SUM(ConsumedQuantity), 0) AS CacheHitRate\nFROM CostAndUsage\nWHERE ChargeCategory = 'Usage'\n  AND ChargeClass IS NULL\n  AND ConsumedUnit = 'Tokens'\n  AND JSON_VALUE(SkuPriceDetails, '$.TokenDirection') = 'Input'\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd <= ?\nGROUP BY\n  ServiceProviderName,\n  ModelId",
   "sql": "SELECT\n  ServiceProviderName,\n  JSON_VALUE(SkuPriceDetails, '$.ModelId') ->> '$' AS ModelId,\n  COALESCE(\n    SUM(\n      CASE\n        WHEN (\n          JSON_VALUE(SkuPriceDetails, '$.TokenCacheAction') ->> '$'\n        ) = 'Read'\n        THEN ConsumedQuantity\n      END\n    ),\n    0\n  ) / NULLIF(SUM(ConsumedQuantity), 0) AS CacheHitRate\nFROM CostAndUsage\nWHERE\n  ChargeCategory = 'Usage'\n  AND ChargeClass IS NULL\n  AND ConsumedUnit = 'Tokens'\n  AND (\n    JSON_VALUE(SkuPriceDetails, '$.TokenDirection') ->> '$'\n  ) = 'Input'\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  ServiceProviderName,\n  ModelId",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -1460,7 +1460,7 @@
   "original_sql": "SELECT\n  ServiceProviderName,\n  JSON_VALUE(SkuPriceDetails, '$.ModelId') AS ModelId,\n  SUM(CASE WHEN JSON_VALUE(SkuPriceDetails, '$.TokenDirection') = 'Input'\n           THEN ConsumedQuantity END) AS InputTokens,\n  SUM(CASE WHEN JSON_VALUE(SkuPriceDetails, '$.TokenDirection') = 'Output'\n           THEN ConsumedQuantity END) AS OutputTokens,\n  SUM(CASE WHEN JSON_VALUE(SkuPriceDetails, '$.TokenDirection') = 'Input'\n           THEN ConsumedQuantity END)\n    / NULLIF(SUM(CASE WHEN JSON_VALUE(SkuPriceDetails, '$.TokenDirection') = 'Output'\n                      THEN ConsumedQuantity END), 0) AS InputToOutputRatio\nFROM CostAndUsage\nWHERE ChargeCategory = 'Usage'\n  AND ChargeClass IS NULL\n  AND ConsumedUnit = 'Tokens'\n  AND ChargePeriodStart >= ? AND ChargePeriodEnd <= ?\nGROUP BY\n  ServiceProviderName,\n  ModelId",
   "sql": "SELECT\n  ServiceProviderName,\n  JSON_VALUE(SkuPriceDetails, '$.ModelId') ->> '$' AS ModelId,\n  SUM(\n    CASE\n      WHEN (\n        JSON_VALUE(SkuPriceDetails, '$.TokenDirection') ->> '$'\n      ) = 'Input'\n      THEN ConsumedQuantity\n    END\n  ) AS InputTokens,\n  SUM(\n    CASE\n      WHEN (\n        JSON_VALUE(SkuPriceDetails, '$.TokenDirection') ->> '$'\n      ) = 'Output'\n      THEN ConsumedQuantity\n    END\n  ) AS OutputTokens,\n  SUM(\n    CASE\n      WHEN (\n        JSON_VALUE(SkuPriceDetails, '$.TokenDirection') ->> '$'\n      ) = 'Input'\n      THEN ConsumedQuantity\n    END\n  ) / NULLIF(\n    SUM(\n      CASE\n        WHEN (\n          JSON_VALUE(SkuPriceDetails, '$.TokenDirection') ->> '$'\n        ) = 'Output'\n        THEN ConsumedQuantity\n      END\n    ),\n    0\n  ) AS InputToOutputRatio\nFROM CostAndUsage\nWHERE\n  ChargeCategory = 'Usage'\n  AND ChargeClass IS NULL\n  AND ConsumedUnit = 'Tokens'\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd <= CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  ServiceProviderName,\n  ModelId",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -1482,7 +1482,7 @@
   "original_sql": "SELECT\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  ServiceProviderName,\n  ServiceCategory,\n  ServiceSubcategory,\n  ServiceName,\n  BillingCurrency,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE BillingPeriodStart >= ? and BillingPeriodEnd < ?\nGROUP BY\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  ServiceProviderName,\n  ServiceCategory,\n  ServiceSubcategory,\n  ServiceName,\n  BillingCurrency",
   "sql": "SELECT\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  ServiceProviderName,\n  ServiceCategory,\n  ServiceSubcategory,\n  ServiceName,\n  BillingCurrency,\n  SUM(BilledCost) AS TotalBilledCost\nFROM CostAndUsage\nWHERE\n  BillingPeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND BillingPeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  BillingPeriodStart,\n  BillingPeriodEnd,\n  ServiceProviderName,\n  ServiceCategory,\n  ServiceSubcategory,\n  ServiceName,\n  BillingCurrency",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 113
   },
@@ -1505,7 +1505,7 @@
   "original_sql": "SELECT\n  BillingPeriodStart,\n  ServiceProviderName,\n  SubAccountId,\n  SubAccountName,\n  ServiceCategory,\n  ServiceSubcategory,\n  ServiceName,\n  SUM(BilledCost) AS TotalBilledCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE ServiceName = ?\n  AND BillingPeriodStart >= ? AND BillingPeriodStart < ?\nGROUP BY\n  BillingPeriodStart,\n  ServiceProviderName,\n  SubAccountId,\n  SubAccountName,\n  ServiceCategory,\n  ServiceSubcategory,\n  ServiceName\nORDER BY TotalBilledCost DESC",
   "sql": "SELECT\n  BillingPeriodStart,\n  ServiceProviderName,\n  SubAccountId,\n  SubAccountName,\n  ServiceCategory,\n  ServiceSubcategory,\n  ServiceName,\n  SUM(BilledCost) AS TotalBilledCost,\n  SUM(EffectiveCost) AS TotalEffectiveCost\nFROM CostAndUsage\nWHERE\n  ServiceName = 'Aura Web Compute'\n  AND BillingPeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND BillingPeriodStart < CAST('2100-01-01 00:00:00' AS TIMESTAMP)\nGROUP BY\n  BillingPeriodStart,\n  ServiceProviderName,\n  SubAccountId,\n  SubAccountName,\n  ServiceCategory,\n  ServiceSubcategory,\n  ServiceName\nORDER BY\n  TotalBilledCost DESC",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -1528,7 +1528,7 @@
   "original_sql": "SELECT DISTINCT\n  SkuId,\n  SkuPriceId,\n  SkuPriceDetails,\n  BillingPeriodStart,\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  BillingCurrency,\n  ListUnitPrice,\n  ContractedUnitPrice\nFROM CostAndUsage\nWHERE\n  SkuPriceId = ?\n  AND ChargePeriodStart >= ?\n  AND ChargePeriodEnd < ?",
   "sql": "SELECT DISTINCT\n  SkuId,\n  SkuPriceId,\n  SkuPriceDetails,\n  BillingPeriodStart,\n  ChargePeriodStart,\n  ChargePeriodEnd,\n  BillingCurrency,\n  ListUnitPrice,\n  ContractedUnitPrice\nFROM CostAndUsage\nWHERE\n  SkuPriceId = 'AURAWEB-USEAST1-COMPUTE-USAGE-FLEXSPEND-ALL-UPFRONT'\n  AND ChargePeriodStart >= CAST('2000-01-01 00:00:00' AS TIMESTAMP)\n  AND ChargePeriodEnd < CAST('2100-01-01 00:00:00' AS TIMESTAMP)",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 0
   },
@@ -1547,7 +1547,7 @@
   "original_sql": "SELECT ProviderName, SUM(BilledCost) AS TotalCost\nFROM focus_data\nGROUP BY ProviderName",
   "sql": "SELECT\n  ProviderName,\n  SUM(BilledCost) AS TotalCost\nFROM focus_data\nGROUP BY\n  ProviderName",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 4
   },
@@ -1566,7 +1566,7 @@
   "original_sql": "SELECT ServiceProviderName, SUM(BilledCost) AS TotalCost\nFROM focus_data\nGROUP BY ServiceProviderName",
   "sql": "SELECT\n  ServiceProviderName,\n  SUM(BilledCost) AS TotalCost\nFROM focus_data\nGROUP BY\n  ServiceProviderName",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 6
   },
@@ -1585,7 +1585,7 @@
   "original_sql": "SELECT \n    ProviderName, \n    PublisherName, \n    InvoiceIssuerName, \n    SUM(BilledCost) AS TotalCost\nFROM focus_data\nGROUP BY ProviderName, PublisherName, InvoiceIssuerName",
   "sql": "SELECT\n  ProviderName,\n  PublisherName,\n  InvoiceIssuerName,\n  SUM(BilledCost) AS TotalCost\nFROM focus_data\nGROUP BY\n  ProviderName,\n  PublisherName,\n  InvoiceIssuerName",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 9
   },
@@ -1604,7 +1604,7 @@
   "original_sql": "SELECT \n    ServiceProviderName, \n    HostProviderName, \n    InvoiceIssuerName, \n    SUM(BilledCost) AS TotalCost\nFROM focus_data\nGROUP BY ServiceProviderName, HostProviderName, InvoiceIssuerName",
   "sql": "SELECT\n  ServiceProviderName,\n  HostProviderName,\n  InvoiceIssuerName,\n  SUM(BilledCost) AS TotalCost\nFROM focus_data\nGROUP BY\n  ServiceProviderName,\n  HostProviderName,\n  InvoiceIssuerName",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 8
   },
@@ -1623,7 +1623,7 @@
   "original_sql": "SELECT \n    ProviderName,\n    PublisherName, \n    SUM(BilledCost) AS TotalCost\nFROM focus_data\nWHERE ProviderName != PublisherName\nGROUP BY ProviderName, PublisherName",
   "sql": "SELECT\n  ProviderName,\n  PublisherName,\n  SUM(BilledCost) AS TotalCost\nFROM focus_data\nWHERE\n  ProviderName <> PublisherName\nGROUP BY\n  ProviderName,\n  PublisherName",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 5
   },
@@ -1642,7 +1642,7 @@
   "original_sql": "SELECT \n    ServiceProviderName,\n    HostProviderName, \n    SUM(BilledCost) AS TotalCost\nFROM focus_data\nWHERE ServiceProviderName != HostProviderName\nGROUP BY ServiceProviderName, HostProviderName",
   "sql": "SELECT\n  ServiceProviderName,\n  HostProviderName,\n  SUM(BilledCost) AS TotalCost\nFROM focus_data\nWHERE\n  ServiceProviderName <> HostProviderName\nGROUP BY\n  ServiceProviderName,\n  HostProviderName",
   "transpiled": true,
-  "real": {
+  "sample": {
    "ok": true,
    "rows": 2
   },

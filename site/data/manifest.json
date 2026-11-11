@@ -1,10 +1,10 @@
 {
  "tables": {
-  "cau_real": {
-   "file": "cau_real.parquet",
+  "cau_sample": {
+   "file": "cau_sample.parquet",
    "rows": 100000,
-   "bytes": 4941934,
-   "description": "Anonymised real FOCUS 1.0 billing data (AWS, Microsoft, Oracle), 100,000 rows from FinOps Foundation FOCUS-Sample-Data, with FOCUS 1.5 column names added. 1.5-only columns are NULL.",
+   "bytes": 4941809,
+   "description": "Anonymised FOCUS 1.0 data (AWS, Microsoft, Oracle), 100,000 rows from FinOps Foundation FOCUS-Sample-Data, with FOCUS 1.5 column names added. 1.5-only columns are NULL.",
    "columns": [
     {
      "name": "AvailabilityZone",

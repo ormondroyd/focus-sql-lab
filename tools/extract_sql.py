@@ -45,7 +45,7 @@ def blocks(md):
 
 
 con = duckdb.connect()
-for t in ["cau_real", "cau_examples", "ContractCommitment", "InvoiceDetail", "SkuPrice", "CorrectionExamples"]:
+for t in ["cau_sample", "cau_examples", "ContractCommitment", "InvoiceDetail", "SkuPrice", "CorrectionExamples"]:
     con.execute(f"CREATE VIEW {t} AS SELECT * FROM '{DATA / (t + '.parquet')}'")
 con.execute("CREATE VIEW CostAndUsage AS SELECT * FROM cau_examples")
 con.execute("CREATE VIEW focus_data AS SELECT * FROM CostAndUsage")  # name used by the migration guide
@@ -130,7 +130,7 @@ for md in SOURCES:
             transpiled = True
         except sqlglot.errors.SqlglotError as e:
             duck, transpiled = filled, False
-        real, ex = run(duck, "cau_real"), run(duck, "cau_examples")
+        sample, ex = run(duck, "cau_sample"), run(duck, "cau_examples")
         examples.append({
             "id": eid,
             "params": params,
@@ -141,7 +141,7 @@ for md in SOURCES:
             "original_sql": raw,
             "sql": duck,
             "transpiled": transpiled,
-            "real": real,
+            "sample": sample,
             "examples": ex,
         })
 
@@ -150,7 +150,7 @@ NOTES = {
         "CC.ContractCommitmentId column, not the SELECT alias built from JSON_VALUE(CA, ...), so that "
         "expression is not grouped. Grouping by the expression itself fixes it.",
     "custom_columns-1": "Illustrative only: x_CustomColumn stands for any provider-specific column. "
-        "Replace it with a real x_ column to run it.",
+        "Replace it with an x_ column that exists to run it.",
     "data_generator_calculated_split_cost_allocation-7": "Uses JSON_TABLE(... COLUMNS (...)), SQL-standard "
         "syntax that neither BigQuery nor DuckDB supports, although the spec presents its examples as BigQuery SQL. "
         "In DuckDB, unnest the JSON array with json_extract and read each field with ->>.",
@@ -161,18 +161,18 @@ for e in examples:
 
 practice = json.loads((pathlib.Path(__file__).parent / "practice.json").read_text())
 for p in practice:
-    p.update({"feature": "Practice on real data", "source": None, "params": [], "transpiled": False,
-              "real": run(p["sql"], "cau_real"), "examples": run(p["sql"], "cau_examples")})
-    print("practice", p["id"], "real:", p["real"], "examples:", p["examples"])
+    p.update({"feature": "Practice queries", "source": None, "params": [], "transpiled": False,
+              "sample": run(p["sql"], "cau_sample"), "examples": run(p["sql"], "cau_examples")})
+    print("practice", p["id"], "sample:", p["sample"], "examples:", p["examples"])
 examples = practice + examples
 
 OUT.write_text(json.dumps(examples, indent=1))
-ok_real = sum(e["real"]["ok"] for e in examples)
+ok_sample = sum(e["sample"]["ok"] for e in examples)
 ok_ex = sum(e["examples"]["ok"] for e in examples)
-nonempty_real = sum(e["real"].get("rows", 0) > 0 for e in examples)
+nonempty_sample = sum(e["sample"].get("rows", 0) > 0 for e in examples)
 nonempty_ex = sum(e["examples"].get("rows", 0) > 0 for e in examples)
-print(f"{len(examples)} queries | run on real: {ok_real} ({nonempty_real} return rows) | "
+print(f"{len(examples)} queries | run on sample: {ok_sample} ({nonempty_sample} return rows) | "
       f"run on 1.5 examples: {ok_ex} ({nonempty_ex} return rows)")
 for e in examples:
-    if not (e["real"]["ok"] or e["examples"]["ok"]):
+    if not (e["sample"]["ok"] or e["examples"]["ok"]):
         print("FAIL", e["id"], "|", e["title"], "|", e["examples"].get("error"))

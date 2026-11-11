@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FOCUS SQL Lab</title>
-<meta name="description" content="Run SQL against real FOCUS billing data in your browser.">
+<meta name="description" content="SQL practice on FOCUS sample data and FOCUS specification examples.">
 <style>
   :root {
     --bg: #f7f7f5; --panel: #ffffff; --fg: #1d1d1b; --muted: #6b6b66; --line: #e2e1dc;
@@ -104,7 +104,6 @@
 <body>
 <header>
   <h1>FOCUS SQL Lab</h1>
-  <span class="sub">SQL on real FOCUS billing data, running in your browser</span>
   <span id="status">Loading DuckDB…</span>
 </header>
 <div class="layout">
@@ -113,7 +112,7 @@
       <h2>Dataset</h2>
       <label class="field" for="dataset"><code>CostAndUsage</code> points to</label>
       <select id="dataset">
-        <option value="cau_real">Real sample, FOCUS 1.0 data with 1.5 names (100,000 rows)</option>
+        <option value="cau_sample">FOCUS sample data, 1.0 with 1.5 names (100,000 rows)</option>
         <option value="cau_examples">Spec 1.5 worked examples (493 rows)</option>
       </select>
       <p class="hint" id="dataset-hint"></p>
@@ -127,9 +126,9 @@
       <details class="notes">
         <summary>Sources and cleaning</summary>
         <ul>
-          <li><b>cau_real</b> is anonymised real FOCUS 1.0 data (AWS, Microsoft, Oracle, a little Google) from the FinOps Foundation's FOCUS-Sample-Data. Costs are anonymised: read the method, not the money.</li>
+          <li><b>cau_sample</b> is the FinOps Foundation's FOCUS-Sample-Data: anonymised FOCUS 1.0 data from AWS, Microsoft, Oracle and a little Google. Costs are anonymised: read the method, not the money.</li>
           <li>To let 1.5 queries run on it, every 1.5 column was added. Columns 1.0 doesn't have are NULL. <code>ServiceProviderName</code> and <code>HostProviderName</code> were derived from <code>ProviderName</code>, <code>PublisherName</code> and <code>InvoiceIssuerName</code> using the spec's migration guidance. The removed 1.0 columns are kept so you can practise migrating queries.</li>
-          <li>The sample writes missing values as the text <code>NULL</code>. These were loaded as real nulls.</li>
+          <li>The sample writes missing values as the text <code>NULL</code>. These were loaded as nulls.</li>
           <li><b>cau_examples</b> and the other tables come from the specification's worked-example CSVs. Each file is a separate scenario, so filter by <code>x_ExampleFile</code> before you add anything up. Some files used the text <code>null</code> or currency text such as <code>$10,000.00</code> in Decimal columns. These were cleaned on load.</li>
           <li>The spec's example queries were converted from BigQuery SQL to DuckDB SQL with sqlglot. <code>?</code> placeholders were filled with values from the data.</li>
         </ul>
@@ -166,7 +165,7 @@ import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.33.1
 const $ = (id) => document.getElementById(id);
 const SPEC_URL = 'https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/blob/working_draft/';
 const SHOW_ROWS = 1000;
-const DATASET_LABEL = { cau_real: 'the real sample', cau_examples: 'the spec 1.5 examples' };
+const DATASET_LABEL = { cau_sample: 'the FOCUS sample data', cau_examples: 'the spec 1.5 examples' };
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch { /* storage unavailable */ } },
@@ -206,7 +205,7 @@ async function init() {
   }
   try { await conn.query(`SELECT '{"a":1}'::JSON ->> '$.a'`); } catch { /* json loads on first use */ }
 
-  const ds = manifest.tables[store.get('dataset')] ? store.get('dataset') : 'cau_real';
+  const ds = manifest.tables[store.get('dataset')] ? store.get('dataset') : 'cau_sample';
   await setDataset(ds);
   await conn.query('CREATE VIEW focus_data AS SELECT * FROM CostAndUsage'); // name used in the migration guide
   renderTables();
@@ -226,12 +225,12 @@ async function setDataset(t, why = '') {
   $('dataset').value = t;
   store.set('dataset', t);
   $('dataset-hint').textContent = why ||
-    (t === 'cau_real' ? 'FOCUS 1.5-only columns, such as SkuPriceDetails, are NULL here.'
+    (t === 'cau_sample' ? 'FOCUS 1.5-only columns, such as SkuPriceDetails, are NULL here.'
                       : 'Each worked-example file is its own scenario. Filter by x_ExampleFile.');
 }
 
 function renderTables() {
-  const order = ['cau_real', 'cau_examples', 'SkuPrice', 'InvoiceDetail', 'ContractCommitment', 'CorrectionExamples'];
+  const order = ['cau_sample', 'cau_examples', 'SkuPrice', 'InvoiceDetail', 'ContractCommitment', 'CorrectionExamples'];
   const views = `<details class="table"><summary><span>CostAndUsage</span><span class="rows">view</span></summary>
     <p>Points to the dataset chosen above. Every spec query uses this name.</p></details>
     <details class="table"><summary><span>focus_data</span><span class="rows">view</span></summary>
@@ -258,7 +257,7 @@ function renderExamples() {
   const sel = $('examples');
   sel.innerHTML = '<option value="">Pick an example query…</option>' + [...groups].map(([feature, list]) =>
     `<optgroup label="${escapeHtml(feature)}">` + list.map((e) => {
-      const broken = !e.real.ok && !e.examples.ok;
+      const broken = !e.sample.ok && !e.examples.ok;
       return `<option value="${e.id}">${broken ? '⚠ ' : ''}${escapeHtml(e.title)}</option>`;
     }).join('') + '</optgroup>').join('');
   sel.disabled = false;
@@ -272,7 +271,7 @@ async function pickExample(id, autoRun = false) {
   $('editor').value = e.sql;
   store.set('sql', e.sql);
 
-  let target = e.dataset || (e.real.rows > 0 ? 'cau_real' : e.examples.rows > 0 ? 'cau_examples' : null);
+  let target = e.dataset || (e.sample.rows > 0 ? 'cau_sample' : e.examples.rows > 0 ? 'cau_examples' : null);
   if (target && target !== $('dataset').value && /CostAndUsage|focus_data/.test(e.sql)) {
     await setDataset(target, `Switched to ${DATASET_LABEL[target]}, because this query returns rows there.`);
   }
@@ -287,7 +286,7 @@ async function pickExample(id, autoRun = false) {
     ${e.intro ? `<p>${escapeHtml(e.intro)}</p>` : ''}
     ${e.note ? `<div class="note">${escapeHtml(e.note)}</div>` : ''}
     ${params}
-    <div class="meta">Tested · ${status(e.real, 'real sample')} · ${status(e.examples, '1.5 examples')}</div>`;
+    <div class="meta">Tested · ${status(e.sample, 'sample data')} · ${status(e.examples, '1.5 examples')}</div>`;
   $('example-info').hidden = false;
   if (autoRun) run();
 }

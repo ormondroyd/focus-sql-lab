@@ -1,19 +1,19 @@
 # FOCUS SQL Lab
 
-A web page for running SQL against real FOCUS billing data. DuckDB-WASM runs the queries in the browser, so the
+A web page for practising SQL on FOCUS sample data and the FOCUS specification's worked examples. DuckDB-WASM runs the queries in the browser, so the
 server only serves static files: no database, no login, no API.
 
 ## What's in it
 
 | Table | Rows | Source |
 | --- | --- | --- |
-| `cau_real` | 100,000 | FinOps Foundation [FOCUS-Sample-Data](https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data), anonymised real FOCUS 1.0 data, given FOCUS 1.5 column names |
+| `cau_sample` | 100,000 | FinOps Foundation [FOCUS-Sample-Data](https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data), anonymised FOCUS 1.0 data, given FOCUS 1.5 column names |
 | `cau_examples` | 493 | FOCUS 1.5 worked-example Cost and Usage rows from the [specification](https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec) |
 | `SkuPrice`, `InvoiceDetail`, `ContractCommitment`, `CorrectionExamples` | small | Specification worked examples |
 
-`CostAndUsage` is a view that points at either `cau_real` or `cau_examples`, chosen on the page.
+`CostAndUsage` is a view that points at either `cau_sample` or `cau_examples`, chosen on the page.
 
-The example menu holds 11 practice queries for the real data and the specification's 66 example queries, converted from BigQuery SQL to DuckDB SQL. 74 of the 77 run. The three that don't are labelled on the page with the reason.
+The example menu holds 11 practice queries for the sample data and the specification's 66 example queries, converted from BigQuery SQL to DuckDB SQL. 74 of the 77 run. The three that don't are labelled on the page with the reason.
 
 ## Rebuild the data
 
