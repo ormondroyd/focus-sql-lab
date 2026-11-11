@@ -62,4 +62,4 @@ python3 -m http.server 8644 --directory site
 ## Deploy
 
 On Coolify, add this repository as a Public Repository resource using the Dockerfile build pack and port 80.
-Press Deploy after each push.
+A GitHub webhook redeploys it on every push to `main`.

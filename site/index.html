@@ -509,7 +509,7 @@ const PSP_V = '3.8.0';
 const darkMode = matchMedia('(prefers-color-scheme: dark)');
 const pspTheme = () => (darkMode.matches ? 'Pro Dark' : 'Pro Light');
 let view = store.get('view') === 'explore' ? 'explore' : 'table';
-let psp = null, pspTable = null, pspSig = null, exploredResult = null, exploreQueue = Promise.resolve();
+let psp = null, pspTable = null, pspSig = null, pspSized = false, exploredResult = null, exploreQueue = Promise.resolve();
 
 function showView() {
   document.querySelectorAll('.viewtabs button').forEach((b) =>
@@ -599,12 +599,22 @@ function renderExplore() {
     try {
       const worker = await loadPerspective();
       const viewer = $('psp');
-      // Don't draw while hidden (Table view or the Data model tab): charts drawn at zero size produce NaN paths.
-      if (viewer.setAutoPause) viewer.setAutoPause(true);
+      if (!pspSized) {
+        // Charts drawn at zero size produce NaN paths. Hiding the explorer (Table view or the Data model tab) shrinks
+        // it to 0×0, so don't redraw on every size change: resize only when it has a real size.
+        viewer.setAutoPause(true);
+        viewer.setAutoSize(false);
+        new ResizeObserver(([e]) => {
+          if (pspTable && e.contentRect.width > 0 && e.contentRect.height > 0) viewer.resize().catch(() => {});
+        }).observe(viewer);
+        pspSized = true;
+      }
       const { schema, data, cols, sig } = toPerspective(result);
       const keep = pspTable && sig === pspSig ? await viewer.save() : null; // same columns: keep the user's view
       const table = await worker.table(schema);
       await table.update(data);
+      // New columns: clear the old chart first, or it is drawn once against columns the new table doesn't have.
+      if (pspTable && !keep) await viewer.reset();
       await viewer.load(table);
       if (pspTable) pspTable.delete().catch(() => {});
       pspTable = table;
