@@ -12,6 +12,9 @@ Everything outside `site/focus/`:
 - `site/column-notes.json`: notes on the debate behind the 11 join-key columns, written by Claude (an AI model) from
   the FOCUS_Spec GitHub issues and pull requests each note lists. They paraphrase those discussions and name
   participants by their GitHub usernames.
+- `site/thread-summaries.json`: summaries of the conversation in the FOCUS_Spec issues and pull requests shown in the
+  Data model's history that have three or more comments or reviews, written by Claude (an AI model) from each thread.
+  They paraphrase those discussions and name participants by their GitHub usernames.
 - `tools/practice.json`: the practice queries, which are built into `site/practice-queries.json`
 - `tools/*.py`: the build scripts
 - `Dockerfile`, `nginx.conf`, `README.md`, `NOTICE.md`

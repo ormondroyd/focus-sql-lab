@@ -206,6 +206,9 @@
   .detail details > summary { cursor: pointer; color: var(--accent); margin: 8px 0; }
   .detail .note-box { border: 1px dashed var(--line); border-radius: 8px; padding: 4px 10px 8px; margin: 10px 0; }
   .detail .note-box h5 { margin: 8px 0 2px; font-size: 12.5px; }
+  .detail .conv { margin: 4px 0 2px; }
+  .detail .conv-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-right: 4px; }
+  .detail ul.pr-issues .conv { font-size: 12.5px; color: var(--muted); }
   .meter { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin: 4px 0 8px; max-width: 360px; }
   .meter span { display: block; height: 100%; background: var(--accent); }
   .detail table { font-size: 12px; min-width: 0; width: auto; }
@@ -1120,8 +1123,14 @@ const loadHistory = () => (historyP ??= fetch('focus/history.json').then((r) => 
 const HISTORY = '<h4>History</h4><div id="history"><p class="hint">Loading…</p></div>';
 const plural = (n, word) => `${n.toLocaleString()} ${word}${n === 1 ? '' : 's'}`;
 
+// Summaries of each thread's conversation (site/thread-summaries.json), for threads with 3+ comments or reviews.
+let summariesP = null;
+const loadSummaries = () => (summariesP ??= fetch('thread-summaries.json').then((r) => (r.ok ? r.json() : null)).catch(() => null));
+
 async function fillHistory(path, token) {
-  const h = await loadHistory();
+  const [h, sums] = await Promise.all([loadHistory(), loadSummaries()]);
+  const said = (sums && sums.summaries) || {};
+  const conv = (n) => (said[n] ? `<p class="conv"><span class="conv-label">The conversation</span>${linkRefs(said[n])}</p>` : '');
   const box = $('history');
   if (token !== detailToken || !box) return;
   const f = h && h.files[path];
@@ -1133,17 +1142,18 @@ async function fillHistory(path, token) {
   const link = (url, text) => `<a href="${url}" target="_blank" rel="noopener">${text}</a>`;
   const issue = (i) => {
     const x = h.issues[i];
-    return x ? `<li>${link(x.url, `#${i}`)} ${escapeHtml(x.title)} · ${plural(x.comments, 'comment')}</li>` : '';
+    return x ? `<li>${link(x.url, `#${i}`)} ${escapeHtml(x.title)} · ${plural(x.comments, 'comment')}${said[i] ? `<div class="conv">${linkRefs(said[i])}</div>` : ''}</li>` : '';
   };
   const item = (p) => `<li class="pr">
     <div class="pr-head"><span class="date">${p.merged}</span>${link(p.url, `#${p.n}`)} ${escapeHtml(p.title)}</div>
     <div class="pr-meta">${p.author ? `${escapeHtml(p.author)} · ` : ''}+${p.a} −${p.d} lines in ${escapeHtml(file)} ·
       ${plural(p.files, 'file')} changed · ${plural(p.comments, 'comment')} · ${plural(p.reviews, 'review')}</div>
     ${p.summary ? `<blockquote>${escapeHtml(p.summary)}<cite>From ${p.summary_from === 'pr' ? 'the pull request' : `issue #${p.summary_from.split(' ')[1]}`}</cite></blockquote>` : ''}
+    ${conv(p.n)}
     ${p.issues.length ? `<ul class="pr-issues">${p.issues.map(issue).join('')}</ul>` : ''}</li>`;
   box.innerHTML = `<p class="hint">The pull requests that changed <code>${escapeHtml(file)}</code>, newest first, from the
-      specification's git history. Each summary is an excerpt of the pull request's own description, or of its issue's.
-      Comment and review counts show how much discussion each had.</p>
+      specification's git history. The quoted text is an excerpt of the pull request's own description, or of its
+      issue's. Where a pull request or issue had a discussion, a summary of it follows.</p>
     <ul class="history">${focused.map(item).join('') || '<li class="hint">None that changed only a few files.</li>'}</ul>
     ${wide.length ? `<details><summary>${plural(wide.length, 'spec-wide change')}: pull requests that changed more than ${h.wide} files</summary>
       <ul class="history">${wide.map(item).join('')}</ul></details>` : ''}
