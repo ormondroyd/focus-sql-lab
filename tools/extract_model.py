@@ -186,6 +186,99 @@ for d in datasets:  # requirements that name a condition, e.g. "When IncludesUni
             if anchor in by_cond and [d["id"], owner] not in by_cond[anchor]["used_by"]:
                 by_cond[anchor]["used_by"].append([d["id"], owner])
 
+# Supporting material: appendix topics, metadata areas and JSON schemas, each a page or a folder of pages.
+SPECDIR = SPEC / "specification"
+TOPICS = [  # kind, path (file or folder) relative to specification/, main page (for folders)
+    *[("appendix", f, m) for f, m in [
+        ("appendix/ai_model_billing_examples", "ai_model_billing_examples.md"), ("appendix/ai_model_identity_examples.md", None),
+        ("appendix/ai_prompt_caching_examples.md", None), ("appendix/commitment_discounts", "commitment_discounts.md"),
+        ("appendix/commitment_program_eligibility_details_examples.md", None),
+        ("appendix/contract_commitments", "contract_commitments.md"),
+        ("appendix/correction_handling_examples", "correction_handling_examples_overview.md"),
+        ("appendix/discount_handling.md", None),
+        ("appendix/examples/commitment_discount_flexibility_examples", "commitment_discount_flexibility_examples_overview.md"),
+        ("appendix/grouping_constructs_for_resources_and_or_services.md", None),
+        ("appendix/invoice_and_billing_period_handling.md", None), ("appendix/invoice_detail", "invoice_detail.md"),
+        ("appendix/json_object_examples", "json_object_examples_overview.md"),
+        ("appendix/metadata_examples", "metadata_examples_overview.md"),
+        ("appendix/participating_entity_identification.md", None), ("appendix/requester_attribution.md", None),
+        ("appendix/rounding_variance_tolerance.md", None), ("appendix/saas_examples", "saas_examples_overview.md"),
+        ("appendix/sku_price_examples", "sku_price_examples_overview.md"), ("appendix/split_cost_allocation_examples.md", None),
+        ("appendix/split_cost_allocation_field_mapping.md", None)]],
+    *[("metadata", f, m) for f, m in [
+        ("metadata/metadata_overview.md", None), ("metadata/data_generator", "data_generator_overview.md"),
+        ("metadata/dataset_instance", "dataset_instance_overview.md"), ("metadata/recency", "recency_overview.md"),
+        ("metadata/schema", "schema_overview.md")]],
+    *[("schema", str(p.relative_to(SPECDIR)), None) for p in sorted((SPECDIR / "schemas").rglob("*.json"))],
+]
+norm = lambda t: re.sub(r"\s+", "", t.lower())
+topics = []
+for kind, rel, main in TOPICS:
+    path = SPECDIR / rel
+    files = sorted(path.rglob("*.md")) if path.is_dir() else [path]
+    if path.is_dir() and main is None:
+        main = files[0].name
+    primary = path / main if path.is_dir() else path
+    text = primary.read_text()
+    tid = re.sub(r"[^a-z0-9]+", "-", rel.rsplit(".", 1)[0].split("/", 1)[1].lower()).strip("-")
+    if kind == "schema":
+        name = json.loads(text).get("title") or primary.stem
+        description = json.loads(text).get("description", "")
+    else:
+        name = clean(text.split("\n", 1)[0].lstrip("# "))
+        description = clean(section(text, "Description") or text.split("\n", 1)[1].strip().split("\n\n")[0])
+    headings = {norm(clean(h)) for f in files for h in re.findall(r"^#{1,4} +(.+)$", f.read_text(), re.M)}
+    topics.append({"id": tid, "kind": kind, "name": name, "description": description, "source": rel_path(primary),
+                   "files": [rel_path(f) for f in files], "pages": [clean(f.read_text().split("\n", 1)[0].lstrip("# "))
+                   for f in files] if len(files) > 1 else [], "requirements": requirements(text) if kind == "metadata" else [],
+                   "json": text if kind == "schema" else None, "headings": sorted(headings), "referenced_by": []})
+
+# Resolve every link the spec makes to this material, e.g. #appendix.examples:participatingentityidentification.
+ref_anchor = {}
+by_id = {t["id"]: t for t in topics}
+everything = " ".join((SPECDIR / f).read_text() for f in [] ) + " ".join(
+    p.read_text() for p in list((SPECDIR / "datasets").rglob("*.md")) + list((SPECDIR / "attributes").glob("*.md"))
+    + list((SPECDIR / "operating_model_conditions").glob("*.md")) + list((SPECDIR / "metadata").rglob("*.md"))
+    + list((SPECDIR / "appendix").rglob("*.md")))
+for target in sorted(set(re.findall(r"\]\(#((?:appendix|metadata|schemas)[^)]*)\)", everything))):
+    if target.startswith("schemas."):
+        hit = next((t for t in topics if t["kind"] == "schema" and t["source"].endswith(target.rsplit(".", 1)[1] + ".json")), None)
+    elif target.startswith("metadata"):
+        parts = target.split(".")
+        want = parts[1] if len(parts) > 1 else "metadata"
+        hit = next((t for t in topics if t["kind"] == "metadata" and t["source"].split("/")[2].replace("_", "").startswith(want)), None)
+    else:
+        segs = [x for x in re.split(r"[.:]", target)[1:] if x not in ("examples", "example")]
+        # The spec's link names are headings or folder names run together, often shortened: "aimodelbilling" for
+        # "AI Model Billing Examples". Prefer an exact match, then a prefix match, segment by segment.
+        def keys(t):
+            return set(t["headings"]) | {re.sub(r"[_\s]", "", pathlib.Path(t["source"]).parent.name if len(t["files"]) > 1
+                                           else pathlib.Path(t["source"]).stem)}
+        def folder(t):
+            return re.sub(r"[_\s]", "", pathlib.Path(t["source"]).parent.name if len(t["files"]) > 1 else pathlib.Path(t["source"]).stem)
+        apx = [t for t in topics if t["kind"] == "appendix"]
+        hit = None
+        for seg in segs:
+            hit = (next((t for t in apx if seg in keys(t)), None)                   # exact heading or folder name
+                   or next((t for t in apx if folder(t).startswith(seg)), None)     # shortened folder name
+                   or next((t for t in apx if any(k.startswith(seg) for k in t["headings"])), None))
+            if hit:
+                break
+        # One link names the page by its title, which the folder and headings don't share.
+        hit = hit or {"appendix.examples:datagenerator-calculatedsplitcostallocation": by_id.get("split-cost-allocation-examples")}.get(target)
+    if hit:
+        ref_anchor[target] = hit["id"]
+unresolved = sorted(set(re.findall(r"\]\(#((?:appendix|metadata|schemas)[^)]*)\)", everything)) - set(ref_anchor))
+by_topic = {t["id"]: t for t in topics}
+for d in datasets:  # every dataset and column page that links to the topic, anywhere on the page
+    for owner, src in [(None, d["source"])] + [(c["id"], c["source"]) for c in d["columns"]]:
+        for target in re.findall(r"\(#((?:appendix|metadata|schemas)[^)]*)\)", (SPEC / src).read_text()):
+            if target in ref_anchor and [d["id"], owner] not in by_topic[ref_anchor[target]]["referenced_by"]:
+                by_topic[ref_anchor[target]]["referenced_by"].append([d["id"], owner])
+for t in topics:
+    del t["headings"]
+print(f"{len(topics)} supporting topics; {len(ref_anchor)} link targets resolved; unresolved: {unresolved}")
+
 # Glossary: the defined terms that requirements link to, e.g. #glossary:covered-charge.
 glossary = {}
 gtext = (SPEC / "specification/glossary.md").read_text()
@@ -342,6 +435,8 @@ model = {
     "datasets": datasets,
     "attributes": attributes,
     "conditions": conditions,
+    "topics": topics,
+    "ref_anchor": ref_anchor,
     "glossary": glossary,
     "relationships": RELS,
 }

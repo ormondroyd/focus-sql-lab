@@ -36,7 +36,8 @@ paths = sorted({d["source"] for d in model["datasets"]}
                | {c["source"] for d in model["datasets"] for c in d["columns"]}
                | {r["source"] for r in model["relationships"]}
                | {a["source"] for a in model.get("attributes", [])}
-               | {c["source"] for c in model.get("conditions", [])})
+               | {c["source"] for c in model.get("conditions", [])}
+               | {f for t in model.get("topics", []) for f in t["files"]})
 
 # ---- Which pull requests changed each file -------------------------------------------------------------------
 files = {}
@@ -253,11 +254,25 @@ for n in out_prs:
 for n in out_issues:
     out_issues[n].update(state_of(n))
 
+# ---- Supporting topics (appendix, metadata, schemas) span several pages: merge their pages' histories ---------
+for t in model.get("topics", []):
+    merged, unmerged, unlinked = {}, {}, 0
+    for f in t["files"]:
+        for n, a, d in files[f]["prs"]:
+            x = merged.get(n, (0, 0)); merged[n] = (x[0] + a, x[1] + d)
+        for n, a, d in files[f].get("unmerged", []):
+            x = unmerged.get(n, (0, 0)); unmerged[n] = (x[0] + a, x[1] + d)
+        unlinked += files[f]["unlinked"]
+    folder = t["source"].rsplit("/", 1)[0] if len(t["files"]) > 1 else t["source"]
+    files["topic:" + t["id"]] = {"prs": [[n, a, d] for n, (a, d) in merged.items()],
+                                 "unmerged": [[n, a, d] for n, (a, d) in unmerged.items()], "unlinked": unlinked,
+                                 "label": folder.rsplit("/", 1)[-1], "link": folder}
+
 # ---- Which pull request last changed each requirement line (git blame) ------------------------------------------
 subjects = dict(line.split(" ", 1) for line in git("log", "--format=%H %s", COMMIT).splitlines() if " " in line)
 req_lines = {}
 for owner in (model["datasets"] + [c for d in model["datasets"] for c in d["columns"]] + model.get("attributes", [])
-              + model.get("conditions", [])):
+              + model.get("conditions", []) + model.get("topics", [])):
     req_lines.setdefault(owner["source"], set()).update(r["line"] for r in owner.get("requirements", []))
 lines = {}
 for path, wanted in req_lines.items():

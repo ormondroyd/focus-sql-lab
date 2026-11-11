@@ -34,17 +34,7 @@ for a change, how the working group found out (surveys, polls, user groups, prov
 use cases, and the trade-offs behind what was cut or deferred. A first keyword pass finds about 150 candidate
 statements; curate them into a browsable list linked to their threads.
 
-## 4. Metadata
-
-The FOCUS metadata section (data generator, dataset instance, recency, schema) describes a delivery of FOCUS data
-rather than its rows. Add it to the Data model with definitions and requirements, the same way as datasets.
-
-## 5. Appendix examples in context
-
-Link the spec's appendix examples (discount handling, split cost allocation, invoice and billing period handling,
-rounding tolerance, AI billing and caching) from the columns and attributes they illustrate.
-
-## 6. Licensing mapping experiment
+## 4. Licensing mapping experiment
 
 Generate synthetic software-licensing data (entitlements, subscription and support terms, part numbers, processor- or
 user-based metrics, sub-capacity usage), express it in FOCUS (for example part number as `SkuId`, licence metric as

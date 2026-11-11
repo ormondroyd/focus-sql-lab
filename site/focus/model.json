@@ -13459,6 +13459,1055 @@
    "used_by": []
   }
  ],
+ "topics": [
+  {
+   "id": "ai-model-billing-examples",
+   "kind": "appendix",
+   "name": "Examples: AI Model Billing",
+   "description": "The following examples illustrate how a Cost and Usage FOCUS dataset represents usage-based billing for AI model APIs, where consumption is measured in tokens rather than in the compute, storage, or networking units common to infrastructure services. Provider and model names below are illustrative.",
+   "source": "specification/appendix/ai_model_billing_examples/ai_model_billing_examples.md",
+   "files": [
+    "specification/appendix/ai_model_billing_examples/ai_model_billing_examples.md",
+    "specification/appendix/ai_model_billing_examples/cached_tokens_via_csp_marketplace.md",
+    "specification/appendix/ai_model_billing_examples/csp_served_third_party_model.md",
+    "specification/appendix/ai_model_billing_examples/drawdown_via_prepayment_ai_model_api.md",
+    "specification/appendix/ai_model_billing_examples/multi_model_invoice_via_csp_marketplace.md",
+    "specification/appendix/ai_model_billing_examples/multi_model_usage.md",
+    "specification/appendix/ai_model_billing_examples/per_token_ai_model_api.md"
+   ],
+   "pages": [
+    "Examples: AI Model Billing",
+    "Cached Tokens via CSP Marketplace",
+    "CSP-Served Third-Party Model",
+    "Drawdown via Prepayment",
+    "Multi-Model Invoice via CSP Marketplace",
+    "Multi-Model Usage",
+    "Per-Token AI Model API"
+   ],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "ai-model-identity-examples",
+   "kind": "appendix",
+   "name": "Examples: AI Model Identity",
+   "description": "The following examples illustrate how a Cost and Usage FOCUS dataset represents the identity of an AI model using FOCUS-defined SKU Price Details properties. They also demonstrate how the TokenDirection property labels the structural split between input (i.e., prompt) and output (i.e., generated) tokens. Provider and model names below are illustrative.",
+   "source": "specification/appendix/ai_model_identity_examples.md",
+   "files": [
+    "specification/appendix/ai_model_identity_examples.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "ai-prompt-caching-examples",
+   "kind": "appendix",
+   "name": "Examples: AI Prompt Caching",
+   "description": "The following examples illustrate how a Cost and Usage FOCUS dataset uses the FOCUS-defined SKU Price Details properties TokenCacheAction and TokenDirection to distinguish cached from uncached token charges. They also show how charges for retaining cached content over time remain a separate metered operation. Provider and model names below are illustrative.",
+   "source": "specification/appendix/ai_prompt_caching_examples.md",
+   "files": [
+    "specification/appendix/ai_prompt_caching_examples.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": [
+    [
+     "CostAndUsage",
+     "SkuPriceDetails"
+    ]
+   ]
+  },
+  {
+   "id": "commitment-discounts",
+   "kind": "appendix",
+   "name": "Examples: Commitment Discounts",
+   "description": "This appendix section defines the concept of a commitment discount. It then lays out a series of FOCUS dataset examples.",
+   "source": "specification/appendix/commitment_discounts/commitment_discounts.md",
+   "files": [
+    "specification/appendix/commitment_discounts/aura_web_flexible_spend_plan_all_upfront_0pct.md",
+    "specification/appendix/commitment_discounts/aura_web_flexible_spend_plan_all_upfront_100pct.md",
+    "specification/appendix/commitment_discounts/aura_web_flexible_spend_plan_all_upfront_50pct.md",
+    "specification/appendix/commitment_discounts/aura_web_flexible_spend_plan_all_upfront_75pct.md",
+    "specification/appendix/commitment_discounts/aura_web_flexible_spend_plan_all_upfront_overage.md",
+    "specification/appendix/commitment_discounts/aura_web_flexible_spend_plan_no_upfront_100pct.md",
+    "specification/appendix/commitment_discounts/aura_web_flexible_spend_plan_partial_upfront_100pct.md",
+    "specification/appendix/commitment_discounts/aura_web_resource_reservation_all_upfront_100pct.md",
+    "specification/appendix/commitment_discounts/aura_web_resource_reservation_partial_upfront_100pct.md",
+    "specification/appendix/commitment_discounts/commitment_discounts.md",
+    "specification/appendix/commitment_discounts/crestnode_flexible_spend_plan_all_upfront_100pct.md",
+    "specification/appendix/commitment_discounts/crestnode_resource_reservation_all_upfront_100pct.md",
+    "specification/appendix/commitment_discounts/crestnode_resource_reservation_no_upfront_100pct.md",
+    "specification/appendix/commitment_discounts/latticescale_dynamic_compute_commitment_no_upfront_100pct.md",
+    "specification/appendix/commitment_discounts/latticescale_resource_reservation_no_upfront_100pct.md"
+   ],
+   "pages": [
+    "Aura Web Flexible Spend Plan - All Upfront - 0% Utilization",
+    "Aura Web Flexible Spend Plan - All Upfront - 100% Utilization",
+    "Aura Web Flexible Spend Plan - All Upfront - 50% Utilization",
+    "Aura Web Flexible Spend Plan - All Upfront - 75% Utilization",
+    "Aura Web Flexible Spend Plan - All Upfront - 100% Utilization with Overage",
+    "Aura Web Flexible Spend Plan - No Upfront - 100% Utilization",
+    "Aura Web Flexible Spend Plan - Partial Upfront - 100% Utilization",
+    "Aura Web Resource Reservation - All Upfront - 100% Utilization",
+    "Aura Web Resource Reservation - Partial Upfront - 100% Utilization",
+    "Examples: Commitment Discounts",
+    "CrestNode Flexible Spend Plan - All Upfront - 100% Utilization",
+    "CrestNode Resource Reservation - All Upfront - 100% Utilization",
+    "CrestNode Resource Reservation - No Upfront - 100% Utilization",
+    "LatticeScale Dynamic Compute Commitment - No Upfront - 100% Utilization",
+    "LatticeScale Resource Reservation - No Upfront - 100% Utilization"
+   ],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "commitment-program-eligibility-details-examples",
+   "kind": "appendix",
+   "name": "Examples: Commitment Program Eligibility Details",
+   "description": "This section demonstrates how CommitmentProgramEligibilityDetails interacts with other columns for capacity reservation programs. For discount-bearing program SQL queries, see the Commitment Program Eligibility Details supported feature.",
+   "source": "specification/appendix/commitment_program_eligibility_details_examples.md",
+   "files": [
+    "specification/appendix/commitment_program_eligibility_details_examples.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "contract-commitments",
+   "kind": "appendix",
+   "name": "Examples: Contract Commitments",
+   "description": "## Overview",
+   "source": "specification/appendix/contract_commitments/contract_commitments.md",
+   "files": [
+    "specification/appendix/contract_commitments/contract_commitments.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "correction-handling-examples",
+   "kind": "appendix",
+   "name": "Examples: Correction Handling",
+   "description": "This section provides examples of how correction handling may be implemented in alignment with the FOCUS specification. The examples are limited to illustrating correction handling for the Cost and Usage FOCUS dataset, and cover scenarios involving corrections to open and closed billing periods, as well as the various delivery mechanisms and correction styles supported by FOCUS.",
+   "source": "specification/appendix/correction_handling_examples/correction_handling_examples_overview.md",
+   "files": [
+    "specification/appendix/correction_handling_examples/closed_billing_period.md",
+    "specification/appendix/correction_handling_examples/correction_handling_examples_overview.md",
+    "specification/appendix/correction_handling_examples/open_billing_period.md"
+   ],
+   "pages": [
+    "Corrections to Closed Billing Period",
+    "Examples: Correction Handling",
+    "Corrections to Open Billing Period"
+   ],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "discount-handling",
+   "kind": "appendix",
+   "name": "Discount Handling",
+   "description": "While service providers may use different terms and mechanisms to describe and represent discounts in their native datasets, FOCUS represents discounts as reduced pricing reflected directly in the charges they pertain to, rather than as separate offsetting charges. Unlike discounts, credits are financial incentives or allowances represented as separate charges unrelated to other charges.",
+   "source": "specification/appendix/discount_handling.md",
+   "files": [
+    "specification/appendix/discount_handling.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "examples-commitment-discount-flexibility-examples",
+   "kind": "appendix",
+   "name": "Examples: Commitment Discount Flexibility",
+   "description": "A usage-based commitment discount obligates a customer to a usage amount for one or more related SKUs in return for reduced rates. For example, when a usage-based commitment discount is purchased to cover a specific database SKU, this commitment will cover every hour over the period where at least one instance of this SKU is running. The usage-based commitment can cover 1 resource over the hour, or in the case of commitment discount flexibility, it can cover a portion of 1 resource or multiple resources at a time.",
+   "source": "specification/appendix/examples/commitment_discount_flexibility_examples/commitment_discount_flexibility_examples_overview.md",
+   "files": [
+    "specification/appendix/examples/commitment_discount_flexibility_examples/commitment_discount_flexibility_examples_overview.md",
+    "specification/appendix/examples/commitment_discount_flexibility_examples/one_hundred_percent_utilization_with_commitment_discount_flexibility_with_1_resource.md",
+    "specification/appendix/examples/commitment_discount_flexibility_examples/one_hundred_percent_utilization_with_commitment_discount_flexibility_with_2_resources.md",
+    "specification/appendix/examples/commitment_discount_flexibility_examples/one_hundred_percent_utilization_without_commitment_discount_flexibility.md",
+    "specification/appendix/examples/commitment_discount_flexibility_examples/zero_percent_utilization_without_commitment_discount_flexibility.md"
+   ],
+   "pages": [
+    "Examples: Commitment Discount Flexibility",
+    "100% Utilization with Commitment Discount Flexibility with 1 Resource",
+    "100% Utilization with Commitment Discount Flexibility with 2 Resources",
+    "100% Utilization Without Commitment Discount Flexibility",
+    "0% Utilization Without Commitment Discount Flexibility"
+   ],
+   "requirements": [],
+   "json": null,
+   "referenced_by": [
+    [
+     "CostAndUsage",
+     "CommitmentDiscountQuantity"
+    ],
+    [
+     "CostAndUsage",
+     "CommitmentDiscountUnit"
+    ],
+    [
+     "CostAndUsage",
+     "SkuPriceId"
+    ]
+   ]
+  },
+  {
+   "id": "grouping-constructs-for-resources-and-or-services",
+   "kind": "appendix",
+   "name": "Grouping Constructs for Resources or Services",
+   "description": "Service Providers natively support various constructs for grouping resources or services. These grouping constructs are often used to mimic organizational structures, technical architectures, cost attribution/allocation and access management boundaries, or other customer-specific structures based on requirements.",
+   "source": "specification/appendix/grouping_constructs_for_resources_and_or_services.md",
+   "files": [
+    "specification/appendix/grouping_constructs_for_resources_and_or_services.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": [
+    [
+     "CostAndUsage",
+     "BillingAccountId"
+    ],
+    [
+     "CostAndUsage",
+     "BillingAccountName"
+    ],
+    [
+     "CostAndUsage",
+     "InvoiceId"
+    ],
+    [
+     "CostAndUsage",
+     "SubAccountId"
+    ],
+    [
+     "CostAndUsage",
+     "SubAccountName"
+    ],
+    [
+     "InvoiceDetail",
+     "BillingAccountId"
+    ]
+   ]
+  },
+  {
+   "id": "invoice-and-billing-period-handling",
+   "kind": "appendix",
+   "name": "Invoice and Billing Period Handling",
+   "description": "## Overview",
+   "source": "specification/appendix/invoice_and_billing_period_handling.md",
+   "files": [
+    "specification/appendix/invoice_and_billing_period_handling.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": [
+    [
+     "InvoiceDetail",
+     "InvoiceIssueStatus"
+    ],
+    [
+     "BillingPeriod",
+     "BillingPeriodStatus"
+    ]
+   ]
+  },
+  {
+   "id": "invoice-detail",
+   "kind": "appendix",
+   "name": "Examples: Invoice Detail",
+   "description": "## Overview",
+   "source": "specification/appendix/invoice_detail/invoice_detail.md",
+   "files": [
+    "specification/appendix/invoice_detail/invoice_detail.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "json-object-examples",
+   "kind": "appendix",
+   "name": "Examples: JSON Object",
+   "description": "This section provides examples for the columns in the specification in the JSON Object Format.",
+   "source": "specification/appendix/json_object_examples/json_object_examples_overview.md",
+   "files": [
+    "specification/appendix/json_object_examples/allocated_method_details_examples.md",
+    "specification/appendix/json_object_examples/commitment_program_eligibility_details_examples.md",
+    "specification/appendix/json_object_examples/contract_applied_examples.md",
+    "specification/appendix/json_object_examples/contract_commitment_applicability_examples.md",
+    "specification/appendix/json_object_examples/json_object_examples_overview.md",
+    "specification/appendix/json_object_examples/requester_details_examples.md",
+    "specification/appendix/json_object_examples/sku_price_eligibility_examples.md"
+   ],
+   "pages": [
+    "Examples: Allocated Method Details",
+    "Examples: Commitment Program Eligibility Details",
+    "Examples: Contract Applied",
+    "Examples: Contract Commitment Applicability",
+    "Examples: JSON Object",
+    "Examples: Requester Details",
+    "Examples: SKU Price Eligibility"
+   ],
+   "requirements": [],
+   "json": null,
+   "referenced_by": [
+    [
+     "CostAndUsage",
+     "AllocatedMethodDetails"
+    ],
+    [
+     "CostAndUsage",
+     "CommitmentProgramEligibilityDetails"
+    ],
+    [
+     "CostAndUsage",
+     "ContractApplied"
+    ],
+    [
+     "CostAndUsage",
+     "RequesterDetails"
+    ],
+    [
+     "ContractCommitment",
+     "ContractCommitmentApplicability"
+    ]
+   ]
+  },
+  {
+   "id": "metadata-examples",
+   "kind": "appendix",
+   "name": "Examples: Metadata",
+   "description": "The following sections contain examples of metadata provided by a hypothetical FOCUS data generator called CrestNode to supply the required reference between the FOCUS dataset artifacts and the Metadata. Data Generator implementations will vary on how the metadata is disseminated; however, the data generator's chosen metadata delivery approach should be able to support the structure represented in this example.",
+   "source": "specification/appendix/metadata_examples/metadata_examples_overview.md",
+   "files": [
+    "specification/appendix/metadata_examples/adding_new_columns_example.md",
+    "specification/appendix/metadata_examples/changing_column_metadata_example.md",
+    "specification/appendix/metadata_examples/correcting_schema_errors_example.md",
+    "specification/appendix/metadata_examples/data_generator_example.md",
+    "specification/appendix/metadata_examples/data_generator_version_changed_example.md",
+    "specification/appendix/metadata_examples/dataset_instance_metadata_example.md",
+    "specification/appendix/metadata_examples/deprecating_columns_example.md",
+    "specification/appendix/metadata_examples/focus_version_changed_example.md",
+    "specification/appendix/metadata_examples/focus_version_changed_with_data_generator_version_used_example.md",
+    "specification/appendix/metadata_examples/metadata_examples_overview.md",
+    "specification/appendix/metadata_examples/recency_metadata_example.md",
+    "specification/appendix/metadata_examples/recency_metadata_update_non_time_series_example.md",
+    "specification/appendix/metadata_examples/recency_metadata_update_time_series_example.md",
+    "specification/appendix/metadata_examples/removing_columns_example.md",
+    "specification/appendix/metadata_examples/renaming_columns_example.md",
+    "specification/appendix/metadata_examples/schema_dataset_instance_id_example.md",
+    "specification/appendix/metadata_examples/schema_metadata_example.md",
+    "specification/appendix/metadata_examples/schema_metadata_reference_example.md"
+   ],
+   "pages": [
+    "Adding New Columns",
+    "Changing Column Metadata",
+    "Data Generator Metadata Error Correction",
+    "Data Generator Metadata",
+    "Data Changed by Data Generator Using Data Generator Version",
+    "Dataset Instance Metadata",
+    "Deprecating Columns",
+    "FOCUS Version Changed",
+    "FOCUS Version Changed by Data Generator Using Data Generator Version",
+    "Examples: Metadata",
+    "Recency Metadata",
+    "Recency Metadata Update (Non Time Series)",
+    "Recency Metadata Update (Time Series)",
+    "Removing Columns",
+    "Renaming Columns",
+    "Dataset Metadata Example",
+    "Schema Metadata",
+    "Schema Metadata to FOCUS Data Reference"
+   ],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "participating-entity-identification",
+   "kind": "appendix",
+   "name": "Examples: Participating Entity Identification",
+   "description": "Understanding cost and usage data in billing datasets requires identifying the roles of several participating entities involved in resource or service provisioning, invoicing, and data generation. The FOCUS Specification includes multiple columns to identify key participating entities, these include:",
+   "source": "specification/appendix/participating_entity_identification.md",
+   "files": [
+    "specification/appendix/participating_entity_identification.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": [
+    [
+     "CostAndUsage",
+     "HostProviderName"
+    ],
+    [
+     "CostAndUsage",
+     "InvoiceIssuerName"
+    ],
+    [
+     "CostAndUsage",
+     "ServiceProviderName"
+    ],
+    [
+     "SkuPrice",
+     "ServiceProviderName"
+    ],
+    [
+     "InvoiceDetail",
+     "InvoiceIssuerName"
+    ],
+    [
+     "BillingPeriod",
+     "InvoiceIssuerName"
+    ]
+   ]
+  },
+  {
+   "id": "requester-attribution",
+   "kind": "appendix",
+   "name": "Examples: Requester Attribution",
+   "description": "The examples below illustrate how Principal ID and Credential ID are populated in the Cost and Usage dataset across technology environments. Each scenario shows which levels of the requester are represented: the principal to which access to a resource or service is granted, the credential presented on the request that produced the charge, both, or neither. Provider, customer, and identifier values below are illustrative.",
+   "source": "specification/appendix/requester_attribution.md",
+   "files": [
+    "specification/appendix/requester_attribution.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": [
+    [
+     "CostAndUsage",
+     "CredentialId"
+    ],
+    [
+     "CostAndUsage",
+     "PrincipalId"
+    ]
+   ]
+  },
+  {
+   "id": "rounding-variance-tolerance",
+   "kind": "appendix",
+   "name": "Rounding Variance Tolerance",
+   "description": "When performing invoice reconciliation between the Cost and Usage dataset and an invoice (either the payable invoice itself, or the Invoice Detail dataset), the totals may not be perfectly equal due to precision differences (e.g., 6 decimals in detailed cost data vs. 2 decimals in invoice data). The following tolerance formula allows for a maximum rounding error based on the statistical probability of rounding variance, which grows with the square root of the row count.",
+   "source": "specification/appendix/rounding_variance_tolerance.md",
+   "files": [
+    "specification/appendix/rounding_variance_tolerance.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": [
+    [
+     "CostAndUsage",
+     "BilledCost"
+    ],
+    [
+     "InvoiceDetail",
+     "BilledCost"
+    ]
+   ]
+  },
+  {
+   "id": "saas-examples",
+   "kind": "appendix",
+   "name": "Examples: SaaS",
+   "description": "The following section contains examples of how SaaS data generators may implement the FOCUS specification. SaaS data generator implementations will vary on the level of detail available in their data, contract terms, purchasing options, and other factors.",
+   "source": "specification/appendix/saas_examples/saas_examples_overview.md",
+   "files": [
+    "specification/appendix/saas_examples/billing_scenario_examples.md",
+    "specification/appendix/saas_examples/consumption_currency_pricing_model.md",
+    "specification/appendix/saas_examples/saas_examples_overview.md",
+    "specification/appendix/saas_examples/simple_agreements.md",
+    "specification/appendix/saas_examples/spend_agreements.md"
+   ],
+   "pages": [
+    "Billing Scenario Examples",
+    "Consumption Currency Pricing Model",
+    "Examples: SaaS",
+    "Simple SaaS Agreements",
+    "SaaS Spend Agreements"
+   ],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "sku-price-examples",
+   "kind": "appendix",
+   "name": "Examples: SKU Price",
+   "description": "> Preview: The SKU Price dataset is a preview in this version of FOCUS, so these examples may change in the next version based on implementation feedback. The preview also covers two requirements outside the dataset, which are excluded from conformance, and two operating model conditions and a schema that exist only for SKU Price. Issue #2768 tracks the preview and lists each one.",
+   "source": "specification/appendix/sku_price_examples/sku_price_examples_overview.md",
+   "files": [
+    "specification/appendix/sku_price_examples/commitment_pricing.md",
+    "specification/appendix/sku_price_examples/price_effectivity_and_currency.md",
+    "specification/appendix/sku_price_examples/quantity_tier_pricing.md",
+    "specification/appendix/sku_price_examples/sku_price_examples_overview.md",
+    "specification/appendix/sku_price_examples/standard_and_negotiated_prices.md"
+   ],
+   "pages": [
+    "Commitment Pricing",
+    "Price Effectivity and Currency",
+    "Quantity Tier Pricing",
+    "Examples: SKU Price",
+    "Standard and Negotiated Prices"
+   ],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "split-cost-allocation-examples",
+   "kind": "appendix",
+   "name": "Examples: Data Generator-Calculated Split Cost Allocation",
+   "description": "This section demonstrates how AllocatedServiceName enables consumer service identification on allocated charges when a data generator preserves origin dimensions in accordance with DataGeneratorCalculatedSplitCostAllocationHandling requirements.",
+   "source": "specification/appendix/split_cost_allocation_examples.md",
+   "files": [
+    "specification/appendix/split_cost_allocation_examples.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "split-cost-allocation-field-mapping",
+   "kind": "appendix",
+   "name": "Examples: Split Cost Allocation Field Mapping",
+   "description": "DataGeneratorCalculatedSplitCostAllocationHandling  defines the requirements for split cost allocation, but does not show how a data generator gets there from its own native dataset. This is a non-obvious step for data generators whose native dataset artifact uses a column-augmentation format \u2014 a single row carrying per-consumer allocation detail in extension columns, rather than a separate row per consumer. Without a worked example, data generators using this format have had to reverse-engineer the transformation independently. This section closes that gap with a worked example showing how such a native dataset artifact transforms into FOCUS allocated charge rows. It shows the resulting origin charge and allocated charge rows, including the Allocated* columns used in this scenario, and verifies that summable metrics reconcile across the split.",
+   "source": "specification/appendix/split_cost_allocation_field_mapping.md",
+   "files": [
+    "specification/appendix/split_cost_allocation_field_mapping.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "metadata-overview",
+   "kind": "metadata",
+   "name": "Metadata",
+   "description": "The FOCUS specification defines a metadata structure to be supplied by data providers to facilitate practitioners' use of FOCUS data. This metadata includes general information about the dataset artifact.",
+   "source": "specification/metadata/metadata_overview.md",
+   "files": [
+    "specification/metadata/metadata_overview.md"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "data-generator",
+   "kind": "metadata",
+   "name": "Data Generator",
+   "description": "The FOCUS metadata about the generator of the FOCUS data.",
+   "source": "specification/metadata/data_generator/data_generator_overview.md",
+   "files": [
+    "specification/metadata/data_generator/data_generator.md",
+    "specification/metadata/data_generator/data_generator_overview.md"
+   ],
+   "pages": [
+    "Data Generator",
+    "Data Generator"
+   ],
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "DataGenerator adheres to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "DataGenerator MUST be present in the [Metadata](#metadata).",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "DataGenerator MUST be of type Object.",
+     "line": 10
+    },
+    {
+     "depth": 0,
+     "md": "DataGenerator MUST NOT be null.",
+     "line": 11
+    }
+   ],
+   "json": null,
+   "referenced_by": [
+    [
+     "CostAndUsage",
+     null
+    ],
+    [
+     "CostAndUsage",
+     "RequesterDetails"
+    ]
+   ]
+  },
+  {
+   "id": "dataset-instance",
+   "kind": "metadata",
+   "name": "Dataset Instance",
+   "description": "The Dataset Instance metadata object provides information about the dataset instance and its content. Dataset Instance is a data generator-delivered instance of a FOCUS Dataset. For example, a Data Generator may provide multiple datasets utilizing the FOCUS specification, including multiple instances of the FOCUS Cost and Usage dataset, each representing a different time granularity.",
+   "source": "specification/metadata/dataset_instance/dataset_instance_overview.md",
+   "files": [
+    "specification/metadata/dataset_instance/dataset_instance_id.md",
+    "specification/metadata/dataset_instance/dataset_instance_name.md",
+    "specification/metadata/dataset_instance/dataset_instance_overview.md",
+    "specification/metadata/dataset_instance/focus_dataset.md"
+   ],
+   "pages": [
+    "Dataset Instance ID",
+    "Dataset Instance Name",
+    "Dataset Instance",
+    "FOCUS Dataset ID"
+   ],
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "DatasetInstance adheres to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "DatasetInstance MUST be present in the [Metadata](#metadata).",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "DatasetInstance MUST be structured as a collection of objects.",
+     "line": 10
+    },
+    {
+     "depth": 0,
+     "md": "DatasetInstance MUST NOT be null.",
+     "line": 11
+    },
+    {
+     "depth": 0,
+     "md": "DatasetInstance collection MUST contain at least one object for every [*FOCUS dataset*](#glossary:FOCUS-dataset) supported by the data generator.",
+     "line": 12
+    },
+    {
+     "depth": 0,
+     "md": "DatasetInstance collection object MUST NOT be null.",
+     "line": 13
+    },
+    {
+     "depth": 0,
+     "md": "DatasetInstance collection object MUST be associated with one and only one *FOCUS dataset*.",
+     "line": 14
+    }
+   ],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "recency",
+   "kind": "metadata",
+   "name": "Recency",
+   "description": "The recency metadata object and its contents provide information about how up-to-date FOCUS datasets are and when they have been updated.",
+   "source": "specification/metadata/recency/recency_overview.md",
+   "files": [
+    "specification/metadata/recency/dataset_instance_complete.md",
+    "specification/metadata/recency/dataset_instance_id.md",
+    "specification/metadata/recency/dataset_instance_last_updated.md",
+    "specification/metadata/recency/recency_last_updated.md",
+    "specification/metadata/recency/recency_overview.md",
+    "specification/metadata/recency/time_sectors/time_sector_complete.md",
+    "specification/metadata/recency/time_sectors/time_sector_end.md",
+    "specification/metadata/recency/time_sectors/time_sector_last_updated.md",
+    "specification/metadata/recency/time_sectors/time_sector_start.md",
+    "specification/metadata/recency/time_sectors/time_sectors_overview.md"
+   ],
+   "pages": [
+    "Dataset Instance Complete",
+    "Dataset Instance ID",
+    "Dataset Instance Last Updated",
+    "Recency Last Updated",
+    "Recency",
+    "Time Sector Complete",
+    "Time Sector End",
+    "Time Sector Last Updated",
+    "Time Sector Start",
+    "Time Sectors"
+   ],
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "Recency adheres to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "Recency MAY be present in the [Metadata](#metadata).",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "Recency MUST be structured as a collection of objects.",
+     "line": 10
+    },
+    {
+     "depth": 0,
+     "md": "Recency MUST NOT be null.",
+     "line": 11
+    },
+    {
+     "depth": 0,
+     "md": "Recency collection MUST NOT contain null objects.",
+     "line": 12
+    },
+    {
+     "depth": 0,
+     "md": "Recency collection MAY contain one and only one object for every [DatasetInstance](#metadata.datasetinstance) object.",
+     "line": 13
+    },
+    {
+     "depth": 0,
+     "md": "Recency collection object MUST be associated with one and only one DatasetInstance object.",
+     "line": 14
+    },
+    {
+     "depth": 0,
+     "md": "Recency collection object MUST be retrievable without inspection of the contents of [*dataset instance artifacts*](#glossary:dataset-instance-artifact).",
+     "line": 15
+    },
+    {
+     "depth": 0,
+     "md": "Recency collection object SHOULD be updated when the data generator updates the corresponding *dataset instance artifact*.",
+     "line": 16
+    }
+   ],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "schema",
+   "kind": "metadata",
+   "name": "Schema",
+   "description": "The schema metadata object and its content provide information about the structure of the data provided.",
+   "source": "specification/metadata/schema/schema_overview.md",
+   "files": [
+    "specification/metadata/schema/column_definition/column_definition_overview.md",
+    "specification/metadata/schema/column_definition/columnname.md",
+    "specification/metadata/schema/column_definition/datatype.md",
+    "specification/metadata/schema/column_definition/deprecated.md",
+    "specification/metadata/schema/column_definition/numberscale.md",
+    "specification/metadata/schema/column_definition/numericprecision.md",
+    "specification/metadata/schema/column_definition/previouscolumnname.md",
+    "specification/metadata/schema/column_definition/providertagprefixes.md",
+    "specification/metadata/schema/column_definition/stringencoding.md",
+    "specification/metadata/schema/column_definition/stringmaxlength.md",
+    "specification/metadata/schema/creation_date.md",
+    "specification/metadata/schema/data_generator_version.md",
+    "specification/metadata/schema/dataset_instance_id.md",
+    "specification/metadata/schema/focus_version.md",
+    "specification/metadata/schema/schema_id.md",
+    "specification/metadata/schema/schema_overview.md"
+   ],
+   "pages": [
+    "Column Definition",
+    "Column Name",
+    "Data Type",
+    "Deprecated",
+    "Number Scale",
+    "Numeric Precision",
+    "Previous Column Name",
+    "Provider Tag Prefixes",
+    "String Encoding",
+    "String Max Length",
+    "Creation Date",
+    "Data Generator Version",
+    "Dataset Instance ID",
+    "FOCUS Version",
+    "Schema ID",
+    "Schema"
+   ],
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "Schema adheres to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "Schema MUST be present in the [Metadata](#metadata).",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "Schema MUST be structured as a collection of objects.",
+     "line": 10
+    },
+    {
+     "depth": 0,
+     "md": "Schema MUST NOT be null.",
+     "line": 11
+    },
+    {
+     "depth": 0,
+     "md": "Schema collection MUST contain at least one object for every [DatasetInstance](#metadata.datasetinstance) object.",
+     "line": 12
+    },
+    {
+     "depth": 0,
+     "md": "Schema collection MUST NOT contain null objects.",
+     "line": 13
+    },
+    {
+     "depth": 0,
+     "md": "Schema collection object MUST be associated with one and only one DatasetInstance object.",
+     "line": 14
+    },
+    {
+     "depth": 0,
+     "md": "Schema collection object MUST be added to the collection whenever the structure of the [*dataset instance artifacts*](#glossary:dataset-instance-artifact) changes (including, but not limited to, additions or removals of columns, modifications to any ColumnDefinition, or updates to the FOCUSVersion or DataGeneratorVersion).",
+     "line": 15
+    },
+    {
+     "depth": 0,
+     "md": "Schema collection object MUST be referenced by *dataset instance artifacts* that conform to the structure defined by that Schema collection object.",
+     "line": 16
+    },
+    {
+     "depth": 0,
+     "md": "Schema collection object MUST define the exact structure of the *dataset instance artifacts* that reference it.",
+     "line": 17
+    },
+    {
+     "depth": 0,
+     "md": "Schema collection object MUST be retrievable independently from the *dataset instance artifacts* that conform to the structure defined by that Schema collection object.",
+     "line": 18
+    },
+    {
+     "depth": 0,
+     "md": "Schema collection object SHOULD be provided separately from the *dataset instance artifacts* that conform to the structure defined by that Schema collection object.",
+     "line": 19
+    },
+    {
+     "depth": 0,
+     "md": "Schema collection object MAY be provided through the structure and/or schema of the delivery mechanism (e.g., database tables).",
+     "line": 20
+    }
+   ],
+   "json": null,
+   "referenced_by": []
+  },
+  {
+   "id": "datasets-contract-commitment-contractcommitmentapplicabilityobjectschema",
+   "kind": "schema",
+   "name": "Contract Commitment Applicability Object",
+   "description": "Schema for validating the Contract Commitment Applicability column JSON object structure in FOCUS datasets",
+   "source": "specification/schemas/datasets/contract_commitment/contractcommitmentapplicabilityobjectschema.json",
+   "files": [
+    "specification/schemas/datasets/contract_commitment/contractcommitmentapplicabilityobjectschema.json"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"$id\": \"https://focus.finops.org/schemas/contractcommitmentapplicabilityobject.json\",\n  \"title\": \"Contract Commitment Applicability Object\",\n  \"description\": \"Schema for validating the Contract Commitment Applicability column JSON object structure in FOCUS datasets\",\n  \"type\": \"object\",\n  \"$defs\": {\n    \"ApplicabilityObject\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"Cost\": {\n          \"type\": \"number\",\n          \"description\": \"Percentage applicable to ContractCommitmentCost\",\n          \"minimum\": 0.0,\n          \"maximum\": 1.0,\n          \"default\": 1.0\n        },\n        \"Usage\": {\n          \"type\": \"number\",\n          \"description\": \"Percentage applicable to ContractCommitmentQuantity\",\n          \"minimum\": 0.0,\n          \"maximum\": 1.0,\n          \"default\": 1.0\n        }\n      },\n      \"additionalProperties\": false\n    },\n    \"ApplicabilityRule\": {\n      \"type\": \"object\",\n      \"required\": [\n        \"Dimension\",\n        \"Operator\",\n        \"Values\"\n      ],\n      \"properties\": {\n        \"Dimension\": {\n          \"type\": \"string\",\n          \"description\": \"A valid FOCUS Column Name\"\n        },\n        \"Operator\": {\n          \"type\": \"string\",\n          \"description\": \"The comparison logic to apply\",\n          \"enum\": [\n            \"In\",\n            \"NotIn\",\n            \"StartsWith\",\n            \"NotStartsWith\",\n            \"Contains\",\n            \"NotContains\",\n            \"EndsWith\",\n            \"Exists\",\n            \"DoesNotExist\"\n          ]\n        },\n        \"Values\": {\n          \"type\": \"array\",\n          \"description\": \"List of strings to compare\",\n          \"items\": {\n            \"type\": \"string\"\n          },\n          \"minItems\": 1\n        },\n        \"Applicability\": {\n          \"$ref\": \"#/$defs/ApplicabilityObject\",\n          \"description\": \"Optional rule-level applicability that overrides top-level\"\n        }\n      },\n      \"allOf\": [\n        {\n          \"description\": \"Wildcard constraint: If '*' is used, it must be the only value and Operator must be compatible.\",\n          \"if\": {\n            \"properties\": {\n              \"Values\": {\n                \"contains\": {\n                  \"const\": \"*\"\n                }\n              }\n            }\n          },\n          \"then\": {\n            \"properties\": {\n              \"Values\": {\n                \"maxItems\": 1\n              },\n              \"Operator\": {\n                \"enum\": [\n                  \"In\",\n                  \"Contains\",\n                  \"Exists\",\n                  \"DoesNotExist\"\n                ]\n              }\n            }\n          }\n        },\n        {\n          \"description\": \"Existence Logic: Exists/DoesNotExist operators require the specific wildcard value.\",\n          \"if\": {\n            \"properties\": {\n              \"Operator\": {\n                \"enum\": [\n                  \"Exists\",\n                  \"DoesNotExist\"\n                ]\n              }\n            }\n          },\n          \"then\": {\n            \"properties\": {\n              \"Values\": {\n                \"items\": {\n                  \"const\": \"*\"\n                },\n                \"maxItems\": 1\n              }\n            }\n          }\n        }\n      ],\n      \"additionalProperties\": false\n    }\n  },\n  \"properties\": {\n    \"IsGlobalScope\": {\n      \"type\": \"boolean\",\n      \"description\": \"If true, commitment applies to all entities\",\n      \"default\": false\n    },\n    \"IsComplexScope\": {\n      \"type\": \"boolean\",\n      \"description\": \"If true, applicability logic exceeds schema capabilities\",\n      \"default\": false\n    },\n    \"Applicability\": {\n      \"$ref\": \"#/$defs/ApplicabilityObject\",\n      \"description\": \"Top-level fractional mapping for metrics\"\n    },\n    \"InclusionOperator\": {\n      \"type\": \"string\",\n      \"description\": \"Logical operator for Inclusions array\",\n      \"enum\": [\n        \"And\",\n        \"Or\"\n      ]\n    },\n    \"Inclusions\": {\n      \"type\": \"array\",\n      \"description\": \"List of rules defining the applicability boundary\",\n      \"items\": {\n        \"$ref\": \"#/$defs/ApplicabilityRule\"\n      }\n    },\n    \"ExclusionOperator\": {\n      \"type\": \"string\",\n      \"description\": \"Logical operator for Exclusions array\",\n      \"enum\": [\n        \"And\",\n        \"Or\"\n      ]\n    },\n    \"Exclusions\": {\n      \"type\": \"array\",\n      \"description\": \"List of rules defining entities to exclude\",\n      \"items\": {\n        \"$ref\": \"#/$defs/ApplicabilityRule\"\n      },\n      \"minItems\": 1\n    }\n  },\n  \"allOf\": [\n    {\n      \"description\": \"IsGlobalScope and IsComplexScope cannot both be true simultaneously.\",\n      \"not\": {\n        \"required\": [\n          \"IsGlobalScope\",\n          \"IsComplexScope\"\n        ],\n        \"properties\": {\n          \"IsGlobalScope\": {\n            \"const\": true\n          },\n          \"IsComplexScope\": {\n            \"const\": true\n          }\n        }\n      }\n    },\n    {\n      \"description\": \"If IsGlobalScope is true, Inclusions must be empty or omitted.\",\n      \"if\": {\n        \"properties\": {\n          \"IsGlobalScope\": {\n            \"const\": true\n          }\n        },\n        \"required\": [\n          \"IsGlobalScope\"\n        ]\n      },\n      \"then\": {\n        \"properties\": {\n          \"Inclusions\": {\n            \"maxItems\": 0\n          },\n          \"InclusionOperator\": false\n        }\n      }\n    },\n    {\n      \"description\": \"If IsComplexScope is true, Inclusions must be empty or omitted.\",\n      \"if\": {\n        \"properties\": {\n          \"IsComplexScope\": {\n            \"const\": true\n          }\n        },\n        \"required\": [\n          \"IsComplexScope\"\n        ]\n      },\n      \"then\": {\n        \"properties\": {\n          \"Inclusions\": {\n            \"maxItems\": 0\n          },\n          \"InclusionOperator\": false\n        }\n      }\n    },\n    {\n      \"description\": \"If neither Global nor Complex scope is active, Inclusions and InclusionOperator are required.\",\n      \"if\": {\n        \"not\": {\n          \"anyOf\": [\n            {\n              \"properties\": {\n                \"IsGlobalScope\": {\n                  \"const\": true\n                }\n              },\n              \"required\": [\n                \"IsGlobalScope\"\n              ]\n            },\n            {\n              \"properties\": {\n                \"IsComplexScope\": {\n                  \"const\": true\n                }\n              },\n              \"required\": [\n                \"IsComplexScope\"\n              ]\n            }\n          ]\n        }\n      },\n      \"then\": {\n        \"required\": [\n          \"InclusionOperator\",\n          \"Inclusions\"\n        ],\n        \"properties\": {\n          \"Inclusions\": {\n            \"minItems\": 1\n          }\n        }\n      }\n    },\n    {\n      \"description\": \"If Exclusions are present, ExclusionOperator is required.\",\n      \"if\": {\n        \"required\": [\n          \"Exclusions\"\n        ]\n      },\n      \"then\": {\n        \"required\": [\n          \"ExclusionOperator\"\n        ]\n      }\n    }\n  ],\n  \"patternProperties\": {\n    \"^x_[A-Z][a-zA-Z0-9]*$\": {\n      \"description\": \"Custom data generator-defined properties prefixed with x_ in PascalCase format\"\n    }\n  },\n  \"additionalProperties\": false\n}",
+   "referenced_by": [
+    [
+     "ContractCommitment",
+     "ContractCommitmentApplicability"
+    ]
+   ]
+  },
+  {
+   "id": "datasets-cost-and-usage-allocatedmethoddetailsobjectschema",
+   "kind": "schema",
+   "name": "Allocated Method Details Object",
+   "description": "Schema for validating the Allocated Method Details column JSON object structure in FOCUS datasets",
+   "source": "specification/schemas/datasets/cost_and_usage/allocatedmethoddetailsobjectschema.json",
+   "files": [
+    "specification/schemas/datasets/cost_and_usage/allocatedmethoddetailsobjectschema.json"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": "{\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"$id\": \"https://focus.finops.org/schemas/allocatedmethoddetailsobject.json\",\n    \"title\": \"Allocated Method Details Object\",\n    \"description\": \"Schema for validating the Allocated Method Details column JSON object structure in FOCUS datasets\",\n    \"type\": \"object\",\n    \"required\": [\n        \"Elements\"\n    ],\n    \"properties\": {\n        \"Elements\": {\n            \"type\": \"array\",\n            \"description\": \"Array containing one or more objects describing allocation properties\",\n            \"minItems\": 1,\n            \"items\": {\n                \"type\": \"object\",\n                \"required\": [\n                    \"AllocatedRatio\"\n                ],\n                \"properties\": {\n                    \"AllocatedRatio\": {\n                        \"type\": \"number\",\n                        \"description\": \"Percentage of overall cost derived from corresponding method and metric\",\n                        \"minimum\": 0,\n                        \"maximum\": 1\n                    },\n                    \"UsageUnit\": {\n                        \"type\": [\n                            \"string\",\n                            \"null\"\n                        ],\n                        \"description\": \"Unit being measured used to calculate allocation\"\n                    },\n                    \"UsageQuantity\": {\n                        \"type\": [\n                            \"number\",\n                            \"null\"\n                        ],\n                        \"description\": \"Volume of UsageUnit consumed or used\"\n                    }\n                },\n                \"anyOf\": [\n                    {\n                        \"description\": \"Scenario 1: UsageQuantity is absent or explicitly null. UsageUnit can be anything (or absent).\",\n                        \"properties\": {\n                            \"UsageQuantity\": {\n                                \"type\": \"null\"\n                            }\n                        }\n                    },\n                    {\n                        \"description\": \"Scenario 2: UsageQuantity is provided and is a number. UsageUnit MUST be provided and MUST be a string.\",\n                        \"required\": [\n                            \"UsageQuantity\",\n                            \"UsageUnit\"\n                        ],\n                        \"properties\": {\n                            \"UsageQuantity\": {\n                                \"type\": \"number\"\n                            },\n                            \"UsageUnit\": {\n                                \"type\": \"string\"\n                            }\n                        }\n                    }\n                ],\n                \"patternProperties\": {\n                    \"^x_[A-Z][a-zA-Z0-9]*$\": {\n                        \"description\": \"Custom data generator-defined properties prefixed with x_ in PascalCase format\"\n                    }\n                },\n                \"additionalProperties\": false\n            }\n        }\n    },\n    \"patternProperties\": {\n        \"^x_[A-Z][a-zA-Z0-9]*$\": {\n            \"description\": \"Custom data generator-defined top-level properties prefixed with x_ in PascalCase format\"\n        }\n    },\n    \"additionalProperties\": false\n}",
+   "referenced_by": [
+    [
+     "CostAndUsage",
+     "AllocatedMethodDetails"
+    ]
+   ]
+  },
+  {
+   "id": "datasets-cost-and-usage-commitmentprogrameligibilitydetailsobjectschema",
+   "kind": "schema",
+   "name": "Commitment Program Eligibility Details Object",
+   "description": "Schema for validating the Commitment Program Eligibility Details column JSON object structure in FOCUS datasets",
+   "source": "specification/schemas/datasets/cost_and_usage/commitmentprogrameligibilitydetailsobjectschema.json",
+   "files": [
+    "specification/schemas/datasets/cost_and_usage/commitmentprogrameligibilitydetailsobjectschema.json"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": "{\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"$id\": \"https://focus.finops.org/schemas/commitmentprogrameligibilitydetailsobject.json\",\n    \"title\": \"Commitment Program Eligibility Details Object\",\n    \"description\": \"Schema for validating the Commitment Program Eligibility Details column JSON object structure in FOCUS datasets\",\n    \"type\": \"object\",\n    \"required\": [\n        \"CommitmentPrograms\"\n    ],\n    \"properties\": {\n        \"CommitmentPrograms\": {\n            \"type\": \"array\",\n            \"description\": \"Array of objects identifying commitment programs for which the usage is eligible.\",\n            \"minItems\": 1,\n            \"items\": {\n                \"type\": \"object\",\n                \"required\": [\n                    \"ProgramType\"\n                ],\n                \"properties\": {\n                    \"ProgramType\": {\n                        \"type\": \"string\",\n                        \"description\": \"The specific type of commitment program (e.g., discount or capacity reservation) available for this usage.\"\n                    }\n                },\n                \"patternProperties\": {\n                    \"^x_[A-Z][a-zA-Z0-9]*$\": {\n                        \"description\": \"Custom data generator-defined properties prefixed with x_ in PascalCase format\"\n                    }\n                },\n                \"additionalProperties\": false\n            }\n        }\n    },\n    \"patternProperties\": {\n        \"^x_[A-Z][a-zA-Z0-9]*$\": {\n            \"description\": \"Custom data generator-defined top-level properties prefixed with x_ in PascalCase format\"\n        }\n    },\n    \"additionalProperties\": false\n}",
+   "referenced_by": [
+    [
+     "CostAndUsage",
+     "CommitmentProgramEligibilityDetails"
+    ]
+   ]
+  },
+  {
+   "id": "datasets-cost-and-usage-contractappliedobjectschema",
+   "kind": "schema",
+   "name": "Contract Applied Object",
+   "description": "Schema for validating the Contract Applied column JSON object structure in FOCUS datasets",
+   "source": "specification/schemas/datasets/cost_and_usage/contractappliedobjectschema.json",
+   "files": [
+    "specification/schemas/datasets/cost_and_usage/contractappliedobjectschema.json"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": "{\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"$id\": \"https://focus.finops.org/schemas/contractappliedobject.json\",\n    \"title\": \"Contract Applied Object\",\n    \"description\": \"Schema for validating the Contract Applied column JSON object structure in FOCUS datasets\",\n    \"type\": \"object\",\n    \"required\": [\n        \"Elements\"\n    ],\n    \"properties\": {\n        \"Elements\": {\n            \"type\": \"array\",\n            \"description\": \"Array containing one or more objects describing contract commitments applied to the charge\",\n            \"minItems\": 1,\n            \"items\": {\n                \"type\": \"object\",\n                \"required\": [\n                    \"ContractId\",\n                    \"ContractCommitmentId\"\n                ],\n                \"properties\": {\n                    \"ContractId\": {\n                        \"type\": \"string\",\n                        \"description\": \"Unique identifier for the contract\"\n                    },\n                    \"ContractCommitmentId\": {\n                        \"type\": \"string\",\n                        \"description\": \"Unique identifier for the contract commitment term\"\n                    },\n                    \"ContractCommitmentAppliedCost\": {\n                        \"type\": [\n                            \"number\",\n                            \"null\"\n                        ],\n                        \"description\": \"Cost value of the charge applied to the contract commitment\"\n                    },\n                    \"ContractCommitmentAppliedQuantity\": {\n                        \"type\": [\n                            \"number\",\n                            \"null\"\n                        ],\n                        \"description\": \"Quantity of usage applied to the contract commitment\"\n                    },\n                    \"ContractCommitmentAppliedUnit\": {\n                        \"type\": [\n                            \"string\",\n                            \"null\"\n                        ],\n                        \"description\": \"Unit of measure for the applied quantity\"\n                    }\n                },\n                \"oneOf\": [\n                    {\n                        \"description\": \"Scenario 1: Cost has a value. Quantity and Unit MUST be absent or explicitly null.\",\n                        \"required\": [\n                            \"ContractCommitmentAppliedCost\"\n                        ],\n                        \"properties\": {\n                            \"ContractCommitmentAppliedCost\": {\n                                \"type\": \"number\"\n                            },\n                            \"ContractCommitmentAppliedQuantity\": {\n                                \"type\": \"null\"\n                            },\n                            \"ContractCommitmentAppliedUnit\": {\n                                \"type\": \"null\"\n                            }\n                        }\n                    },\n                    {\n                        \"description\": \"Scenario 2: Quantity and Unit have values. Cost MUST be absent or explicitly null.\",\n                        \"required\": [\n                            \"ContractCommitmentAppliedQuantity\",\n                            \"ContractCommitmentAppliedUnit\"\n                        ],\n                        \"properties\": {\n                            \"ContractCommitmentAppliedCost\": {\n                                \"type\": \"null\"\n                            },\n                            \"ContractCommitmentAppliedQuantity\": {\n                                \"type\": \"number\"\n                            },\n                            \"ContractCommitmentAppliedUnit\": {\n                                \"type\": \"string\"\n                            }\n                        }\n                    }\n                ],\n                \"patternProperties\": {\n                    \"^x_[A-Z][a-zA-Z0-9]*$\": {\n                        \"description\": \"Custom data generator-defined properties prefixed with x_ in PascalCase format\"\n                    }\n                },\n                \"additionalProperties\": false\n            }\n        }\n    },\n    \"patternProperties\": {\n        \"^x_[A-Z][a-zA-Z0-9]*$\": {\n            \"description\": \"Custom data generator-defined top-level properties prefixed with x_ in PascalCase format\"\n        }\n    },\n    \"additionalProperties\": false\n}",
+   "referenced_by": [
+    [
+     "CostAndUsage",
+     "ContractApplied"
+    ]
+   ]
+  },
+  {
+   "id": "datasets-cost-and-usage-requesterdetailsobjectschema",
+   "kind": "schema",
+   "name": "Requester Details Object",
+   "description": "Schema for validating the Requester Details column structure in FOCUS datasets. The column is an array of key-value entries, where each entry's value is an object of FOCUS-defined descriptive properties (Type, Name, Email) plus optional custom properties.",
+   "source": "specification/schemas/datasets/cost_and_usage/requesterdetailsobjectschema.json",
+   "files": [
+    "specification/schemas/datasets/cost_and_usage/requesterdetailsobjectschema.json"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": "{\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"$id\": \"https://focus.finops.org/schemas/requesterdetailsobject.json\",\n    \"title\": \"Requester Details Object\",\n    \"description\": \"Schema for validating the Requester Details column structure in FOCUS datasets. The column is an array of key-value entries, where each entry's value is an object of FOCUS-defined descriptive properties (Type, Name, Email) plus optional custom properties.\",\n    \"type\": \"array\",\n    \"minItems\": 1,\n    \"items\": {\n        \"type\": \"object\",\n        \"required\": [\n            \"key\",\n            \"value\"\n        ],\n        \"properties\": {\n            \"key\": {\n                \"type\": \"string\",\n                \"description\": \"Names the requester level the entry describes: \\\"Principal\\\", \\\"Credential\\\", or a custom key\",\n                \"anyOf\": [\n                    {\n                        \"enum\": [\n                            \"Principal\",\n                            \"Credential\"\n                        ]\n                    },\n                    {\n                        \"pattern\": \"^x_[A-Z][a-zA-Z0-9]*$\"\n                    }\n                ]\n            },\n            \"value\": {\n                \"$ref\": \"#/$defs/entryValue\"\n            }\n        },\n        \"additionalProperties\": false\n    },\n    \"$defs\": {\n        \"entryValue\": {\n            \"type\": \"object\",\n            \"minProperties\": 1,\n            \"description\": \"Descriptive attributes of the requester level named by the entry key\",\n            \"properties\": {\n                \"Type\": {\n                    \"type\": \"string\",\n                    \"description\": \"The kind of entity the entry describes (e.g., User, Service Account, API Key, Session)\"\n                },\n                \"Name\": {\n                    \"type\": \"string\",\n                    \"description\": \"Readable display name for the entity the entry describes\"\n                },\n                \"Email\": {\n                    \"type\": \"string\",\n                    \"description\": \"Email address associated with the entity the entry describes\"\n                }\n            },\n            \"patternProperties\": {\n                \"^x_[A-Z][a-zA-Z0-9]*$\": {\n                    \"type\": [\n                        \"string\",\n                        \"number\",\n                        \"boolean\",\n                        \"object\",\n                        \"array\"\n                    ],\n                    \"description\": \"Custom data generator-defined properties prefixed with x_ in PascalCase format\"\n                }\n            },\n            \"additionalProperties\": false\n        }\n    }\n}\n",
+   "referenced_by": [
+    [
+     "CostAndUsage",
+     "RequesterDetails"
+    ]
+   ]
+  },
+  {
+   "id": "datasets-sku-price-skupriceeligibilityobjectschema",
+   "kind": "schema",
+   "name": "SKU Price Eligibility Object",
+   "description": "Schema for validating the SKU Price Eligibility column JSON object structure in FOCUS datasets",
+   "source": "specification/schemas/datasets/sku_price/skupriceeligibilityobjectschema.json",
+   "files": [
+    "specification/schemas/datasets/sku_price/skupriceeligibilityobjectschema.json"
+   ],
+   "pages": [],
+   "requirements": [],
+   "json": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"$id\": \"https://focus.finops.org/schemas/skupriceeligibilityobject.json\",\n  \"title\": \"SKU Price Eligibility Object\",\n  \"description\": \"Schema for validating the SKU Price Eligibility column JSON object structure in FOCUS datasets\",\n  \"type\": \"object\",\n  \"$defs\": {\n    \"EligibilityRule\": {\n      \"type\": \"object\",\n      \"required\": [\n        \"Dimension\",\n        \"Operator\",\n        \"Values\"\n      ],\n      \"properties\": {\n        \"Dimension\": {\n          \"type\": \"string\",\n          \"description\": \"A valid FOCUS Column Name\"\n        },\n        \"Operator\": {\n          \"type\": \"string\",\n          \"description\": \"The comparison logic to apply\",\n          \"enum\": [\n            \"In\",\n            \"NotIn\",\n            \"StartsWith\",\n            \"NotStartsWith\",\n            \"Contains\",\n            \"NotContains\",\n            \"EndsWith\",\n            \"Exists\",\n            \"DoesNotExist\"\n          ]\n        },\n        \"Values\": {\n          \"type\": \"array\",\n          \"description\": \"List of strings to compare\",\n          \"items\": {\n            \"type\": \"string\"\n          },\n          \"minItems\": 1\n        }\n      },\n      \"allOf\": [\n        {\n          \"description\": \"Wildcard constraint: If '*' is used, it must be the only value and Operator must be compatible.\",\n          \"if\": {\n            \"properties\": {\n              \"Values\": {\n                \"contains\": {\n                  \"const\": \"*\"\n                }\n              }\n            }\n          },\n          \"then\": {\n            \"properties\": {\n              \"Values\": {\n                \"maxItems\": 1\n              },\n              \"Operator\": {\n                \"enum\": [\n                  \"In\",\n                  \"Contains\",\n                  \"Exists\",\n                  \"DoesNotExist\"\n                ]\n              }\n            }\n          }\n        },\n        {\n          \"description\": \"Existence Logic: Exists/DoesNotExist operators require the specific wildcard value.\",\n          \"if\": {\n            \"properties\": {\n              \"Operator\": {\n                \"enum\": [\n                  \"Exists\",\n                  \"DoesNotExist\"\n                ]\n              }\n            }\n          },\n          \"then\": {\n            \"properties\": {\n              \"Values\": {\n                \"items\": {\n                  \"const\": \"*\"\n                },\n                \"maxItems\": 1\n              }\n            }\n          }\n        }\n      ],\n      \"additionalProperties\": false\n    }\n  },\n  \"properties\": {\n    \"IsGlobalScope\": {\n      \"type\": \"boolean\",\n      \"description\": \"If true, price eligibility is not restricted to an enumerated set of entities\",\n      \"default\": false\n    },\n    \"IsComplexScope\": {\n      \"type\": \"boolean\",\n      \"description\": \"If true, eligibility logic exceeds schema capabilities\",\n      \"default\": false\n    },\n    \"InclusionOperator\": {\n      \"type\": \"string\",\n      \"description\": \"Logical operator for Inclusions array\",\n      \"enum\": [\n        \"And\",\n        \"Or\"\n      ]\n    },\n    \"Inclusions\": {\n      \"type\": \"array\",\n      \"description\": \"List of rules defining the eligibility boundary\",\n      \"items\": {\n        \"$ref\": \"#/$defs/EligibilityRule\"\n      }\n    },\n    \"ExclusionOperator\": {\n      \"type\": \"string\",\n      \"description\": \"Logical operator for Exclusions array\",\n      \"enum\": [\n        \"And\",\n        \"Or\"\n      ]\n    },\n    \"Exclusions\": {\n      \"type\": \"array\",\n      \"description\": \"List of rules defining entities to exclude\",\n      \"items\": {\n        \"$ref\": \"#/$defs/EligibilityRule\"\n      },\n      \"minItems\": 1\n    }\n  },\n  \"allOf\": [\n    {\n      \"description\": \"IsGlobalScope and IsComplexScope cannot both be true simultaneously.\",\n      \"not\": {\n        \"required\": [\n          \"IsGlobalScope\",\n          \"IsComplexScope\"\n        ],\n        \"properties\": {\n          \"IsGlobalScope\": {\n            \"const\": true\n          },\n          \"IsComplexScope\": {\n            \"const\": true\n          }\n        }\n      }\n    },\n    {\n      \"description\": \"If IsGlobalScope is true, Inclusions must be empty or omitted.\",\n      \"if\": {\n        \"properties\": {\n          \"IsGlobalScope\": {\n            \"const\": true\n          }\n        },\n        \"required\": [\n          \"IsGlobalScope\"\n        ]\n      },\n      \"then\": {\n        \"properties\": {\n          \"Inclusions\": {\n            \"maxItems\": 0\n          },\n          \"InclusionOperator\": false\n        }\n      }\n    },\n    {\n      \"description\": \"If IsComplexScope is true, Inclusions must be empty or omitted.\",\n      \"if\": {\n        \"properties\": {\n          \"IsComplexScope\": {\n            \"const\": true\n          }\n        },\n        \"required\": [\n          \"IsComplexScope\"\n        ]\n      },\n      \"then\": {\n        \"properties\": {\n          \"Inclusions\": {\n            \"maxItems\": 0\n          },\n          \"InclusionOperator\": false\n        }\n      }\n    },\n    {\n      \"description\": \"If neither Global nor Complex scope is active, Inclusions and InclusionOperator are required.\",\n      \"if\": {\n        \"not\": {\n          \"anyOf\": [\n            {\n              \"properties\": {\n                \"IsGlobalScope\": {\n                  \"const\": true\n                }\n              },\n              \"required\": [\n                \"IsGlobalScope\"\n              ]\n            },\n            {\n              \"properties\": {\n                \"IsComplexScope\": {\n                  \"const\": true\n                }\n              },\n              \"required\": [\n                \"IsComplexScope\"\n              ]\n            }\n          ]\n        }\n      },\n      \"then\": {\n        \"required\": [\n          \"InclusionOperator\",\n          \"Inclusions\"\n        ],\n        \"properties\": {\n          \"Inclusions\": {\n            \"minItems\": 1\n          }\n        }\n      }\n    },\n    {\n      \"description\": \"If Exclusions are present, ExclusionOperator is required.\",\n      \"if\": {\n        \"required\": [\n          \"Exclusions\"\n        ]\n      },\n      \"then\": {\n        \"required\": [\n          \"ExclusionOperator\"\n        ]\n      }\n    }\n  ],\n  \"patternProperties\": {\n    \"^x_[A-Z][a-zA-Z0-9]*$\": {\n      \"description\": \"Custom data generator-defined properties prefixed with x_ in PascalCase format\"\n    }\n  },\n  \"additionalProperties\": false\n}\n",
+   "referenced_by": [
+    [
+     "SkuPrice",
+     null
+    ],
+    [
+     "SkuPrice",
+     "SkuPriceEligibility"
+    ]
+   ]
+  }
+ ],
+ "ref_anchor": {
+  "appendix.discounthandling": "discount-handling",
+  "appendix.examples:aimodelbilling": "ai-model-billing-examples",
+  "appendix.examples:aimodelidentity": "ai-model-identity-examples",
+  "appendix.examples:aipromptcaching": "ai-prompt-caching-examples",
+  "appendix.examples:commitmentdiscountflexibility": "examples-commitment-discount-flexibility-examples",
+  "appendix.examples:commitmentdiscounts": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.aurawebflexiblespendplan-allupfront-0%utilization": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.aurawebflexiblespendplan-allupfront-100%utilization": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.aurawebflexiblespendplan-allupfront-100%utilizationwithoverage": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.aurawebflexiblespendplan-allupfront-50%utilization": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.aurawebflexiblespendplan-allupfront-75%utilization": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.aurawebflexiblespendplan-noupfront-100%utilization": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.aurawebflexiblespendplan-partialupfront-100%utilization": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.aurawebresourcereservation-allupfront-100%utilization": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.aurawebresourcereservation-partialupfront-100%utilization": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.crestnodeflexiblespendplan-allupfront-100%utilization": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.crestnoderesourcereservation-allupfront-100%utilization": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.crestnoderesourcereservation-noupfront-100%utilization": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.latticescaledynamiccomputecommitment-noupfront-100%utilization": "commitment-discounts",
+  "appendix.examples:commitmentdiscounts.latticescaleresourcereservation-noupfront-100%utilization": "commitment-discounts",
+  "appendix.examples:commitmentprogrameligibilitydetails": "commitment-program-eligibility-details-examples",
+  "appendix.examples:contractcommitments": "contract-commitments",
+  "appendix.examples:correctionhandling.correctionstoclosedbillingperiod": "correction-handling-examples",
+  "appendix.examples:correctionhandling.correctionstoopenbillingperiod.currentopen-periodcorrectionscenarios": "correction-handling-examples",
+  "appendix.examples:correctionhandling.correctionstoopenbillingperiod.previousopen-periodcorrectionscenarios": "correction-handling-examples",
+  "appendix.examples:datagenerator-calculatedsplitcostallocation": "split-cost-allocation-examples",
+  "appendix.examples:invoicedetail": "invoice-detail",
+  "appendix.examples:jsonobject": "json-object-examples",
+  "appendix.examples:jsonobject.examples:allocatedmethoddetails": "json-object-examples",
+  "appendix.examples:jsonobject.examples:commitmentprogrameligibilitydetails": "json-object-examples",
+  "appendix.examples:jsonobject.examples:contractapplied": "json-object-examples",
+  "appendix.examples:jsonobject.examples:contractcommitmentapplicability": "json-object-examples",
+  "appendix.examples:jsonobject.examples:requesterdetails": "json-object-examples",
+  "appendix.examples:metadata": "metadata-examples",
+  "appendix.examples:metadata.addingnewcolumns": "metadata-examples",
+  "appendix.examples:metadata.changingcolumnmetadata": "metadata-examples",
+  "appendix.examples:metadata.datageneratormetadata": "metadata-examples",
+  "appendix.examples:metadata.datageneratormetadataerrorcorrection": "metadata-examples",
+  "appendix.examples:metadata.focusversionchanged": "metadata-examples",
+  "appendix.examples:metadata.recencymetadataupdatenontimeseries": "metadata-examples",
+  "appendix.examples:metadata.recencymetadataupdatetimeseries": "metadata-examples",
+  "appendix.examples:metadata.removingcolumns": "metadata-examples",
+  "appendix.examples:metadata.schemametadatatofocusdatareference": "metadata-examples",
+  "appendix.examples:participatingentityidentification": "participating-entity-identification",
+  "appendix.examples:requesterattribution": "requester-attribution",
+  "appendix.examples:saas": "saas-examples",
+  "appendix.examples:saas.billingscenarioexamples.annualcommitmentbilledmonthly:seat-basedcrm": "saas-examples",
+  "appendix.examples:saas.billingscenarioexamples.credit-basedconsumption:on-demanddataplatformusage": "saas-examples",
+  "appendix.examples:saas.billingscenarioexamples.flat-ratesaaslicensing:fixedmonthlysubscription": "saas-examples",
+  "appendix.examples:saas.billingscenarioexamples.host-basedsaasmonitoring:monthlyon-demandusage": "saas-examples",
+  "appendix.examples:saas.billingscenarioexamples.multi-unitusage-basedpaas:database-as-a-service": "saas-examples",
+  "appendix.examples:saas.billingscenarioexamples.seat-basedsaassubscription:annualupfrontwithcommitmentdiscount": "saas-examples",
+  "appendix.examples:saas.billingscenarioexamples.tieredpricingwithcommittedminimum:emailapiplatform": "saas-examples",
+  "appendix.examples:skuprice": "sku-price-examples",
+  "appendix.examples:splitcostallocationfieldmapping": "split-cost-allocation-field-mapping",
+  "appendix.groupingconstructsforresourcesorservices": "grouping-constructs-for-resources-and-or-services",
+  "appendix.invoiceandbillingperiodhandling": "invoice-and-billing-period-handling",
+  "appendix.roundingvariancetolerance": "rounding-variance-tolerance",
+  "metadata": "metadata-overview",
+  "metadata.datagenerator": "data-generator",
+  "metadata.datasetinstance": "dataset-instance",
+  "metadata.recency": "recency",
+  "metadata.recency.timesectors": "recency",
+  "metadata.schema": "schema",
+  "metadata.schema.columndefinition": "schema",
+  "metadata.schema.columndefinition.columnname": "schema",
+  "metadata.schema.datageneratorversion": "schema",
+  "metadata.schema.focusversion": "schema",
+  "metadata.schema.schemaid": "schema",
+  "schemas.contractcommitment.contractcommitmentapplicabilityobjectschema": "datasets-contract-commitment-contractcommitmentapplicabilityobjectschema",
+  "schemas.costandusage.allocatedmethoddetailsobjectschema": "datasets-cost-and-usage-allocatedmethoddetailsobjectschema",
+  "schemas.costandusage.commitmentprogrameligibilitydetailsobjectschema": "datasets-cost-and-usage-commitmentprogrameligibilitydetailsobjectschema",
+  "schemas.costandusage.contractappliedobjectschema": "datasets-cost-and-usage-contractappliedobjectschema",
+  "schemas.costandusage.requesterdetailsobjectschema": "datasets-cost-and-usage-requesterdetailsobjectschema",
+  "schemas.skuprice.skupriceeligibilityobjectschema": "datasets-sku-price-skupriceeligibilityobjectschema"
+ },
  "glossary": {
   "accrual-based-accounting": {
    "term": "Accrual-Based Accounting",
