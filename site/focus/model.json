@@ -591,7 +591,8 @@
        "md": "AllocatedMethodDetails MUST conform to [AllocatedMethodDetailsObject](#datamodel.costandusage.allocatedmethoddetails.allocatedmethoddetailsobject) requirements when AllocatedMethodDetails is not null.",
        "line": 19
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "AllocatedMethodId",
@@ -641,7 +642,8 @@
        "md": "Data generator-calculated split cost allocation method documentation MUST reference a single AllocatedMethodId value.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "AllocatedResourceId",
@@ -706,7 +708,8 @@
        "md": "AllocatedResourceId MAY NOT be unique across ResourceId or ChargePeriod values.",
        "line": 17
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "AllocatedResourceName",
@@ -756,7 +759,8 @@
        "md": "AllocatedResourceName MAY duplicate AllocatedResourceId when a separate display name is not applicable.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "AllocatedServiceName",
@@ -806,7 +810,8 @@
        "md": "AllocatedServiceName SHOULD match the ServiceName used by the data generator for the equivalent *service*.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "AllocatedTags",
@@ -916,7 +921,8 @@
        "md": "User-defined tag keys in all user-defined *tag schemes* MUST include a predetermined, data generator-specified tag key prefix that is unique to each corresponding user-defined *tag scheme* when the data generator has more than one user-defined *tag scheme*.",
        "line": 26
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "AvailabilityZone",
@@ -951,7 +957,8 @@
        "md": "AvailabilityZone MUST be null when a [*charge*](#glossary:charge) is not specific to an *availability zone*.",
        "line": 11
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BilledCost",
@@ -1026,7 +1033,8 @@
        "md": "The sum of BilledCost MAY differ from preliminary or estimated invoiced amounts when the corresponding invoice has not yet been issued.",
        "line": 23
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BillingAccountId",
@@ -1076,7 +1084,8 @@
        "md": "See [Appendix: Grouping constructs for resources or services](#appendix.groupingconstructsforresourcesorservices) for details and examples of the different grouping constructs supported by FOCUS.",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BillingAccountName",
@@ -1116,7 +1125,8 @@
        "md": "See [Appendix: Grouping constructs for resources or services](#appendix.groupingconstructsforresourcesorservices) for details and examples of the different grouping constructs supported by FOCUS.",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BillingAccountType",
@@ -1166,7 +1176,8 @@
        "md": "BillingAccountType MUST be a consistent, readable display value.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BillingCurrency",
@@ -1216,7 +1227,8 @@
        "md": "BillingCurrency MUST be expressed in [*national currency*](#glossary:national-currency) (e.g., USD, EUR).",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BillingPeriodEnd",
@@ -1256,7 +1268,8 @@
        "md": "BillingPeriodEnd MUST be the *exclusive end bound* of the *billing period*.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BillingPeriodStart",
@@ -1296,7 +1309,8 @@
        "md": "BillingPeriodStart MUST be the *inclusive start bound* of the *billing period*.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "CapacityReservationId",
@@ -1361,7 +1375,8 @@
        "md": "CapacityReservationId SHOULD be a fully-qualified identifier.",
        "line": 17
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "CapacityReservationStatus",
@@ -1421,6 +1436,20 @@
        "md": "CapacityReservationStatus MUST be \"Used\" when the *charge* represents the used portion of a *capacity reservation*.",
        "line": 16
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Used",
+       "Charges that utilized a specific amount of a capacity reservation."
+      ],
+      [
+       "Unused",
+       "Charges that represent the unused portion of a capacity reservation."
+      ]
      ]
     },
     {
@@ -1486,6 +1515,32 @@
        "md": "ChargeCategory for a given [SkuPriceId](#datamodel.costandusage.skupriceid) and [ServiceProviderName](#datamodel.costandusage.serviceprovidername) MUST match [SkuPrice.ChargeCategory](#datamodel.skuprice.chargecategory) for the same [SkuPrice.SkuPriceId](#datamodel.skuprice.skupriceid) and [SkuPrice.ServiceProviderName](#datamodel.skuprice.serviceprovidername) when SkuPriceId is not null and ChargeCategory is \"Usage\" or \"Purchase\".",
        "line": 19
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Usage",
+       "Positive or negative charges based on the quantity of a service or resource that was consumed over a given period of time including refunds."
+      ],
+      [
+       "Purchase",
+       "Positive or negative charges for the acquisition of a service or resource bought upfront or on a recurring basis including refunds."
+      ],
+      [
+       "Tax",
+       "Positive or negative applicable taxes that are levied by the relevant authorities including refunds. Tax charges may vary depending on factors such as the location, jurisdiction, and local or federal regulations."
+      ],
+      [
+       "Credit",
+       "Positive or negative charges granted by the service provider for various scenarios e.g., promotional credits or corrections to promotional credits."
+      ],
+      [
+       "Adjustment",
+       "Positive or negative charges the service provider applies that do not fall into other category values."
+      ]
      ]
     },
     {
@@ -1531,6 +1586,16 @@
        "md": "ChargeClass MUST be \"Correction\" when ChargeClass is not null.",
        "line": 13
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Correction",
+       "Correction to a previously closed billing period (e.g., refunds and credit modifications)."
+      ]
      ]
     },
     {
@@ -1571,7 +1636,8 @@
        "md": "ChargeDescription maximum length SHOULD be provided in the corresponding FOCUS Metadata Schema.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ChargeFrequency",
@@ -1611,6 +1677,24 @@
        "md": "ChargeFrequency MUST NOT be \"Usage-Based\" when [ChargeCategory](#datamodel.costandusage.chargecategory) is \"Purchase\".",
        "line": 12
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "One-Time",
+       "Charges that only happen once and will not repeat. One-time charges are typically recorded on the hour or day when the cost was incurred."
+      ],
+      [
+       "Recurring",
+       "Charges that repeat on a periodic cadence (e.g., weekly, monthly) regardless of whether the product or service was used. Recurring charges typically happen on the same day or point within every period. The charge date does not change based on how or when the service is used."
+      ],
+      [
+       "Usage-Based",
+       "Charges that repeat every time the service is used. Usage-based charges are typically recorded hourly or daily, based on the granularity of the cost data for the period when the service was used (referred to as charge period). Usage-based charges are not recorded when the service is not used."
+      ]
      ]
     },
     {
@@ -1651,7 +1735,8 @@
        "md": "ChargePeriodEnd MUST be the *exclusive end bound* of the effective period of the *charge*.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ChargePeriodStart",
@@ -1691,7 +1776,8 @@
        "md": "ChargePeriodStart MUST be the *inclusive start bound* of the effective period of the *charge*.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "CommitmentDiscountCategory",
@@ -1736,6 +1822,20 @@
        "md": "CommitmentDiscountCategory MUST be one of the allowed values.",
        "line": 13
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Spend",
+       "Commitment discounts that require a predetermined amount of spend."
+      ],
+      [
+       "Usage",
+       "Commitment discounts that require a predetermined amount of usage."
+      ]
      ]
     },
     {
@@ -1806,7 +1906,8 @@
        "md": "CommitmentDiscountId SHOULD be a fully-qualified identifier.",
        "line": 18
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "CommitmentDiscountName",
@@ -1861,7 +1962,8 @@
        "md": "CommitmentDiscountName MAY be null when a display name cannot be assigned to a *commitment discount*.",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "CommitmentDiscountQuantity",
@@ -1951,7 +2053,8 @@
        "md": "CommitmentDiscountQuantity MUST be the remaining, unused quantity of CommitmentDiscountUnit in a given *charge period* when CommitmentDiscountStatus is \"Unused\".",
        "line": 24
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "CommitmentDiscountStatus",
@@ -2006,6 +2109,20 @@
        "md": "CommitmentDiscountStatus MUST be \"Unused\" when the *charge* represents the unused portion of the given CommitmentDiscountId.",
        "line": 15
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Used",
+       "Charges that utilized a specific amount of a commitment discount."
+      ],
+      [
+       "Unused",
+       "Charges that represent the unused portion of the commitment discount."
+      ]
      ]
     },
     {
@@ -2051,7 +2168,8 @@
        "md": "CommitmentDiscountType MUST NOT be null when CommitmentDiscountId is not null.",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "CommitmentDiscountUnit",
@@ -2126,7 +2244,8 @@
        "md": "See [Examples: Commitment Discount Flexibility](#appendix.examples:commitmentdiscountflexibility) for more details around *commitment discount flexibility*.",
        "line": 20
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "CommitmentProgramEligibilityDetails",
@@ -2195,7 +2314,8 @@
        "md": "CommitmentProgramEligibilityDetails MUST conform to [CommitmentProgramEligibilityDetailsObject](#datamodel.costandusage.commitmentprogrameligibilitydetails.commitmentprogrameligibilitydetailsobject) requirements when CommitmentProgramEligibilityDetails is not null.",
        "line": 19
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ConsumedQuantity",
@@ -2260,7 +2380,8 @@
        "md": "ConsumedQuantity MUST NOT include [*tokens*](#glossary:token) counted on a different row with TokenCacheAction \"Read\" or \"Write\" in [SkuPriceDetails](#datamodel.costandusage.skupricedetails) when SkuPriceDetails on the same row includes neither value (e.g., a cached token that a usage report also counts inside a prompt token total is counted on the \"Read\" row only).",
        "line": 17
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ConsumedUnit",
@@ -2310,7 +2431,8 @@
        "md": "ConsumedUnit MUST NOT be null when ConsumedQuantity is not null.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractApplied",
@@ -2359,7 +2481,8 @@
        "md": "ContractApplied MUST conform to [ContractAppliedObject](#datamodel.costandusage.contractapplied.contractappliedobject) requirements when ContractApplied is not null.",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractedCost",
@@ -2434,7 +2557,8 @@
        "md": "ContractedCost MUST equal the product of ContractedUnitPrice and PricingQuantity when ContractedUnitPrice is not null and PricingQuantity is not null.",
        "line": 23
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractedUnitPrice",
@@ -2524,7 +2648,8 @@
        "md": "ContractedUnitPrice MUST equal ListUnitPrice when no *negotiated pricing terms* apply to the *charge*.",
        "line": 26
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "CredentialId",
@@ -2594,7 +2719,8 @@
        "md": "CredentialId MUST NOT contain a *credential* value that authenticates a request (e.g., an API key string, an access token, a password).",
        "line": 20
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "EffectiveCost",
@@ -2684,7 +2810,8 @@
        "md": "The sum of EffectiveCost for a given [*billing period*](#glossary:billing-period) MAY differ from the sum of BilledCost when *covered* and *covering charges* span multiple *billing periods* or [*billing accounts*](#glossary:billing-account), or when only one side of a covering relationship is present in the *dataset instance*.",
        "line": 26
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "HostProviderName",
@@ -2759,7 +2886,8 @@
        "md": "See [Appendix: Participating Entity Identification Examples](#appendix.examples:participatingentityidentification) section for examples of Host Provider values across various use case scenarios.",
        "line": 22
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "InvoiceDetailId",
@@ -2814,7 +2942,8 @@
        "md": "InvoiceDetailId MUST uniquely identify a specific record within a given [InvoiceId](#datamodel.invoicedetail.invoiceid).",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "InvoiceId",
@@ -2874,7 +3003,8 @@
        "md": "See [Appendix: Grouping constructs for resources or services](#appendix.groupingconstructsforresourcesorservices) for details and examples of the different grouping constructs supported by FOCUS.",
        "line": 17
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "InvoiceIssuerName",
@@ -2919,7 +3049,8 @@
        "md": "See [Appendix: Participating Entity Identification Examples](#appendix.examples:participatingentityidentification) section for examples of Invoice Issuer Name values across various use case scenarios.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ListCost",
@@ -2994,7 +3125,8 @@
        "md": "ListCost MUST equal the product of ListUnitPrice and PricingQuantity when ListUnitPrice is not null and PricingQuantity is not null.",
        "line": 23
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ListUnitPrice",
@@ -3084,7 +3216,8 @@
        "md": "ListUnitPrice MUST NOT reflect any unit price impact dependent on a discount-bearing *commitment program* being applied to the [*charge*](#glossary:charge).",
        "line": 24
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PricingCategory",
@@ -3164,6 +3297,28 @@
        "md": "PricingCategory MUST be \"Other\" when there is a pricing model but none of the allowed values apply.",
        "line": 20
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Standard",
+       "Charges priced at the agreed upon rate for the billing account, including negotiated discounts. This pricing includes any flat rate and volume/tiered pricing but does not include dynamic pricing or reduced pricing due to the application of a commitment discount. This does include the purchase of a commitment discount at agreed upon rates."
+      ],
+      [
+       "Dynamic",
+       "Charges priced at a variable rate determined by the service provider. This includes any product or service with a unit price the service provider can change without notice, like interruptible or low priority resources."
+      ],
+      [
+       "Committed",
+       "Charges with reduced pricing due to the application of the commitment discount specified by the Commitment Discount ID."
+      ],
+      [
+       "Other",
+       "Charges priced in a way not covered by another pricing category."
+      ]
      ]
     },
     {
@@ -3224,7 +3379,8 @@
        "md": "PricingCurrency documentation MUST be accessible to practitioners.",
        "line": 16
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PricingCurrencyContractedUnitPrice",
@@ -3314,7 +3470,8 @@
        "md": "PricingCurrencyContractedUnitPrice MUST equal PricingCurrencyListUnitPrice when no *negotiated non-FX pricing terms* apply to the *charge*.",
        "line": 26
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PricingCurrencyEffectiveCost",
@@ -3359,7 +3516,8 @@
        "md": "PricingCurrencyEffectiveCost MUST be the PricingCurrency-denominated equivalent of EffectiveCost, before any currency exchange rate conversion.",
        "line": 17
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PricingCurrencyListUnitPrice",
@@ -3449,7 +3607,8 @@
        "md": "PricingCurrencyListUnitPrice MUST NOT reflect any unit price impact dependent on a discount-bearing *commitment program* being applied to the [*charge*](#glossary:charge).",
        "line": 24
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PricingQuantity",
@@ -3504,7 +3663,8 @@
        "md": "PricingQuantity MAY be null in all other cases.",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PricingUnit",
@@ -3569,7 +3729,8 @@
        "md": "PricingUnit MUST be semantically equal to the corresponding pricing measurement unit provided in invoice, when the invoice includes a pricing measurement unit.",
        "line": 17
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PrincipalId",
@@ -3639,7 +3800,8 @@
        "md": "PrincipalId MUST NOT contain a value that authenticates a request (e.g., an API key string, an access token, a password).",
        "line": 20
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "RegionId",
@@ -3684,7 +3846,8 @@
        "md": "RegionId MAY be null when a *resource* or *service* is not operated in or managed from a distinct region.",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "RegionName",
@@ -3729,7 +3892,8 @@
        "md": "RegionName MUST NOT be null when RegionId is not null.",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "RequesterDetails",
@@ -3788,7 +3952,8 @@
        "md": "RequesterDetails MUST conform to [RequesterDetailsObject](#datamodel.costandusage.requesterdetails.requesterdetailsobject) requirements when RequesterDetails is not null.",
        "line": 21
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ResourceId",
@@ -3853,7 +4018,8 @@
        "md": "ResourceId MUST be the identifier of the *resource* that received the [*commitment discount*](#glossary:commitment-discount) when [CommitmentDiscountStatus](#datamodel.costandusage.commitmentdiscountstatus) is \"Used\".",
        "line": 17
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ResourceName",
@@ -3903,7 +4069,8 @@
        "md": "ResourceName MUST NOT duplicate ResourceId when the *resource* is not provisioned interactively or only has a system-generated ResourceId.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ResourceType",
@@ -3948,7 +4115,8 @@
        "md": "ResourceType MUST NOT be null when ResourceId is not null.",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ServiceCategory",
@@ -3983,6 +4151,88 @@
        "md": "ServiceCategory MUST be one of the allowed values.",
        "line": 11
       }
+     ],
+     "allowed_values": [
+      [
+       "Service Category",
+       "Description"
+      ],
+      [
+       "AI and Machine Learning",
+       "Artificial Intelligence and Machine Learning related technologies."
+      ],
+      [
+       "Analytics",
+       "Data processing, analytics, and visualization capabilities."
+      ],
+      [
+       "Business Applications",
+       "Business and productivity applications and services."
+      ],
+      [
+       "Compute",
+       "Physical, virtual, containerized, or serverless computing infrastructure and services."
+      ],
+      [
+       "Databases",
+       "Database platforms and services that allow for storage and querying of data."
+      ],
+      [
+       "Developer Tools",
+       "Software development and delivery tools and services."
+      ],
+      [
+       "Identity",
+       "Identity and access management services."
+      ],
+      [
+       "Integration",
+       "Services that allow applications to interact with one another."
+      ],
+      [
+       "Internet of Things",
+       "Development and management of IoT devices and networks."
+      ],
+      [
+       "Management and Governance",
+       "Management, logging, and observability of a customer's infrastructure, applications, and services."
+      ],
+      [
+       "Media",
+       "Media and entertainment streaming and processing services."
+      ],
+      [
+       "Migration",
+       "Moving applications and data between environments or providers."
+      ],
+      [
+       "Mobile",
+       "Services enabling applications to interact via mobile technologies."
+      ],
+      [
+       "Multicloud",
+       "Support for the interworking of multiple distinct environments across different service providers or on-premises infrastructure."
+      ],
+      [
+       "Networking",
+       "Network connectivity and management."
+      ],
+      [
+       "Security",
+       "Security monitoring and compliance services."
+      ],
+      [
+       "Storage",
+       "Storage services for structured or unstructured data."
+      ],
+      [
+       "Web",
+       "Services enabling applications to interact via the Internet."
+      ],
+      [
+       "Other",
+       "New or emerging services that do not align with an existing category."
+      ]
      ]
     },
     {
@@ -4048,7 +4298,8 @@
        "md": "ServiceName SHOULD be associated with the ServiceSubcategory \"Other\" when no suitable ServiceSubcategory is available.",
        "line": 19
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ServiceProviderName",
@@ -4088,7 +4339,8 @@
        "md": "See [Appendix: Participating Entity Identification Examples](#appendix.examples:participatingentityidentification) section for examples of Service Provider Name values across various use case scenarios.",
        "line": 19
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ServiceSubcategory",
@@ -4128,6 +4380,428 @@
        "md": "ServiceSubcategory MUST have one and only one parent ServiceCategory as specified in the allowed values below.",
        "line": 12
       }
+     ],
+     "allowed_values": [
+      [
+       "Service Category",
+       "Service Subcategory",
+       "Service Subcategory Description"
+      ],
+      [
+       "AI and Machine Learning",
+       "AI Platforms",
+       "Unified solution that combines artificial intelligence and machine learning technologies."
+      ],
+      [
+       "AI and Machine Learning",
+       "Bots",
+       "Automated performance of tasks such as customer service, data collection, and content moderation."
+      ],
+      [
+       "AI and Machine Learning",
+       "Generative AI",
+       "Creation of content like text, images, and music by learning patterns from existing data."
+      ],
+      [
+       "AI and Machine Learning",
+       "Machine Learning",
+       "Creation, training, and deployment of statistical algorithms that learn from and perform tasks based on data."
+      ],
+      [
+       "AI and Machine Learning",
+       "Natural Language Processing",
+       "Generation of human language, handling tasks like translation, sentiment analysis, and text summarization."
+      ],
+      [
+       "AI and Machine Learning",
+       "Other (AI and Machine Learning)",
+       "AI and Machine Learning services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Analytics",
+       "Analytics Platforms",
+       "Unified solution that combines technologies across the entire analytics lifecycle."
+      ],
+      [
+       "Analytics",
+       "Business Intelligence",
+       "Semantic models, dashboards, reports, and data visualizations to track performance and identify trends."
+      ],
+      [
+       "Analytics",
+       "Data Processing",
+       "Integration and transformation tasks to prepare data for analysis."
+      ],
+      [
+       "Analytics",
+       "Search",
+       "Discovery of information by indexing and retrieving data from various sources."
+      ],
+      [
+       "Analytics",
+       "Streaming Analytics",
+       "Real-time data stream processes to detect patterns, trends, and anomalies as they occur."
+      ],
+      [
+       "Analytics",
+       "Other (Analytics)",
+       "Analytics services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Business Applications",
+       "Productivity and Collaboration",
+       "Tools that facilitate individuals managing tasks and working together."
+      ],
+      [
+       "Business Applications",
+       "Other (Business Applications)",
+       "Business Applications services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Compute",
+       "Bare Metal",
+       "Computing environments provisioned as physical servers without a provider-managed hypervisor, giving direct access to the underlying hardware."
+      ],
+      [
+       "Compute",
+       "Containers",
+       "Management and orchestration of containerized compute platforms."
+      ],
+      [
+       "Compute",
+       "End User Computing",
+       "Virtualized desktop infrastructure and device / endpoint management."
+      ],
+      [
+       "Compute",
+       "Quantum Compute",
+       "Resources and simulators that leverage the principles of quantum mechanics."
+      ],
+      [
+       "Compute",
+       "Serverless Compute",
+       "Enablement of compute capabilities without provisioning or managing servers."
+      ],
+      [
+       "Compute",
+       "Virtual Machines",
+       "Computing environments provisioned as virtual instances with a provider-managed hypervisor, abstracting access to the underlying hardware, whether shared or single-tenant."
+      ],
+      [
+       "Compute",
+       "Other (Compute)",
+       "Compute services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Databases",
+       "Caching",
+       "Low-latency and high-throughput access to frequently accessed data."
+      ],
+      [
+       "Databases",
+       "Data Warehouses",
+       "Big data storage and querying capabilities."
+      ],
+      [
+       "Databases",
+       "Ledger Databases",
+       "Immutable and transparent databases to record tamper-proof and cryptographically secure transactions."
+      ],
+      [
+       "Databases",
+       "NoSQL Databases",
+       "Unstructured or semi-structured data storage and querying capabilities."
+      ],
+      [
+       "Databases",
+       "Relational Databases",
+       "Structured data storage and querying capabilities."
+      ],
+      [
+       "Databases",
+       "Time Series Databases",
+       "Time-stamped data storage and querying capabilities."
+      ],
+      [
+       "Databases",
+       "Other (Databases)",
+       "Database services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Developer Tools",
+       "Developer Platforms",
+       "Unified solution that combines technologies across multiple areas of the software development lifecycle."
+      ],
+      [
+       "Developer Tools",
+       "Continuous Integration and Deployment",
+       "CI/CD tools and services that support building and deploying code for software and systems."
+      ],
+      [
+       "Developer Tools",
+       "Development Environments",
+       "Tools and services that support authoring code for software and systems."
+      ],
+      [
+       "Developer Tools",
+       "Source Code Management",
+       "Tools and services that support version control of code for software and systems."
+      ],
+      [
+       "Developer Tools",
+       "Quality Assurance",
+       "Tools and services that support testing code for software and systems."
+      ],
+      [
+       "Developer Tools",
+       "Other (Developer Tools)",
+       "Developer Tools services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Identity",
+       "Identity and Access Management",
+       "Technologies that ensure users have appropriate access to resources."
+      ],
+      [
+       "Identity",
+       "Other (Identity)",
+       "Identity services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Integration",
+       "API Management",
+       "Creation, publishing, and management of application programming interfaces."
+      ],
+      [
+       "Integration",
+       "Messaging",
+       "Asynchronous communication between distributed applications."
+      ],
+      [
+       "Integration",
+       "Workflow Orchestration",
+       "Design, execution, and management of business processes and workflows."
+      ],
+      [
+       "Integration",
+       "Other (Integration)",
+       "Integration services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Internet of Things",
+       "IoT Analytics",
+       "Examination of data collected from IoT devices."
+      ],
+      [
+       "Internet of Things",
+       "IoT Platforms",
+       "Unified solution that combines IoT data collection, processing, visualization, and device management."
+      ],
+      [
+       "Internet of Things",
+       "Other (Internet of Things)",
+       "Internet of Things (IoT) services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Management and Governance",
+       "Architecture",
+       "Planning, design, and construction of software systems."
+      ],
+      [
+       "Management and Governance",
+       "Compliance",
+       "Adherence to regulatory standards and industry best practices."
+      ],
+      [
+       "Management and Governance",
+       "Cost Management",
+       "Monitoring and controlling expenses of systems and services."
+      ],
+      [
+       "Management and Governance",
+       "Data Governance",
+       "Management of the availability, usability, integrity, and security of data."
+      ],
+      [
+       "Management and Governance",
+       "Disaster Recovery",
+       "Plans and procedures that ensure systems and services can recover from disruptions."
+      ],
+      [
+       "Management and Governance",
+       "Endpoint Management",
+       "Tools that configure and secure access to devices."
+      ],
+      [
+       "Management and Governance",
+       "Observability",
+       "Monitoring, logging, and tracing of data to track the performance and health of systems."
+      ],
+      [
+       "Management and Governance",
+       "Support",
+       "Assistance and expertise supplied by service providers."
+      ],
+      [
+       "Management and Governance",
+       "Other (Management and Governance)",
+       "Management and governance services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Media",
+       "Content Creation",
+       "Production of media content."
+      ],
+      [
+       "Media",
+       "Gaming",
+       "Development and delivery of gaming services."
+      ],
+      [
+       "Media",
+       "Media Streaming",
+       "Multimedia delivered and rendered in real-time on devices."
+      ],
+      [
+       "Media",
+       "Mixed Reality",
+       "Technologies that blend real-world and computer-generated environments."
+      ],
+      [
+       "Media",
+       "Other (Media)",
+       "Media services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Migration",
+       "Data Migration",
+       "Movement of stored data from one location to another."
+      ],
+      [
+       "Migration",
+       "Resource Migration",
+       "Movement of resources from one location to another."
+      ],
+      [
+       "Migration",
+       "Other (Migration)",
+       "Migration services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Mobile",
+       "Other (Mobile)",
+       "All Mobile services."
+      ],
+      [
+       "Multicloud",
+       "Multicloud Integration",
+       "Environments that facilitate consumption of services from multiple cloud service providers."
+      ],
+      [
+       "Multicloud",
+       "Other (Multicloud)",
+       "Multicloud services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Networking",
+       "Application Networking",
+       "Distribution of incoming network traffic across application-based workloads."
+      ],
+      [
+       "Networking",
+       "Content Delivery",
+       "Distribution of digital content using a network of servers (CDNs)."
+      ],
+      [
+       "Networking",
+       "Network Connectivity",
+       "Facilitates communication between networks or network segments."
+      ],
+      [
+       "Networking",
+       "Network Infrastructure",
+       "Configuration, monitoring, and troubleshooting of network devices."
+      ],
+      [
+       "Networking",
+       "Network Routing",
+       "Services that select paths for traffic within or across networks."
+      ],
+      [
+       "Networking",
+       "Network Security",
+       "Protection from unauthorized network access and cyber threats using firewalls and anti-malware tools."
+      ],
+      [
+       "Networking",
+       "Other (Networking)",
+       "Networking services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Security",
+       "Secret Management",
+       "Information used to authenticate users and systems, including secrets, certificates, tokens, and other keys."
+      ],
+      [
+       "Security",
+       "Security Posture Management",
+       "Tools that help organizations configure, monitor, and improve system security."
+      ],
+      [
+       "Security",
+       "Threat Detection and Response",
+       "Collect and analyze security data to identify and respond to potential security threats and vulnerabilities."
+      ],
+      [
+       "Security",
+       "Other (Security)",
+       "Security services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Storage",
+       "Backup Storage",
+       "Secondary storage to protect against data loss."
+      ],
+      [
+       "Storage",
+       "Block Storage",
+       "High performance, low latency storage that provides random access."
+      ],
+      [
+       "Storage",
+       "File Storage",
+       "Scalable, sharable storage for file-based data."
+      ],
+      [
+       "Storage",
+       "Object Storage",
+       "Highly available, durable storage for unstructured data."
+      ],
+      [
+       "Storage",
+       "Storage Platforms",
+       "Unified solution that supports multiple storage types."
+      ],
+      [
+       "Storage",
+       "Other (Storage)",
+       "Storage services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Web",
+       "Application Platforms",
+       "Integrated environments that run web applications."
+      ],
+      [
+       "Web",
+       "Other (Web)",
+       "Web services that do not fall into one of the defined subcategories."
+      ],
+      [
+       "Other",
+       "Other (Other)",
+       "Services that do not fall into one of the defined categories."
+      ]
      ]
     },
     {
@@ -4208,7 +4882,8 @@
        "md": "SkuId MAY match [SkuPriceId](#datamodel.costandusage.skupriceid).",
        "line": 33
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SkuMeter",
@@ -4258,7 +4933,8 @@
        "md": "SkuMeter SHOULD remain consistent over time for a given [ServiceProviderName](#datamodel.costandusage.serviceprovidername) and SkuId.",
        "line": 16
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SkuPriceDetails",
@@ -4478,7 +5154,8 @@
        "md": "TokenDirection MUST be \"Output\" when the *SKU Price* meters tokens generated in a response.",
        "line": 54
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SkuPriceId",
@@ -4593,7 +5270,8 @@
        "md": "See [Examples: Commitment Discount Flexibility](#appendix.examples:commitmentdiscountflexibility) for more details around [*commitment discount flexibility*](#glossary:commitment-discount-flexibility).",
        "line": 34
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SubAccountId",
@@ -4643,7 +5321,8 @@
        "md": "See [Appendix: Grouping constructs for resources or services](#appendix.groupingconstructsforresourcesorservices) for details and examples of the different grouping constructs supported by FOCUS.",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SubAccountName",
@@ -4693,7 +5372,8 @@
        "md": "See [Appendix: Grouping constructs for resources or services](#appendix.groupingconstructsforresourcesorservices) for details and examples of the different grouping constructs supported by FOCUS.",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SubAccountType",
@@ -4743,7 +5423,8 @@
        "md": "SubAccountType MUST be a consistent, readable display value.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "Tags",
@@ -4878,7 +5559,8 @@
        "md": "Tag finalization documentation SHOULD be accessible to practitioners.",
        "line": 33
       }
-     ]
+     ],
+     "allowed_values": []
     }
    ]
   },
@@ -5128,6 +5810,24 @@
        "md": "ChargeCategory MUST be \"Credit\" when the *SKU Price* represents the unit value of a *credit* granted by the [*service provider*](#glossary:service-provider).",
        "line": 14
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Usage",
+       "The published unit price for the quantity of a service or resource that is consumed over a given period of time."
+      ],
+      [
+       "Purchase",
+       "The published fee for the acquisition of a service, resource, or commitment bought upfront or on a recurring basis."
+      ],
+      [
+       "Credit",
+       "The published unit value of a credit granted by the service provider (e.g., a promotional credit carrying a defined unit value)."
+      ]
      ]
     },
     {
@@ -5173,6 +5873,20 @@
        "md": "CommitmentDiscountCategory MUST be one of the allowed values.",
        "line": 13
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Spend",
+       "Commitment discounts that require a predetermined amount of spend."
+      ],
+      [
+       "Usage",
+       "Commitment discounts that require a predetermined amount of usage."
+      ]
      ]
     },
     {
@@ -5243,7 +5957,8 @@
        "md": "ContractId SHOULD be a fully-qualified identifier.",
        "line": 20
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PricingCurrency",
@@ -5303,7 +6018,8 @@
        "md": "PricingCurrency documentation MUST be accessible to practitioners.",
        "line": 16
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PricingCurrencyCategory",
@@ -5348,6 +6064,20 @@
        "md": "PricingCurrencyCategory MUST be \"Consumable\" when PricingCurrency represents a *consumption currency*.",
        "line": 13
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Payable",
+       "The pricing currency represents a financial medium of exchange the customer can pay in: a national currency (e.g., USD, EUR, JPY). Math resulting from this rate yields a base financial cost, though a currency conversion step may still be required if the customer's actual billed currency differs."
+      ],
+      [
+       "Consumable",
+       "The pricing currency represents a service-provider-specific consumption currency (e.g., platform credits, normalized billing units). Math resulting from this rate yields a virtual cost balance within the provider's ecosystem, requiring a mandatory secondary conversion to determine the financial cost."
+      ]
      ]
     },
     {
@@ -5398,7 +6128,8 @@
        "md": "PricingRegionId MAY be null when the *SKU Price* applies globally or is not regionally scoped.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PricingServiceName",
@@ -5438,7 +6169,8 @@
        "md": "PricingServiceName MUST NOT be null.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PricingUnit",
@@ -5483,7 +6215,8 @@
        "md": "PricingUnit MUST match a [PricingCurrency](#datamodel.skuprice.pricingcurrency) value of records whose [PricingCurrencyCategory](#datamodel.skuprice.pricingcurrencycategory) is \"Consumable\" when the SkuPrice record represents the price of that currency.",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PurchaseDurationType",
@@ -5548,6 +6281,53 @@
        "md": "PurchaseDurationType SHOULD correspond to the standard duration of the purchased offering (e.g., \"1 Year\", \"3 Years\") rather than a precise calculation of days or hours.",
        "line": 19
       }
+     ],
+     "allowed_values": [
+      [
+       "Time Unit"
+      ],
+      [
+       "Minute"
+      ],
+      [
+       "Minutes"
+      ],
+      [
+       "Hour"
+      ],
+      [
+       "Hours"
+      ],
+      [
+       "Day"
+      ],
+      [
+       "Days"
+      ],
+      [
+       "Week"
+      ],
+      [
+       "Weeks"
+      ],
+      [
+       "Month"
+      ],
+      [
+       "Months"
+      ],
+      [
+       "Quarter"
+      ],
+      [
+       "Quarters"
+      ],
+      [
+       "Year"
+      ],
+      [
+       "Years"
+      ]
      ]
     },
     {
@@ -5598,6 +6378,32 @@
        "md": "PurchasePaymentModel MUST be one of the allowed values.",
        "line": 14
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Sort Order",
+       "Description",
+       "Typical Use Case"
+      ],
+      [
+       "No Upfront",
+       "10",
+       "The obligation is settled entirely through deferred payment(s) (typically multiple recurring charges) with no initial payment.",
+       "Pay-as-you-go Savings Plans or monthly-billed SaaS."
+      ],
+      [
+       "Partial Upfront",
+       "20",
+       "The obligation is settled through a combination of an initial payment and deferred payment(s) (typically multiple recurring charges).",
+       "Hybrid RIs or EAs with a \"Year 1\" deposit plus installments."
+      ],
+      [
+       "All Upfront",
+       "30",
+       "The total obligation is settled via a single payment at the start of the duration.",
+       "High-discount RIs or multi-year contracts paid in full Day 1."
+      ]
      ]
     },
     {
@@ -5663,7 +6469,8 @@
        "md": "QuantityTierMaximum MUST be the inclusive upper bound of the quantity-based pricing tier.",
        "line": 19
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "QuantityTierMinimum",
@@ -5713,7 +6520,8 @@
        "md": "QuantityTierMinimum MUST be the exclusive lower bound of the quantity-based pricing tier.",
        "line": 16
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ServiceProviderName",
@@ -5753,7 +6561,8 @@
        "md": "See the [Appendix: Participating Entity Identification Examples](#appendix.examples:participatingentityidentification) section for examples of Service Provider Name values across various use case scenarios.",
        "line": 19
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SkuId",
@@ -5803,7 +6612,8 @@
        "md": "SkuId MUST remain consistent regardless of any other factors that might impact the price but do not affect the functionality of the *SKU*.",
        "line": 27
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SkuPriceCreated",
@@ -5843,7 +6653,8 @@
        "md": "SkuPriceCreated MUST represent the moment in time the *SKU Price* record was instantiated.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SkuPriceDescription",
@@ -5883,7 +6694,8 @@
        "md": "SkuPriceDescription maximum length SHOULD be provided in the corresponding FOCUS Metadata Schema.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SkuPriceEffectiveEnd",
@@ -5938,7 +6750,8 @@
        "md": "SkuPriceEffectiveEnd MUST be greater than SkuPriceEffectiveStart when SkuPriceEffectiveStart is not null and SkuPriceEffectiveEnd is not null.",
        "line": 17
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SkuPriceEffectiveStart",
@@ -5988,7 +6801,8 @@
        "md": "SkuPriceEffectiveStart MUST be the [*inclusive start bound*](#glossary:inclusivestartbound) of the effective [*period*](#glossary:period) of the SkuPrice record when SkuPriceEffectiveStart is not null.",
        "line": 16
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SkuPriceEligibility",
@@ -6037,7 +6851,8 @@
        "md": "SkuPriceEligibility MUST NOT be null.",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SkuPriceId",
@@ -6112,7 +6927,8 @@
        "md": "SkuPriceId MAY match SkuId.",
        "line": 21
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "SkuPriceLastUpdated",
@@ -6162,7 +6978,8 @@
        "md": "> **Note:** SKU Price Last Updated reflects when the SKU Price record was last modified and may be later than SKU Price Effective End, because corrections to a record's descriptive or pricing properties can be applied to a retired rate after its effective window has closed. Practitioners reconstructing price history should key on SKU Price Effective Start and SKU Price Effective End rather than on the record audit timestamps.",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "UnitPrice",
@@ -6207,7 +7024,8 @@
        "md": "UnitPrice MUST be denominated in the [PricingCurrency](#datamodel.skuprice.pricingcurrency).",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "UnitPriceType",
@@ -6277,7 +7095,8 @@
        "md": "UnitPriceType MAY contain provider-specific values when the price model does not align with a recommended value.",
        "line": 18
       }
-     ]
+     ],
+     "allowed_values": []
     }
    ]
   },
@@ -6575,7 +7394,8 @@
        "md": "When InvoiceIssueStatus is \"Open\", the sum of BilledCost MAY differ from the sum of CostAndUsage.BilledCost.",
        "line": 26
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BillingAccountId",
@@ -6625,7 +7445,8 @@
        "md": "See [Appendix: Grouping constructs for resources or services](#appendix.groupingconstructsforresourcesorservices) for details and examples of the different grouping constructs supported by FOCUS.",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BillingCurrency",
@@ -6675,7 +7496,8 @@
        "md": "BillingCurrency MUST be expressed in [*national currency*](#glossary:national-currency) (e.g., USD, EUR).",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ChargeCategory",
@@ -6750,6 +7572,32 @@
        "md": "ChargeCategory MAY be \"Usage\" when the record aggregates *charges* across multiple allowed values other than \"Tax\" (e.g., aggregation of \"Usage\" and \"Credit\" is allowed, but not \"Usage\" and \"Tax\").",
        "line": 19
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Usage",
+       "Positive or negative charges based on the quantity of a service or resource that was consumed over a given period of time including refunds."
+      ],
+      [
+       "Purchase",
+       "Positive or negative charges for the acquisition of a service or resource bought upfront or on a recurring basis including refunds."
+      ],
+      [
+       "Tax",
+       "Positive or negative applicable taxes that are levied by the relevant authorities including refunds. Tax charges may vary depending on factors such as the location, jurisdiction, and local or federal regulations."
+      ],
+      [
+       "Credit",
+       "Positive or negative charges granted by the service provider for various scenarios (e.g., promotional credits, corrections to promotional credits)."
+      ],
+      [
+       "Adjustment",
+       "Positive or negative charges the service provider applies that do not fall into other category values."
+      ]
      ]
     },
     {
@@ -6795,7 +7643,8 @@
        "md": "BillingPeriodEnd for a given [InvoiceId](#datamodel.invoicedetail.invoiceid) and [InvoiceIssuerName](#datamodel.invoicedetail.invoiceissuername) MUST match [CostAndUsage.BillingPeriodEnd](#datamodel.costandusage.billingperiodend) for the same [CostAndUsage.InvoiceId](#datamodel.costandusage.invoiceid) and [CostAndUsage.InvoiceIssuerName](#datamodel.costandusage.invoiceissuername).",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BillingPeriodStart",
@@ -6840,7 +7689,8 @@
        "md": "BillingPeriodStart for a given [InvoiceId](#datamodel.invoicedetail.invoiceid) and [InvoiceIssuerName](#datamodel.invoicedetail.invoiceissuername) MUST match [CostAndUsage.BillingPeriodStart](#datamodel.costandusage.billingperiodstart) for the same [CostAndUsage.InvoiceId](#datamodel.costandusage.invoiceid) and [CostAndUsage.InvoiceIssuerName](#datamodel.costandusage.invoiceissuername).",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "InvoiceDetailCreated",
@@ -6885,7 +7735,8 @@
        "md": "InvoiceDetailCreated for a given [BillingPeriodStart](#datamodel.invoicedetail.billingperiodstart) and [InvoiceIssuerName](#datamodel.invoicedetail.invoiceissuername) MUST be earlier than or equal to [BillingPeriod.BillingPeriodLastUpdated](#datamodel.billingperiod.billingperiodlastupdated) for the same [BillingPeriod.BillingPeriodStart](#datamodel.billingperiod.billingperiodstart) and [BillingPeriod.InvoiceIssuerName](#datamodel.billingperiod.invoiceissuername) when [BillingPeriod.BillingPeriodStatus](#datamodel.billingperiod.billingperiodstatus) is \"Closed\".",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "InvoiceDetailDescription",
@@ -6930,7 +7781,8 @@
        "md": "InvoiceDetailDescription MUST describe the [*charges*](#glossary:charge) represented by the [InvoiceDetailId](#datamodel.invoicedetail.invoicedetailid).",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "InvoiceDetailGrain",
@@ -7010,7 +7862,8 @@
        "md": "Property value MUST be of the type specified for that property.",
        "line": 22
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "InvoiceDetailId",
@@ -7050,7 +7903,8 @@
        "md": "InvoiceDetailId MUST uniquely identify a record within a given [InvoiceId](#datamodel.invoicedetail.invoiceid).",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "InvoiceDetailLastUpdated",
@@ -7095,7 +7949,8 @@
        "md": "InvoiceDetailLastUpdated MUST be greater than or equal to [InvoiceDetailCreated](#datamodel.invoicedetail.invoicedetailcreated).",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "InvoiceId",
@@ -7140,7 +7995,8 @@
        "md": "InvoiceId MUST uniquely identify the invoice as provided by the [*invoice issuer*](#glossary:invoice-issuer).",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "InvoiceIssueDate",
@@ -7180,7 +8036,8 @@
        "md": "InvoiceIssueDate MUST represent the official date of issuance for the corresponding [InvoiceId](#datamodel.invoicedetail.invoiceid).",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "InvoiceIssueStatus",
@@ -7230,6 +8087,24 @@
        "md": "InvoiceIssueStatus MUST NOT be \"Open\" following a previous status of \"Issued\", except when explicitly requested or approved by the customer.",
        "line": 14
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Open",
+       "The invoice is provisional and subject to change. It is not a valid financial obligation and the associated delivered data is preliminary."
+      ],
+      [
+       "Issued",
+       "The invoice has been formally issued by the provider. It represents a valid financial obligation with finalized associated data."
+      ],
+      [
+       "Voided",
+       "The invoice was previously issued but has been retracted or nullified. It is not a valid financial obligation."
+      ]
      ]
     },
     {
@@ -7275,7 +8150,8 @@
        "md": "See [Appendix: Participating Entity Identification Examples](#appendix.examples:participatingentityidentification) section for examples of Invoice Issuer Name values across various use case scenarios.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PaymentCurrency",
@@ -7320,7 +8196,8 @@
        "md": "PaymentCurrency MUST be expressed in [*national currency*](#glossary:national-currency) (e.g., USD, EUR).",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PaymentCurrencyBilledCost",
@@ -7375,7 +8252,8 @@
        "md": "PaymentCurrencyBilledCost MAY be 0 while BilledCost is non-zero when BilledCost (denominated in PaymentCurrency) is represented in a separate aggregate record.",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PaymentCurrencyInvoiceDetailId",
@@ -7420,7 +8298,8 @@
        "md": "PaymentCurrencyInvoiceDetailId MUST match InvoiceDetailId of the current record when PaymentCurrencyBilledCost is non-zero.",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PaymentDueDate",
@@ -7460,7 +8339,8 @@
        "md": "PaymentDueDate MUST be the date specified by the invoice issuer as the deadline for payment for the corresponding [InvoiceId](#datamodel.invoicedetail.invoiceid).",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PaymentTerms",
@@ -7500,7 +8380,8 @@
        "md": "PaymentTerms MUST represent the payment terms (e.g., \"Net 30\") as defined on the corresponding invoice.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PurchaseOrderNumber",
@@ -7540,7 +8421,8 @@
        "md": "PurchaseOrderNumber MUST represent the identifier used by the customer to uniquely identify the purchase order responsible for the charge.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ReferenceInvoiceId",
@@ -7585,7 +8467,8 @@
        "md": "ReferenceInvoiceId MUST match the InvoiceId of the current invoice when it does not adjust another invoice.",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     }
    ]
   },
@@ -7846,7 +8729,8 @@
        "md": "BillingCurrency MUST be expressed in [*national currency*](#glossary:national-currency) (e.g., USD, EUR).",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentApplicability",
@@ -7895,7 +8779,8 @@
        "md": "ContractCommitmentApplicability MUST NOT be null.",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentBenefitCategory",
@@ -7930,6 +8815,38 @@
        "md": "ContractCommitmentBenefitCategory MUST be one of the allowed values.",
        "line": 11
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Sort Order",
+       "Description",
+       "Typical Use Case"
+      ],
+      [
+       "Discount",
+       "10",
+       "A financial reduction in the unit price or list rate, whether applied immediately or conditionally upon meeting usage or spend thresholds.",
+       "Flat rate negotiated reductions, Savings Plans, growth rebates, or volume-tier discounts."
+      ],
+      [
+       "Entitlement",
+       "20",
+       "The contractual right to access and consume specific products, features, or software tiers that would otherwise be unavailable.",
+       "Marketplace SaaS purchases, Enterprise Agreements (e.g., Snowflake), or paid Proof of Concepts."
+      ],
+      [
+       "Availability",
+       "30",
+       "A contractual assurance of resource access and physical capacity.",
+       "Capacity reservations or dedicated host guarantees."
+      ],
+      [
+       "Other",
+       "40",
+       "Benefits not captured by standard categories.",
+       "Support access, training, or professional services."
+      ]
      ]
     },
     {
@@ -7965,6 +8882,20 @@
        "md": "ContractCommitmentCategory MUST be one of the allowed values.",
        "line": 11
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Spend",
+       "Contract commitments that require a predetermined amount of spend."
+      ],
+      [
+       "Usage",
+       "Contract commitments that require a predetermined amount of usage."
+      ]
      ]
     },
     {
@@ -8015,7 +8946,8 @@
        "md": "ContractCommitmentCost MUST be denominated in the [BillingCurrency](#datamodel.contractcommitment.billingcurrency).",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentCreated",
@@ -8055,7 +8987,8 @@
        "md": "ContractCommitmentCreated MUST represent the moment in time the ContractCommitment record was instantiated.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentDescription",
@@ -8095,7 +9028,8 @@
        "md": "ContractCommitmentDescription maximum length SHOULD be provided in the corresponding FOCUS Metadata Schema.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentDiscountPercentage",
@@ -8165,7 +9099,8 @@
        "md": "ContractCommitmentDiscountPercentage SHOULD represent the net effective discount when multiple contractual layers are applicable (e.g., a negotiated discount on top of a standard commitment).",
        "line": 18
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentDurationType",
@@ -8225,7 +9160,8 @@
        "md": "ContractCommitmentDurationType MAY differ from the actual duration calculated between [ContractCommitmentPeriodStart](#datamodel.contractcommitment.contractcommitmentperiodstart) and [ContractCommitmentPeriodEnd](#datamodel.contractcommitment.contractcommitmentperiodend) (e.g., if a 3-year commitment is exchanged in its final month, the resulting record may have a short lifespan but retains a value of \"3 Years\").",
        "line": 18
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentFulfillmentInterval",
@@ -8265,6 +9201,74 @@
        "md": "ContractCommitmentFulfillmentInterval MUST NOT be \"Full Period\" when ContractCommitmentModel is \"Continuous\".",
        "line": 14
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Sort Order",
+       "Description",
+       "Typical Use Case"
+      ],
+      [
+       "Hourly",
+       "10",
+       "Measured over a 60-minute period.",
+       "Continuous Model: Cloud-native RIs and Savings Plans."
+      ],
+      [
+       "Daily",
+       "20",
+       "Measured over a calendar day.",
+       "Daily active user (DAU) caps or daily license minimums."
+      ],
+      [
+       "Weekly",
+       "30",
+       "Measured over a rolling or fixed 7-day period.",
+       "Burstable bandwidth or weekly sprint-based SaaS usage."
+      ],
+      [
+       "Monthly",
+       "40",
+       "Measured over a calendar month.",
+       "Discontinuous Model: SaaS MRR minimums or tiered discounts."
+      ],
+      [
+       "Quarterly",
+       "50",
+       "Measured over a 3-month fiscal period.",
+       "Enterprise true-ups or volume-based rebate targets."
+      ],
+      [
+       "Semi-Annual",
+       "60",
+       "Measured over a 6-month period.",
+       "Mid-year budget alignments or review cycles."
+      ],
+      [
+       "Annual",
+       "70",
+       "Measured over a 12-month period.",
+       "Discontinuous Model: Cloud EAs (Enterprise Agreements)."
+      ],
+      [
+       "Full Period",
+       "80",
+       "The full duration of the contract commitment, with no internal resets.",
+       "\"Pool-of-funds commitments\" spanning the full commitment duration."
+      ],
+      [
+       "Transactional",
+       "90",
+       "No time-based reset; based purely on event volume or credit consumption.",
+       "API call bundles or \"Credit Packs\" with no expiration date."
+      ],
+      [
+       "Custom",
+       "100",
+       "A bespoke interval that does not fit standard calendar units.",
+       "Bridge contracts, unique POCs, or non-standard durations (e.g., 100 days)."
+      ]
      ]
     },
     {
@@ -8320,7 +9324,8 @@
        "md": "ContractCommitmentId MAY match ContractId.",
        "line": 15
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentLastUpdated",
@@ -8365,7 +9370,8 @@
        "md": "ContractCommitmentLastUpdated MUST be greater than or equal to [ContractCommitmentCreated](#datamodel.contractcommitment.contractcommitmentcreated).",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentLifecycleStatus",
@@ -8405,6 +9411,48 @@
        "md": "When a contract commitment record is modified in a way that requires a new [ContractCommitmentId](#datamodel.contractcommitment.contractcommitmentid), ContractCommitmentLifecycleStatus for the previous record MUST be \"Superseded\".",
        "line": 12
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Sort Order",
+       "Description"
+      ],
+      [
+       "Proposed",
+       "10",
+       "The commitment is being negotiated or modeled; it has no legal or financial impact on current data."
+      ],
+      [
+       "Pending",
+       "20",
+       "The commitment is finalized or signed, but the effective start date is in the future."
+      ],
+      [
+       "Active",
+       "30",
+       "The commitment is currently in effect, and it has remaining value."
+      ],
+      [
+       "Exhausted",
+       "40",
+       "The commitment is currently in effect, but its value has been fully consumed."
+      ],
+      [
+       "Expired",
+       "50",
+       "The commitment is no longer active because it reached its scheduled end date."
+      ],
+      [
+       "Canceled",
+       "60",
+       "The commitment is no longer active because it was terminated by either party prior to its scheduled end date."
+      ],
+      [
+       "Superseded",
+       "70",
+       "The commitment is no longer active because it was replaced by a newer version prior to its scheduled end date."
+      ]
      ]
     },
     {
@@ -8445,6 +9493,20 @@
        "md": "ContractCommitmentModel MUST be \"Discontinuous\" when ContractCommitmentFulfillmentInterval is \"Full Period\".",
        "line": 14
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Continuous",
+       "A flat, constant \"floor\" of commitment (e.g., RIs, Savings Plans). Coverage is applied at a fixed rate per Contract Commitment Fulfillment Interval (usually hourly), and benefits are not carried over to subsequent intervals."
+      ],
+      [
+       "Discontinuous",
+       "A flexible, aggregate commitment (e.g., Enterprise Agreements, SaaS Minimum Spend). Coverage is measured over a broad window or against a total monetary value."
+      ]
      ]
     },
     {
@@ -8480,6 +9542,23 @@
        "md": "ContractCommitmentOfferCategory MUST be one of the allowed values.",
        "line": 13
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description",
+       "Typical Use Case"
+      ],
+      [
+       "Public",
+       "Terms that are generally available to all customers via a service provider's standard rate card or portal.",
+       "Standard Savings Plans or Reserved Instances purchased via the cloud console without a custom discount."
+      ],
+      [
+       "Negotiated",
+       "Terms and pricing that have been specifically modified through an agreement between the customer and the service provider.",
+       "Enterprise Agreements (EA), private marketplace offers, or custom SaaS contracts with volume-based discounting."
+      ]
      ]
     },
     {
@@ -8525,6 +9604,50 @@
        "md": "ContractCommitmentPaymentInterval SHOULD represent a time granularity equal to or lesser than the time granularity represented by [ContractCommitmentDurationType](#datamodel.contractcommitment.contractcommitmentdurationtype).",
        "line": 15
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Sort Order",
+       "Description",
+       "Typical Use Case"
+      ],
+      [
+       "One-Time",
+       "10",
+       "A single invoice is generated for the entire obligation.",
+       "All Upfront models (e.g., 3yr All-Upfront RI) or single-invoice arrears paid at the end of a term."
+      ],
+      [
+       "Monthly",
+       "20",
+       "Invoices for the deferred balance are generated once per month.",
+       "No Upfront Savings Plans or Monthly SaaS."
+      ],
+      [
+       "Quarterly",
+       "30",
+       "Invoices for the deferred balance are generated every three months.",
+       "Partial Upfront deals with 90-day true-ups."
+      ],
+      [
+       "Semi-Annual",
+       "40",
+       "Invoices for the deferred balance are generated every six months.",
+       "Split-payment agreements."
+      ],
+      [
+       "Annual",
+       "50",
+       "Invoices for the deferred balance are generated once per year.",
+       "Partial Upfront EAs billed yearly."
+      ],
+      [
+       "Custom",
+       "60",
+       "Hourly/Daily or other irregular cycles.",
+       "Irregular bridge contracts or non-standard terms."
+      ]
      ]
     },
     {
@@ -8560,6 +9683,32 @@
        "md": "ContractCommitmentPaymentModel MUST be one of the allowed values.",
        "line": 17
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Sort Order",
+       "Description",
+       "Typical Use Case"
+      ],
+      [
+       "No Upfront",
+       "10",
+       "The obligation is settled entirely through deferred payment(s) (typically multiple recurring charges) with no initial payment.",
+       "Pay-as-you-go Savings Plans or monthly-billed SaaS."
+      ],
+      [
+       "Partial Upfront",
+       "20",
+       "The obligation is settled through a combination of an initial payment and deferred payment(s) (typically multiple recurring charges).",
+       "Hybrid RIs or EAs with a \"Year 1\" deposit plus installments."
+      ],
+      [
+       "All Upfront",
+       "30",
+       "The total obligation is settled via a single payment at the start of the duration.",
+       "High-discount RIs or multi-year contracts paid in full Day 1."
+      ]
      ]
     },
     {
@@ -8615,7 +9764,8 @@
        "md": "ContractCommitmentPaymentUpfrontPercentage MUST be greater than 0.0 and less than 1.0 when ContractCommitmentPaymentModel is \"Partial Upfront\".",
        "line": 17
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentPeriodEnd",
@@ -8655,7 +9805,8 @@
        "md": "ContractCommitmentPeriodEnd MUST be the *exclusive end bound* of the effective period of the *contract commitment*.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentPeriodStart",
@@ -8695,7 +9846,8 @@
        "md": "ContractCommitmentPeriodStart MUST be the *inclusive start bound* of the effective period of the *contract commitment*.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentQuantity",
@@ -8740,7 +9892,8 @@
        "md": "ContractCommitmentQuantity MAY be null when ContractCommitmentCategory is \"Spend\".",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentType",
@@ -8780,7 +9933,8 @@
        "md": "ContractCommitmentType MUST be a consistent, readable display value.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractCommitmentUnit",
@@ -8830,7 +9984,8 @@
        "md": "ContractCommitmentUnit MUST NOT be null when ContractCommitmentQuantity is not null.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractId",
@@ -8880,7 +10035,8 @@
        "md": "ContractId SHOULD be a fully-qualified identifier.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractPeriodEnd",
@@ -8920,7 +10076,8 @@
        "md": "ContractPeriodEnd MUST be the *exclusive end bound* of the effective period of the *contract*.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ContractPeriodStart",
@@ -8960,7 +10117,8 @@
        "md": "ContractPeriodStart MUST be the *inclusive start bound* of the effective period of the *contract*.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "InvoiceIssuerName",
@@ -9000,7 +10158,8 @@
        "md": "InvoiceIssuerName MUST represent the entity that issues invoices.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PricingCurrency",
@@ -9060,7 +10219,8 @@
        "md": "PricingCurrency documentation MUST be accessible to practitioners.",
        "line": 16
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "PricingCurrencyContractCommitmentCost",
@@ -9110,7 +10270,8 @@
        "md": "PricingCurrencyContractCommitmentCost MUST be denominated in the PricingCurrency.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "ServiceProviderName",
@@ -9145,7 +10306,8 @@
        "md": "ServiceProviderName MUST NOT be null.",
        "line": 16
       }
-     ]
+     ],
+     "allowed_values": []
     }
    ]
   },
@@ -9275,7 +10437,8 @@
        "md": "BillingPeriodCreated MUST represent the moment in time the BillingPeriod record was instantiated.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BillingPeriodEnd",
@@ -9315,7 +10478,8 @@
        "md": "BillingPeriodEnd MUST be the *exclusive end bound* of the *billing period*.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BillingPeriodLastUpdated",
@@ -9360,7 +10524,8 @@
        "md": "BillingPeriodLastUpdated MUST be greater than or equal to [BillingPeriodCreated](#datamodel.billingperiod.billingperiodcreated).",
        "line": 13
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BillingPeriodStart",
@@ -9400,7 +10565,8 @@
        "md": "BillingPeriodStart MUST be the *inclusive start bound* of the *billing period*.",
        "line": 12
       }
-     ]
+     ],
+     "allowed_values": []
     },
     {
      "id": "BillingPeriodStatus",
@@ -9445,6 +10611,20 @@
        "md": "BillingPeriodStatus MUST NOT be \"Open\" following a previous status of \"Closed\", except when explicitly requested or approved by the customer.",
        "line": 13
       }
+     ],
+     "allowed_values": [
+      [
+       "Value",
+       "Description"
+      ],
+      [
+       "Open",
+       "The billing period is currently active or still being processed. Records may continue to be added or revised."
+      ],
+      [
+       "Closed",
+       "The billing period has ended, all anticipated invoices have been issued, and the delivered data is finalized."
+      ]
      ]
     },
     {
@@ -9490,7 +10670,8 @@
        "md": "See [Appendix: Participating Entity Identification Examples](#appendix.examples:participatingentityidentification) section for examples of Invoice Issuer Name values across various use case scenarios.",
        "line": 14
       }
-     ]
+     ],
+     "allowed_values": []
     }
    ]
   }
@@ -11240,6 +12421,528 @@
    ]
   }
  ],
+ "conditions": [
+  {
+   "id": "IncludesAggregationLevelCurrencyDifferences",
+   "name": "Includes Aggregation Level Currency Differences",
+   "description": "The Includes Aggregation Level Currency Differences operating model condition represents a verifiable state indicating whether the operating model includes the representation of billing currency and payment currency at different aggregation levels on payable invoices.",
+   "source": "specification/operating_model_conditions/includesaggregationlevelcurrencydifferences.md"
+  },
+  {
+   "id": "IncludesAvailabilityZones",
+   "name": "Includes Availability Zones",
+   "description": "The Includes Availability Zones operating model condition represents a verifiable state indicating whether the operating model includes deploying resources or services within an availability zone.",
+   "source": "specification/operating_model_conditions/includesavailabilityzones.md"
+  },
+  {
+   "id": "IncludesBillingPaymentCurrencyDifferences",
+   "name": "Includes Billing and Payment Currency Differences",
+   "description": "The Includes Billing and Payment Currency Differences operating model condition represents a verifiable state indicating whether the operating model includes billing and payment in different currencies.",
+   "source": "specification/operating_model_conditions/includesbillingpaymentcurrencydifferences.md"
+  },
+  {
+   "id": "IncludesCapacityReservations",
+   "name": "Includes Capacity Reservations",
+   "description": "The Includes Capacity Reservations operating model condition represents a verifiable state indicating whether the operating model includes capacity reservations.",
+   "source": "specification/operating_model_conditions/includescapacityreservations.md"
+  },
+  {
+   "id": "IncludesCommitmentDiscounts",
+   "name": "Includes Commitment Discounts",
+   "description": "The Includes Commitment Discounts operating model condition represents a verifiable state indicating whether the operating model includes commitment discounts.",
+   "source": "specification/operating_model_conditions/includescommitmentdiscounts.md"
+  },
+  {
+   "id": "IncludesCommitmentPrograms",
+   "name": "Includes Commitment Programs",
+   "description": "The Includes Commitment Programs operating model condition represents a verifiable state indicating whether the operating model includes commitment programs.",
+   "source": "specification/operating_model_conditions/includescommitmentprograms.md"
+  },
+  {
+   "id": "IncludesConsumptionCurrency",
+   "name": "Includes Consumption Currency",
+   "description": "The Includes Consumption Currency operating model condition represents a verifiable state indicating whether the operating model includes prices in consumption currency.",
+   "source": "specification/operating_model_conditions/includesconsumptioncurrency.md"
+  },
+  {
+   "id": "IncludesContractCommitments",
+   "name": "Includes Contract Commitments",
+   "description": "The Includes Contract Commitments operating model condition represents a verifiable state indicating whether the operating model includes contract commitments.",
+   "source": "specification/operating_model_conditions/includescontractcommitments.md"
+  },
+  {
+   "id": "IncludesMultipleBillingAccountTypes",
+   "name": "Includes Multiple Billing Account Types",
+   "description": "The Includes Multiple Billing Account Types operating model condition represents a verifiable state indicating whether the operating model includes multiple Billing Account Types.",
+   "source": "specification/operating_model_conditions/includesmultiplebillingaccounttypes.md"
+  },
+  {
+   "id": "IncludesMultiplePricingCategories",
+   "name": "Includes Multiple Pricing Categories",
+   "description": "The Includes Multiple Pricing Categories operating model condition represents a verifiable state indicating whether the operating model includes multiple pricing categories.",
+   "source": "specification/operating_model_conditions/includesmultiplepricingcategories.md"
+  },
+  {
+   "id": "IncludesMultipleSubAccountTypes",
+   "name": "Includes Multiple Sub Account Types",
+   "description": "The Includes Multiple Sub Account Types operating model condition represents a verifiable state indicating whether the operating model includes multiple Sub Account Types.",
+   "source": "specification/operating_model_conditions/includesmultiplesubaccounttypes.md"
+  },
+  {
+   "id": "IncludesPartialUpfrontPayments",
+   "name": "Includes Partial Upfront Payments",
+   "description": "The Includes Partial Upfront Payments operating model condition represents a verifiable state indicating whether the operating model includes a partial upfront payment model for contract commitments.",
+   "source": "specification/operating_model_conditions/includespartialupfrontpayments.md"
+  },
+  {
+   "id": "IncludesPayableInvoices",
+   "name": "Includes Payable Invoices",
+   "description": "The Includes Payable Invoices operating model condition represents a verifiable state indicating whether the operating model includes payable invoices.",
+   "source": "specification/operating_model_conditions/includespayableinvoices.md"
+  },
+  {
+   "id": "IncludesPricingBillingCurrencyDifferences",
+   "name": "Includes Pricing-Billing Currency Differences",
+   "description": "The Includes Pricing-Billing Currency Differences operating model condition represents a verifiable state indicating whether the operating model includes pricing and billing in different currencies.",
+   "source": "specification/operating_model_conditions/includespricingbillingcurrencydifferences.md"
+  },
+  {
+   "id": "IncludesProvisionedResources",
+   "name": "Includes Provisioned Resources",
+   "description": "The Includes Provisioned Resources operating model condition represents a verifiable state indicating whether the operating model includes provisioned resources.",
+   "source": "specification/operating_model_conditions/includesprovisionedresources.md"
+  },
+  {
+   "id": "IncludesPurchaseOrderNumbers",
+   "name": "Includes Purchase Order Numbers",
+   "description": "The Includes Purchase Order Numbers operating model condition represents a verifiable state indicating whether the operating model includes purchase order numbers.",
+   "source": "specification/operating_model_conditions/includespurchaseordernumbers.md"
+  },
+  {
+   "id": "IncludesPurchases",
+   "name": "Includes Purchases",
+   "description": "The Includes Purchases operating model condition represents a verifiable state indicating whether the operating model includes purchases.",
+   "source": "specification/operating_model_conditions/includespurchases.md"
+  },
+  {
+   "id": "IncludesQuantityTierPricing",
+   "name": "Includes Quantity Tier Pricing",
+   "description": "The Includes Quantity Tier Pricing operating model condition represents a verifiable state indicating whether the operating model includes quantity-based pricing tiers.",
+   "source": "specification/operating_model_conditions/includesquantitytierpricing.md"
+  },
+  {
+   "id": "IncludesRegions",
+   "name": "Includes Regions",
+   "description": "The Includes Regions operating model condition represents a verifiable state indicating whether the operating model includes deploying resources or services within a region.",
+   "source": "specification/operating_model_conditions/includesregions.md"
+  },
+  {
+   "id": "IncludesRequesterAttribution",
+   "name": "Includes Requester Attribution",
+   "description": "The Includes Requester Attribution operating model condition represents a verifiable state indicating whether the operating model includes attributing usage or purchase of resources or services to requesters.",
+   "source": "specification/operating_model_conditions/includesrequesterattribution.md"
+  },
+  {
+   "id": "IncludesResourceTypeAssignment",
+   "name": "Includes Resource Type Assignment",
+   "description": "The Includes Resource Type Assignment operating model condition represents a verifiable state indicating whether the operating model includes categorizing resources by type.",
+   "source": "specification/operating_model_conditions/includesresourcetypeassignment.md"
+  },
+  {
+   "id": "IncludesSplitCostAllocation",
+   "name": "Includes Split Cost Allocation",
+   "description": "The Includes Split Cost Allocation operating model condition represents a verifiable state indicating whether the operating model includes split cost allocation.",
+   "source": "specification/operating_model_conditions/includessplitcostallocation.md"
+  },
+  {
+   "id": "IncludesSubAccounts",
+   "name": "Includes Sub Accounts",
+   "description": "The Includes Sub Accounts operating model condition represents a verifiable state indicating whether the operating model includes a sub account construct.",
+   "source": "specification/operating_model_conditions/includessubaccounts.md"
+  },
+  {
+   "id": "IncludesTags",
+   "name": "Includes Tags",
+   "description": "The Includes Tags operating model condition represents a verifiable state indicating whether the operating model includes tags.",
+   "source": "specification/operating_model_conditions/includestags.md"
+  },
+  {
+   "id": "IncludesUnitPricing",
+   "name": "Includes Unit Pricing",
+   "description": "The Includes Unit Pricing operating model condition represents a verifiable state indicating whether the operating model includes unit pricing.",
+   "source": "specification/operating_model_conditions/includesunitpricing.md"
+  },
+  {
+   "id": "IncludesUsageMeasurement",
+   "name": "Includes Usage Measurement",
+   "description": "The Includes Usage Measurement operating model condition represents a verifiable state indicating whether the operating model includes the measurement of resource or service usage.",
+   "source": "specification/operating_model_conditions/includesusagemeasurement.md"
+  },
+  {
+   "id": "",
+   "name": "Operating Model Conditions",
+   "description": "Operating model conditions represent verifiable states of an operating model that determine the requirement for specific data elements to be present in a FOCUS-compliant dataset.",
+   "source": "specification/operating_model_conditions/operating_model_conditions_overview.md"
+  }
+ ],
+ "glossary": {
+  "accrual-based-accounting": {
+   "term": "Accrual-Based Accounting",
+   "definition": "An accounting method used in technology cost management to record costs in the period when resources are utilized, services are delivered, or entitlements are available for or actually consumed (including unused or expired entitlements). This approach ensures that expenses are recognized in the same timeframe as the value they provide, independent of when charges are invoiced."
+  },
+  "adjustment": {
+   "term": "Adjustment",
+   "definition": "A charge representing a modification to billing data to account for certain events or circumstances not previously captured, or captured incorrectly. Examples include billing errors, service disruptions, or pricing changes."
+  },
+  "ai-model": {
+   "term": "AI Model",
+   "definition": "A trained machine learning system (e.g., a large language model) that produces output, such as text, images, or embeddings, from input content."
+  },
+  "allocated-charge": {
+   "term": "Allocated Charge",
+   "definition": "The charge that was created as the result of an allocation operation. This is used in the context of Data Generator-Calculated Split Cost Allocation to identify the charges that were created from the origin charge resulting from the application of Data Generator-Calculated Split Cost Allocation."
+  },
+  "allocated-method": {
+   "term": "Allocated Method",
+   "definition": "The process or formula by which cost is being allocated from an origin charge to produce allocated charges. This is used in the context of Data Generator-Calculated Split Cost Allocation which requires documentation of the method to be provided for any and all allocated methods used. May also be colloquially referred to as allocation method."
+  },
+  "amortization": {
+   "term": "Amortization",
+   "definition": "The distribution of upfront costs over time to accurately reflect the consumption or benefit derived from the associated resources or services. Amortization is valuable when the commitment period extends beyond the granularity of the source report."
+  },
+  "availability-zone": {
+   "term": "Availability Zone",
+   "definition": "A collection of geographically separated locations containing a data center or cluster of data centers. Each availability zone (AZ) should have its own power, cooling, and networking, to provide redundancy and fault tolerance."
+  },
+  "billing-account": {
+   "term": "Billing Account",
+   "definition": "A container for resources and/or services that are billed together in an invoice. A billing account may have sub accounts, all of whose costs are consolidated and invoiced to the billing account."
+  },
+  "billing-currency": {
+   "term": "Billing Currency",
+   "definition": "An identifier that represents the currency that a charge for resources and/or services was billed in."
+  },
+  "billing-period": {
+   "term": "Billing Period",
+   "definition": "The time window that an organization receives an invoice for, inclusive of the start date and exclusive of the end date. It is independent of the time of usage and consumption of resources and services."
+  },
+  "block-pricing": {
+   "term": "Block Pricing",
+   "definition": "A pricing approach where the cost of a particular resource or service is determined based on predefined quantities or tiers of usage. In these scenarios, the Pricing Unit and the corresponding Pricing Quantity can be different from the Consumed Unit and Consumed Quantity."
+  },
+  "cash-based-accounting": {
+   "term": "Cash-Based Accounting",
+   "definition": "An accounting method used in technology cost management to record costs in the period when charges are invoiced. This approach aligns expenses with billing cycles, independent of when resources are utilized, services are delivered, or entitlements are available for or actually consumed (including unused or expired entitlements)."
+  },
+  "capacity-reservation": {
+   "term": "Capacity Reservation",
+   "definition": "A capacity reservation is an agreement that secures a dedicated amount of resources or services for a specified period. This ensures the reserved capacity is always available and accessible, even if it's not fully utilized. Customers are typically charged for the reserved capacity, regardless of actual consumption."
+  },
+  "charge": {
+   "term": "Charge",
+   "definition": "A row in a FOCUS-compatible cost and usage dataset."
+  },
+  "chargeperiod": {
+   "term": "Charge Period",
+   "definition": "The time window for which a charge is effective, inclusive of the start date and exclusive of the end date. The charge period for continuous usage should match the time granularity of the dataset instance (e.g., 1 hour for hourly, 1 day for daily). The charge period for a non-usage charge with time boundaries should match the period of eligibility."
+  },
+  "closed-billing-period": {
+   "term": "Closed Billing Period",
+   "definition": "A billing period with Billing Period Status set to \"Closed\". The period has been financially closed after all anticipated invoices for the period have been issued by designated invoice issuers and no additional invoices will be associated with this period. Exceptionally, additional invoices may be associated with a closed billing period if explicitly requested or approved by the customer."
+  },
+  "cloud-service-provider": {
+   "term": "Cloud Service Provider (CSP)",
+   "definition": "A company or organization that provides remote access to computing resources, infrastructure, or applications for a fee."
+  },
+  "commitment": {
+   "term": "Commitment",
+   "definition": "A customer's agreement to either spend a defined monetary amount or consume a specific quantity of resources or services over a specified period."
+  },
+  "commitment-discount": {
+   "term": "Commitment Discount",
+   "definition": "A publicly available contract commitment that provides discounted pricing on preselected SKUs in exchange for a commitment to specific spend or usage goals over a specified period, based on publicly disclosed standard terms and pricing. Committed spend or usage is evenly distributed across predefined Contract Commitment Fulfillment Intervals (e.g., hourly), and unused benefits cannot be carried over to subsequent Intervals. Only one commitment discount may be applied to a single charge at a time, and it may overlap with one or more negotiated discounts.\n\nThis term has been used in the past by FinOps teams managing Public Cloud to refer to specific contract commitments (including Reserved Instances, Savings Plans and Committed Use Discounts) offered by cloud providers, and is defined here to maintain consistency with the terms of that subset of contract commitments.\n\nCommitment discounts are classified with the following designations:\n\n* Contract Commitment Offer Category: \"Public\"\n* Contract Commitment Benefit Category: \"Discount\"\n* Contract Commitment Model: \"Continuous\"\n* Unused benefits cannot be carried over to subsequent Contract Commitment Fulfillment Intervals"
+  },
+  "commitment-discount-flexibility": {
+   "term": "Commitment Discount Flexibility",
+   "definition": "A feature of commitment discounts that may further transform the predetermined amount of usage purchased or consumed based on additional, service-provider-specific requirements."
+  },
+  "commitment-program": {
+   "term": "Commitment Program",
+   "definition": "A service-provider offering that allows a customer to enter into a commitment. Commitment programs include commitment discounts, capacity reservations, and other constructs that require advance spend or usage agreements."
+  },
+  "consumption-currency": {
+   "term": "Consumption Currency",
+   "definition": "A proprietary virtual currency issued by a service provider to normalize, measure, and aggregate the consumption of resources or services within their specific ecosystem.\n\nUnlike a national currency, a consumption currency acts as an intermediate balance and holds no purchasing power outside of the issuing provider's platform. Pricing models that utilize a consumption currency require a secondary conversion rate to calculate the final financial cost of the usage. Common examples include proprietary platform credits and normalized billing units."
+  },
+  "contract": {
+   "term": "Contract",
+   "definition": "A collection of agreed terms between a service provider and a customer."
+  },
+  "contract-commitment": {
+   "term": "Contract Commitment",
+   "definition": "A specific term within a contract that defines a measurable obligation agreed upon by a provider and a customer, such as a minimum spend or usage over an agreed period of time."
+  },
+  "contracted-unit-price": {
+   "term": "Contracted Unit Price",
+   "definition": "The negotiated unit price per Pricing Unit for the SKU Price identified by the given SKU Price ID. Contracted Unit Price reflects negotiated pricing terms for the associated SKU Price that are independent of any discount-bearing commitment programs (e.g., commitment discount) being applied to the charge. It does not reflect any unit price impact dependent on a discount-bearing commitment program being applied to the charge."
+  },
+  "correction": {
+   "term": "Correction",
+   "definition": "Any modification (including updates, additions, or omissions) to previously delivered records within a defined delivery scope (e.g., temporal grouping such as a billing period or non-temporal, logical grouping such as a contract).\n\nA correction (lowercase) may consist of one or more simultaneous changes, including updates to or omission of previously delivered records, or the addition of new records that supplement previously delivered data within the affected delivery scope. This concept applies across all FOCUS datasets.\n\nIn contrast to the broader concept of correction (lowercase), the term \"Correction\" (capitalized) refers to a specific allowed value in the Charge Class column in Cost and Usage datasets. It designates charges used to correct cost or usage data from a previously closed billing period."
+  },
+  "covered-charge": {
+   "term": "Covered Charge",
+   "definition": "A charge whose Billed Cost is fully or partially absorbed by a corresponding covering charge. Common examples include usage charges applied against commitment discounts, or consumption of SaaS offerings drawn from a prepayment, such as marketplace purchases."
+  },
+  "covering-charge": {
+   "term": "Covering Charge",
+   "definition": "A purchase charge whose cost is applied against one or more covered charges, offsetting their Billed Cost. Common examples include commitment discount purchases, prepayment charges, and marketplace purchases that cover consumption-based usage."
+  },
+  "credential": {
+   "term": "Credential",
+   "definition": "The means by which a principal is authenticated on an individual request (e.g., API key, access token, session). A credential is distinct from the principal it authenticates, and the same principal may be authenticated by different credentials on different requests. A credential is separate from any published identifier that references it; a credential with no such identifier cannot be represented in a FOCUS dataset."
+  },
+  "credit": {
+   "term": "Credit",
+   "definition": "A financial incentive or allowance granted by a service provider unrelated to other past/current/future charges."
+  },
+  "custom-column": {
+   "term": "Custom Column",
+   "definition": "A column not defined by FOCUS and included in a FOCUS dataset. Custom columns are prefixed with x_ and provide additional context from native datasets beyond what is captured in FOCUS columns. See Dataset Completeness for inclusion requirements."
+  },
+  "dataset-artifact": {
+   "term": "Dataset Artifact",
+   "definition": "An abbreviated term for dataset instance artifact."
+  },
+  "dataset-instance": {
+   "term": "Dataset Instance",
+   "definition": "A specific implementation of a FOCUS dataset provided by a data generator. A Data Generator may provide multiple dataset instances of the same FOCUS dataset, each with different properties such as time granularity or differing custom column inclusions. For example, the same 'FOCUS Cost and Usage' FOCUS dataset may be provided at an hourly or daily time granularity by a Data Generator. Each would be a distinct Dataset Instance."
+  },
+  "dataset-instance-artifact": {
+   "term": "Dataset Instance Artifact",
+   "definition": "A physical representation of a specific dataset instance delivered by a data generator."
+  },
+  "delivery-scope": {
+   "term": "Delivery Scope",
+   "definition": "A dataset-specific boundary or set of boundaries that determines which records are included in a dataset artifact delivery. Scopes can be temporal (e.g., a billing period) or non-temporal (e.g., a contract or other logical grouping), and multiple scopes may be applicable for a single dataset depending on use case or delivery configuration. Scopes determine how Overwrite and Append dataset artifact deliveries, as well as corrections, are applied."
+  },
+  "dimension": {
+   "term": "Dimension",
+   "definition": "A specification-defined categorical attribute that provides context or categorization to billing data."
+  },
+  "exclusiveendbound": {
+   "term": "Exclusive End Bound",
+   "definition": "A Date/Time Format value that is not contained within the ending bound of a time period."
+  },
+  "finalized-tag": {
+   "term": "Finalized Tag",
+   "definition": "A tag with one tag value chosen from a set of possible tag values after being processed by a set of service-provider-defined or user-defined rules."
+  },
+  "finops-cost-and-usage-specification": {
+   "term": "FinOps Cost and Usage Specification (FOCUS)",
+   "definition": "An open-source specification that defines requirements for billing data."
+  },
+  "FOCUS-column": {
+   "term": "FOCUS Column",
+   "definition": "A column defined by FOCUS and included in a FOCUS dataset. See the Columns section of each dataset for definitions."
+  },
+  "FOCUS-dataset": {
+   "term": "FOCUS Dataset",
+   "definition": "A structured collection of columns that conforms to the BCP14 criteria established by FOCUS. All columns included must be defined in the FOCUS Columns section of the specification.\n\nIn addition to these standardized columns, data generators include custom columns to capture information from native datasets that is not represented by FOCUS columns. If custom columns introduce record-splitting (i.e., a single original charge results in multiple rows), the data generator is responsible for ensuring that all cost and quantity metrics still meet the aggregation and consistency rules required by the specification.\n\nThe collection of datasets are designed to provide billing insight, additional context, metadata, mapping, or enrichment information that enhances the interpretability or completeness. See also: Native Dataset."
+  },
+  "FOCUS-dataset-column": {
+   "term": "FOCUS Dataset Column",
+   "definition": "A column included in a FOCUS dataset. A FOCUS dataset column is either a FOCUS column or a custom column."
+  },
+  "foreign-exchange": {
+   "term": "Foreign Exchange (FX)",
+   "definition": "The conversion of an amount from one currency to another using a currency exchange rate."
+  },
+  "general-availability": {
+   "term": "General Availability (GA)",
+   "definition": "The version of FOCUS in which a FOCUS dataset, or a supporting entity on a preview's scope list, is promoted from preview status or initially published without preview status."
+  },
+  "inclusivestartbound": {
+   "term": "Inclusive Start Bound",
+   "definition": "A Date/Time Format value that is contained within the beginning bound of a time period."
+  },
+  "interruptible": {
+   "term": "Interruptible",
+   "definition": "A category of compute resources that can be paused or terminated by the CSP within certain criteria, often advertised at reduced unit pricing when compared to the equivalent non-interruptible resource."
+  },
+  "invoice": {
+   "term": "Invoice",
+   "definition": "A document that summarizes the charges for resources or services consumed by a customer."
+  },
+  "invoice-issuer": {
+   "term": "Invoice Issuer",
+   "definition": "An entity responsible for issuing payable invoices for the resources or services consumed. Common examples include cloud service providers, managed service providers, or marketplace operators."
+  },
+  "invoice-reconciliation": {
+   "term": "Invoice Reconciliation",
+   "definition": "The process of verifying that the costs, quantities, and applied adjustments on an invoice are equal to the underlying usage records and contracted rates for a specific billing period.\n\nIn the context of FOCUS, this process ensures consistency by reconciling cost and usage data across the invoice, the Invoice Detail dataset, and the Cost and Usage dataset to identify and resolve any discrepancies."
+  },
+  "issued-invoice": {
+   "term": "Issued Invoice",
+   "definition": "An invoice that has been formally reconciled and issued by the designated invoice issuer (Invoice Issue Status set to \"Issued\"). Once issued, the invoice becomes the authoritative financial document and is considered finalized. The financial data presented on the invoice is not expected to change."
+  },
+  "json": {
+   "term": "JSON",
+   "definition": "A common acronym for JavaScript Object Notation, a data format codified in ECMA-404 as a standard for human-readable, serializable data objects. This data format is used in FOCUS to communicate multiple pieces of information about a charge (tags, properties, etc.) in a single column."
+  },
+  "list-unit-price": {
+   "term": "List Unit Price",
+   "definition": "The service-provider-suggested unit price per Pricing Unit for the SKU Price identified by the given SKU Price ID. List Unit Price does not reflect negotiated pricing terms for the associated SKU Price or any unit price impact dependent on a discount-bearing commitment program (e.g., commitment discount) being applied to the charge."
+  },
+  "managed-service-provider": {
+   "term": "Managed Service Provider (MSP)",
+   "definition": "A company or organization that provides outsourced management and support of a range of IT services, such as network infrastructure, cybersecurity, cloud computing, and more."
+  },
+  "metric": {
+   "term": "Metric",
+   "definition": "A FOCUS-defined column that provides numeric values, allowing for aggregation operations such as arithmetic operations (sum, multiplication, averaging etc.) and statistical operations."
+  },
+  "national-currency": {
+   "term": "National Currency",
+   "definition": "A government-issued currency (e.g., US dollars, Euros)."
+  },
+  "native-dataset": {
+   "term": "Native Dataset",
+   "definition": "A dataset provided by a data generator in a format other than FOCUS. For service providers, this typically refers to their proprietary data exports (e.g., billing exports, contract details, or other FinOps-related datasets). For FinOps tool vendors, this refers to any non-FOCUS dataset they offer to practitioners. See also: FOCUS Dataset."
+  },
+  "negotiated-discount": {
+   "term": "Negotiated Discount",
+   "definition": "A privately agreed contract commitment that provides discounted pricing in exchange for a commitment to specific spend or usage goals over a specified period, with terms and pricing specifically modified from standard. Multiple negotiated discounts may be applied to a single charge at a time, and they may overlap with a commitment discount.\n\nNegotiated discounts are classified with the following designations:\n\n* Contract Commitment Offer Category: \"Negotiated\"\n* Contract Commitment Benefit Category: \"Discount\""
+  },
+  "negotiated-fx-pricing-terms": {
+   "term": "Negotiated FX Pricing Terms",
+   "definition": "Negotiated pricing terms that affect the foreign exchange conversion between the applicable record's Pricing Currency and Billing Currency."
+  },
+  "negotiated-non-fx-pricing-terms": {
+   "term": "Negotiated Non-FX Pricing Terms",
+   "definition": "Negotiated pricing terms that do not affect the foreign exchange conversion between the applicable record's Pricing Currency and Billing Currency."
+  },
+  "negotiated-pricing-terms": {
+   "term": "Negotiated Pricing Terms",
+   "definition": "Privately agreed terms between a service provider and a customer that modify pricing from the service-provider-suggested pricing. Negotiated pricing terms consist of negotiated non-FX pricing terms (e.g., negotiated unit prices, negotiated tiered pricing configurations) and negotiated FX pricing terms (e.g., negotiated currency exchange rates)."
+  },
+  "on-demand": {
+   "term": "On-Demand",
+   "definition": "A service that is available and provided immediately or as needed, without requiring a pre-scheduled appointment or prior arrangement. In cloud computing, virtual machines can be created and terminated as needed, i.e., on demand."
+  },
+  "open-billing-period": {
+   "term": "Open Billing Period",
+   "definition": "A billing period with Billing Period Status set to \"Open\". Billing activities are ongoing, and the period remains subject to updates until formally closed."
+  },
+  "operating-model": {
+   "term": "Operating Model",
+   "definition": "The collective set of capabilities, business concepts, and data constructs underlying a FOCUS-compliant dataset. It encompasses features and metadata enrichments supported across participating entities (e.g., service providers, host providers, invoice issuers, and data generators), reflecting the verifiable state of these elements at the time of dataset creation."
+  },
+  "origin-charge": {
+   "term": "Origin Charge",
+   "definition": "The charge that existed prior to an operation. This is used in the context of Data Generator-Calculated Split Cost Allocation to identify the charge that existed prior to the application of Data Generator-Calculated Split Cost Allocation to produce allocated charges."
+  },
+  "pascalcase": {
+   "term": "Pascal Case",
+   "definition": "Pascal Case (PascalCase, also known as UpperCamelCase) is a format for identifiers which contain one or more words meaning the words are concatenated together with no delimiter and the first letter of each word is capitalized."
+  },
+  "period": {
+   "term": "Period",
+   "definition": "A time window, with a specifically defined start and end date/time."
+  },
+  "potato": {
+   "term": "Potato",
+   "definition": "A long and often painful conversation had by the FOCUS contributors. Sometimes the name of a thing that we could not yet name. No starchy root vegetables were harmed during the production of this specification. We thank potato for its contribution in the creation of this specification."
+  },
+  "practitioner": {
+   "term": "Practitioner",
+   "definition": "An individual who performs FinOps within an organization to maximize the business value of using cloud and cloud-like services."
+  },
+  "preview": {
+   "term": "Preview",
+   "definition": "A status for a FOCUS dataset that is published in a version of FOCUS so implementers can build it and report what they find, and that may change in the next version without a deprecation notice. See Preview and General Availability (GA)."
+  },
+  "price-list": {
+   "term": "Price List",
+   "definition": "A comprehensive list of prices offered by a service provider."
+  },
+  "principal": {
+   "term": "Principal",
+   "definition": "An entity defined in an identity and access management model (e.g., user, service account) to which access to resources or services is granted. A principal is distinct from the credential (e.g., API key, access token) presented with an individual request, and from the organizational container (e.g., project, workspace) within which the request runs. The same principal may be associated with multiple credentials."
+  },
+  "prompt-cache": {
+   "term": "Prompt Cache",
+   "definition": "A storage mechanism that allows a generative AI workload to reuse previously processed input content across requests to an AI model. Service providers may meter cache reads, cache writes, and cache retention differently."
+  },
+  "service-provider": {
+   "term": "Service Provider",
+   "definition": "An entity that provides the resources or services available for usage or purchase."
+  },
+  "refund": {
+   "term": "Refund",
+   "definition": "A return of funds that have previously been charged."
+  },
+  "requester": {
+   "term": "Requester",
+   "definition": "An entity defined in an identity and access management model on whose behalf a request is initiated, resulting in a charge. A service provider commonly represents a requester at more than one level, such as the principal to which access to resources or services is granted and the credential presented on the request. A requester is distinct from the party that benefits from the usage or purchase, which a FOCUS dataset does not identify."
+  },
+  "resource": {
+   "term": "Resource",
+   "definition": "A unique component that incurs a charge."
+  },
+  "row": {
+   "term": "Row",
+   "definition": "A row in a FOCUS-compatible cost and usage dataset."
+  },
+  "service": {
+   "term": "Service",
+   "definition": "An offering that can be purchased from a service provider, and can include many types of usage or other charges; e.g., a cloud database service may include compute, storage, and networking charges."
+  },
+  "sku": {
+   "term": "SKU",
+   "definition": "A construct composed of the common properties of a product offering associated with one or many SKU Prices."
+  },
+  "sku-price": {
+   "term": "SKU Price",
+   "definition": "A pricing construct that encompasses SKU properties (e.g., functionality and technical specifications) and core stable pricing details for a particular SKU. It excludes dynamic or negotiable pricing elements such as unit price amounts, currency, foreign exchange rates, effective dates, contract or account identifiers, and negotiated discounts. However, modifications to the pricing structure itself (such as a negotiated tier configuration) are included."
+  },
+  "split-cost-allocation": {
+   "term": "Split Cost Allocation",
+   "definition": "A mechanism that splits a single origin charge into multiple allocated charges to distribute cost and usage across resources at a more granular level, using a defined allocated method."
+  },
+  "sub-account": {
+   "term": "Sub Account",
+   "definition": "A sub account is an optional service-provider-supported construct for organizing resources and/or services connected to a billing account. Sub accounts must be associated with a billing account as they do not receive invoices."
+  },
+  "tag": {
+   "term": "Tag",
+   "definition": "A metadata label assigned to a resource to provide information about it or to categorize it for organizational and management purposes."
+  },
+  "tag-scheme": {
+   "term": "Tag Scheme",
+   "definition": "A distinct framework for assigning metadata to charges, resources, or other assets. Different metadata types within a single provider (e.g., \"tags\" vs. \"labels\") are considered separate schemes. They can be user-defined (i.e., allowing user input) or provider-defined (i.e., controlled by the service provider)."
+  },
+  "tag-source": {
+   "term": "Tag Source",
+   "definition": "A Resource or Service-Provider-defined construct for grouping resources and/or other Service-Provider-defined construct that a Tag can be assigned to."
+  },
+  "term": {
+   "term": "Term",
+   "definition": "An agreement specified on a contract or invoice."
+  },
+  "token": {
+   "term": "Token",
+   "definition": "A unit of measure representing a discrete quantity of content processed by an AI model. The amount of content a single token represents is determined by the model, so token counts are not directly comparable across models. Distinct from a token issued as a virtual currency, which denominates value."
+  },
+  "unit-pricing": {
+   "term": "Unit Pricing",
+   "definition": "A billing concept where the cost of a charge is deterministically derived as the product of a unit price (defined per SKU Price) and the corresponding Pricing Quantity, representing purchased or consumed volume of a SKU."
+  },
+  "virtual-currency": {
+   "term": "Virtual Currency",
+   "definition": "A digital representation of value that is independent of government regulation or central banks (e.g., cryptocurrency, digital credits). Distinct from a token as a unit of measure for content processed by an AI model."
+  }
+ },
  "relationships": [
   {
    "id": "cau-sku",

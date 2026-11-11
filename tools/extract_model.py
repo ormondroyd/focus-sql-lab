@@ -95,6 +95,13 @@ def requirements(text):
     return out
 
 
+def allowed_values(text):
+    """The Allowed Values table, any width: header row first, then one row per value."""
+    rows = [[clean(c.strip()) for c in line.strip().strip("|").split("|")]
+            for line in section(text, "Allowed Values").split("\n") if line.lstrip().startswith("|")]
+    return [r for r in rows if not all(set(c) <= set(":- ") for c in r)]
+
+
 def rel_path(p):
     return str(p.relative_to(SPEC))
 
@@ -124,6 +131,7 @@ for ds_id, folder in DATASETS:
             "introduced": clean(section(ct, "Version Introduced")),
             "source": rel_path(cpath),
             "requirements": requirements(ct),
+            "allowed_values": allowed_values(ct),
         })
     datasets.append({
         "id": ds_id,
@@ -155,6 +163,21 @@ for path in sorted((SPEC / "specification/attributes").glob("*.md")):
         "used_by": [],
     })
 by_anchor = {a["anchor"]: a for a in attributes}
+
+# Operating model conditions: what makes a Conditional column required (e.g. "Includes Payable Invoices").
+conditions = []
+for path in sorted((SPEC / "specification/operating_model_conditions").glob("*.md")):
+    text = path.read_text()
+    first = text.split("\n", 1)[1].strip().split("\n\n")[0]
+    conditions.append({"id": clean(section(text, "Operating Model Condition ID")),
+                       "name": clean(text.split("\n", 1)[0].lstrip("# ")), "description": clean(first),
+                       "source": rel_path(path)})
+
+# Glossary: the defined terms that requirements link to, e.g. #glossary:covered-charge.
+glossary = {}
+gtext = (SPEC / "specification/glossary.md").read_text()
+for m in re.finditer(r'<a name="glossary:([^"]+)"><b>([^<]+)</b></a>\s*\n(.*?)(?=\n<a name="glossary:|\Z)', gtext, re.S):
+    glossary[m.group(1)] = {"term": m.group(2).strip(), "definition": clean(m.group(3).strip())}
 for d in datasets:
     for owner, reqs in [(None, d["requirements"])] + [(c["id"], c["requirements"]) for c in d["columns"]]:
         for anchor in dict.fromkeys(re.findall(r"\(#attributes\.([^)]+)\)", " ".join(r.get("md", "") for r in reqs))):
@@ -305,6 +328,8 @@ model = {
              "ref": commit[0] if commit else None, "date": commit[1] if len(commit) > 1 else None},
     "datasets": datasets,
     "attributes": attributes,
+    "conditions": conditions,
+    "glossary": glossary,
     "relationships": RELS,
 }
 out = SITE / "focus" / "model.json"

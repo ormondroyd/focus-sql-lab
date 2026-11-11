@@ -208,6 +208,7 @@
   .detail .note-box { border: 1px dashed var(--line); border-radius: 8px; padding: 4px 10px 8px; margin: 10px 0; }
   .detail .note-box h5 { margin: 8px 0 2px; font-size: 12.5px; }
   .detail .conv { margin: 8px 0 4px; line-height: 1.5; }
+  .detail .term { border-bottom: 1px dotted var(--muted); cursor: help; }
   .detail .plain { font-size: 13.5px; line-height: 1.55; margin: 8px 0; }
   .detail blockquote.spec-def { margin: 8px 0; }
   .detail .reqs { font-size: 12.5px; line-height: 1.5; }
@@ -1247,6 +1248,12 @@ async function fillSummary(path, token) {
 const reqFmt = (t) => escapeHtml(t).replace(/`([^`]+)`/g, '<code>$1</code>')
   .replace(/(^|[^\w*])\*([^*]+)\*(?![\w*])/g, '$1<em>$2</em>')
   .replace(/\b(MUST NOT|MUST|SHOULD NOT|SHOULD|MAY|RECOMMENDED)\b/g, '<b>$1</b>');
+// Glossary definitions, looked up without regard to case (links use both #glossary:FOCUS-dataset and lower case).
+let glossaryLower = null;
+const glossaryTerm = (anchor) => {
+  glossaryLower ??= Object.fromEntries(Object.entries(model.glossary || {}).map(([k, v]) => [k.toLowerCase(), v]));
+  return glossaryLower[anchor.toLowerCase()];
+};
 function reqText(md) {
   let out = '', last = 0, m;
   const re = /\[([^\]]+)\]\(#([^)]+)\)/g;
@@ -1260,6 +1267,9 @@ function reqText(md) {
       const d = model.datasets.find((x) => x.id.toLowerCase() === ds);
       const c = d && d.columns.find((x) => x.id.toLowerCase() === col);
       out += c ? `<button class="linkish" data-ds="${d.id}" data-col="${escapeHtml(c.id)}">${label}</button>` : label;
+    } else if (target.startsWith('glossary:') && glossaryTerm(target.slice(9))) {
+      const g = glossaryTerm(target.slice(9));
+      out += `<em class="term" title="${escapeHtml(`${g.term}: ${g.definition}`)}">${label}</em>`;
     } else out += `<em>${label}</em>`;
     last = re.lastIndex;
   }
@@ -1388,12 +1398,19 @@ async function colDetail(d, c, el, token) {
     (r.a === d.id && k[0] === c.id) || (r.b === d.id && k[1] === c.id)));
   detailSql = { values: `SELECT ${c.id}, count(*) AS Rows\nFROM ${d.id}\nGROUP BY ALL\nORDER BY Rows DESC\nLIMIT 50;` };
   const row = (k, v) => (v && !/not (specified|applicable)/i.test(v) ? `<dt>${k}</dt><dd>${escapeHtml(v)}</dd>` : '');
+  // The operating model conditions that make this column required, with each one's definition from the spec.
+  const conds = (model.conditions || []).filter((x) => c.conditions && c.conditions.includes(x.name));
+  const condRow = conds.length ? `<dt>Required when</dt><dd>${conds.map((x) =>
+    `${escapeHtml(x.name)}<div class="hint">${escapeHtml(x.description)}</div>`).join('')}</dd>` : row('Required when', c.conditions);
+  const av = c.allowed_values || [];
+  const allowed = av.length > 1 ? `<h4>Allowed values</h4><table>${av.map((r, i) => `<tr>${r.map((cell) =>
+    (i ? `<td>${escapeHtml(cell)}</td>` : `<th>${escapeHtml(cell)}</th>`)).join('')}</tr>`).join('')}</table>` : '';
   el.innerHTML = `<h3>${escapeHtml(c.name)}</h3>
     <div class="sub">${d.id}.${escapeHtml(c.id)}</div>
     <div id="obj-summary"></div>${specDef(c.description)}
     <dl>${row('Data type', c.data_type)}${row('Column type', c.column_type)}${row('Feature level', c.feature_level)}
-      ${row('Required when', c.conditions)}${row('Allows nulls', c.allows_nulls)}${row('Value format', c.value_format)}
-      ${row('Introduced', c.introduced)}</dl>
+      ${condRow}${row('Allows nulls', c.allows_nulls)}${row('Value format', c.value_format)}
+      ${row('Introduced', c.introduced)}</dl>${allowed}
     ${rels.length ? `<h4>Key in</h4><ul>${rels.map((r) => `<li><button class="linkish" data-rel="${r.id}">${escapeHtml(r.name)}</button></li>`).join('')}</ul>` : ''}
     <h4>In the loaded data</h4><div id="col-stats"><p class="hint">Profiling…</p></div>
     <div class="actions"><button class="primary" data-action="open" data-key="values">Query its values</button>
