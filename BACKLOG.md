@@ -16,18 +16,7 @@ Today the site refreshes only when someone reruns the four build scripts and pus
 
 Done when a new pull request or a changed spec page appears on the site, summarised, without anyone running a script.
 
-## 2. Operating model conditions as objects
-
-Conditions (such as Includes Payable Invoices) currently show as a definition under a column's "Required when", linked
-to the spec page. Make them open in the Data model like attributes do.
-
-- `extract_model.py`: give each condition an anchor, its Requirements section (`requirements()`) and `used_by` (the
-  columns whose conditions name it).
-- `extract_history.py`: add condition pages to the paths and to the blamed requirement lines.
-- Page: a "Conditions" list under Attributes; a condition panel with its definition, the columns that depend on it, its
-  requirements with blame, and its history; condition names in "Required when" open that panel.
-
-## 3. AI tokens view
+## 2. AI tokens view
 
 One place that shows how FOCUS models AI token usage today, and where it stops.
 
@@ -38,24 +27,24 @@ One place that shows how FOCUS models AI token usage today, and where it stops.
   "tokens per watt" has nowhere to go; "cost per intelligence" needs outcome data that billing doesn't carry; public
   token data is limited to the spec's own examples.
 
-## 4. Customer evidence view
+## 3. Customer evidence view
 
 Pull the product evidence out of the issues and threads: problem statements and what they cost practitioners, who asked
 for a change, how the working group found out (surveys, polls, user groups, provider outreach, finance specialists),
 use cases, and the trade-offs behind what was cut or deferred. A first keyword pass finds about 150 candidate
 statements; curate them into a browsable list linked to their threads.
 
-## 5. Metadata
+## 4. Metadata
 
 The FOCUS metadata section (data generator, dataset instance, recency, schema) describes a delivery of FOCUS data
 rather than its rows. Add it to the Data model with definitions and requirements, the same way as datasets.
 
-## 6. Appendix examples in context
+## 5. Appendix examples in context
 
 Link the spec's appendix examples (discount handling, split cost allocation, invoice and billing period handling,
 rounding tolerance, AI billing and caching) from the columns and attributes they illustrate.
 
-## 7. Licensing mapping experiment
+## 6. Licensing mapping experiment
 
 Generate synthetic software-licensing data (entitlements, subscription and support terms, part numbers, processor- or
 user-based metrics, sub-capacity usage), express it in FOCUS (for example part number as `SkuId`, licence metric as

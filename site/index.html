@@ -177,9 +177,9 @@
   .pill.hl { border-color: var(--accent); color: var(--accent); font-weight: 600; }
   .erd.focus .pill:not(.hl) { opacity: 0.35; }
   .model-bottom { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 16px; margin-top: 22px; align-items: start; }
-  #rel-list, #attr-list { list-style: none; margin: 0; padding: 0; }
-  #rel-list button, #attr-list button { width: 100%; text-align: left; border: 0; border-radius: 6px; padding: 6px 8px; background: transparent; font-size: 13px; }
-  #rel-list button[aria-pressed="true"], #attr-list button[aria-pressed="true"] { background: var(--panel); box-shadow: 0 0 0 1px var(--accent); }
+  #rel-list, #attr-list, #cond-list { list-style: none; margin: 0; padding: 0; }
+  #rel-list button, #attr-list button, #cond-list button { width: 100%; text-align: left; border: 0; border-radius: 6px; padding: 6px 8px; background: transparent; font-size: 13px; }
+  #rel-list button[aria-pressed="true"], #attr-list button[aria-pressed="true"], #cond-list button[aria-pressed="true"] { background: var(--panel); box-shadow: 0 0 0 1px var(--accent); }
   #rel-list .opt { color: var(--muted); font-size: 11px; }
   .detail { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 13px; min-height: 140px; }
   .detail h3 { margin: 0 0 2px; font-size: 15px; }
@@ -331,6 +331,9 @@
       <h2 style="margin-top:18px">Attributes</h2>
       <p class="hint" style="margin:0 0 6px">Shared rule sets that the datasets' and columns' requirements point to.</p>
       <ul id="attr-list"></ul>
+      <h2 style="margin-top:18px">Operating model conditions</h2>
+      <p class="hint" style="margin:0 0 6px">What makes a Conditional column or rule apply, such as Includes Payable Invoices.</p>
+      <ul id="cond-list"></ul>
     </div>
     <div class="detail" id="model-detail"><p class="hint">Select a relationship, a table or a column to see its definition from the spec and how it looks in the loaded data.</p></div>
   </div>
@@ -971,6 +974,9 @@ function buildModel() {
   $('attr-list').innerHTML = (model.attributes || []).map((a) =>
     `<li><button data-attr="${escapeHtml(a.anchor)}" aria-pressed="false">${escapeHtml(a.name)}</button></li>`).join('');
   $('attr-list').addEventListener('click', onModelClick);
+  $('cond-list').innerHTML = (model.conditions || []).map((x) =>
+    `<li><button data-cond="${escapeHtml(x.anchor)}" aria-pressed="false">${escapeHtml(x.name)}</button></li>`).join('');
+  $('cond-list').addEventListener('click', onModelClick);
   $('model-detail').addEventListener('click', onDetailClick);
   new ResizeObserver(() => drawLines()).observe(erd);
   modelBuilt = true;
@@ -1052,6 +1058,8 @@ function onModelClick(e) {
   }
   const attr = e.target.closest('[data-attr]');
   if (attr) return select({ type: 'attr', id: attr.dataset.attr });
+  const cond = e.target.closest('[data-cond]');
+  if (cond) return select({ type: 'cond', id: cond.dataset.cond });
   const rel = e.target.closest('[data-rel]');
   if (rel) return select({ type: 'rel', id: rel.dataset.rel });
   const col = e.target.closest('.col');
@@ -1065,6 +1073,8 @@ function onDetailClick(e) {
   if (open) return openInQuery(detailSql[open.dataset.key]);
   const attr = e.target.closest('[data-attr]');
   if (attr) return select({ type: 'attr', id: attr.dataset.attr }, true);
+  const cond = e.target.closest('[data-cond]');
+  if (cond) return select({ type: 'cond', id: cond.dataset.cond }, true);
   const rel = e.target.closest('[data-rel]');
   if (rel) return select({ type: 'rel', id: rel.dataset.rel }, true);
   const col = e.target.closest('[data-col]');
@@ -1109,6 +1119,8 @@ function applySelection() {
   $('rel-list').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(rels.has(b.dataset.rel))));
   $('attr-list').querySelectorAll('button').forEach((b) =>
     b.setAttribute('aria-pressed', String(selection?.type === 'attr' && selection.id === b.dataset.attr)));
+  $('cond-list').querySelectorAll('button').forEach((b) =>
+    b.setAttribute('aria-pressed', String(selection?.type === 'cond' && selection.id === b.dataset.cond)));
 }
 
 function openInQuery(sql) {
@@ -1136,7 +1148,8 @@ function renderDetail() {
   }
   if (selection.type === 'rel') return relDetail(relById(selection.id), el, token);
   if (selection.type === 'table') return tableDetail(dsById(selection.ds), el, token);
-  if (selection.type === 'attr') return attrDetail(attrByAnchor(selection.id), el, token);
+  if (selection.type === 'attr') return ruleDetail(attrByAnchor(selection.id), 'attribute', el, token);
+  if (selection.type === 'cond') return ruleDetail(condByAnchor(selection.id), 'condition', el, token);
   return colDetail(dsById(selection.ds), colOf(selection.ds, selection.col), el, token);
 }
 
@@ -1231,6 +1244,7 @@ async function fillNote(colId, token) {
 
 // ---- Plain summaries, requirements and attributes ------------------------------------------------------------
 const attrByAnchor = (anchor) => (model.attributes || []).find((a) => a.anchor === anchor);
+const condByAnchor = (anchor) => (model.conditions || []).find((c) => c.anchor === anchor);
 const specDef = (text) => (text ? `<blockquote class="spec-def">${escapeHtml(text)}<cite>The specification's definition</cite></blockquote>` : '');
 const REQS = '<h4>Requirements</h4><div id="reqs" class="reqs"><p class="hint">Loading…</p></div>';
 
@@ -1262,11 +1276,14 @@ function reqText(md) {
     const label = escapeHtml(m[1].replace(/^\*(.*)\*$/, '$1')), target = m[2];
     if (target.startsWith('attributes.') && attrByAnchor(target.slice(11))) {
       out += `<button class="linkish" data-attr="${escapeHtml(target.slice(11))}">${label}</button>`;
+    } else if (target.startsWith('operatingmodelconditions.') && condByAnchor(target.slice(25))) {
+      out += `<button class="linkish" data-cond="${escapeHtml(target.slice(25))}">${label}</button>`;
     } else if (target.startsWith('datamodel.')) {
       const [, ds, col] = target.split('.');
       const d = model.datasets.find((x) => x.id.toLowerCase() === ds);
-      const c = d && d.columns.find((x) => x.id.toLowerCase() === col);
-      out += c ? `<button class="linkish" data-ds="${d.id}" data-col="${escapeHtml(c.id)}">${label}</button>` : label;
+      const c = d && col && d.columns.find((x) => x.id.toLowerCase() === col);
+      out += c ? `<button class="linkish" data-ds="${d.id}" data-col="${escapeHtml(c.id)}">${label}</button>`
+        : d && !col ? `<button class="linkish" data-table="${d.id}">${label}</button>` : label;
     } else if (target.startsWith('glossary:') && glossaryTerm(target.slice(9))) {
       const g = glossaryTerm(target.slice(9));
       out += `<em class="term" title="${escapeHtml(`${g.term}: ${g.definition}`)}">${label}</em>`;
@@ -1297,7 +1314,7 @@ async function fillReqs(owner, token) {
     }).join('');
 }
 
-async function attrDetail(a, el, token) {
+async function ruleDetail(a, badge, el, token) {
   if (!a) { el.innerHTML = ''; return; }
   const byDs = new Map();
   for (const [ds, col] of a.used_by) {
@@ -1311,11 +1328,11 @@ async function attrDetail(a, el, token) {
       `<button class="linkish" data-ds="${ds}" data-col="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join(', ')}</details>` : '';
     return `<div>${self}${cols}</div>`;
   }).join('');
-  el.innerHTML = `<h3>${escapeHtml(a.name)}<span class="badge">attribute</span></h3>
+  el.innerHTML = `<h3>${escapeHtml(a.name)}<span class="badge">${badge}</span></h3>
     <div class="sub">${escapeHtml(a.id)}</div>
     <div id="obj-summary"></div>${specDef(a.description)}
     <dl><dt>Introduced</dt><dd>${escapeHtml(a.introduced || '–')}</dd></dl>
-    <h4>Used by</h4><div class="used-by">${usedBy || '<p class="hint">Only other attributes refer to it.</p>'}</div>
+    <h4>${badge === 'condition' ? 'Columns and rules that depend on it' : 'Used by'}</h4><div class="used-by">${usedBy || `<p class="hint">${badge === 'condition' ? 'No column or dataset rule names it.' : 'Only other attributes refer to it.'}</p>`}</div>
     ${REQS}<p>${specLink(a.source)}</p>${HISTORY}`;
   fillSummary(a.source, token);
   fillReqs(a, token);
@@ -1401,7 +1418,7 @@ async function colDetail(d, c, el, token) {
   // The operating model conditions that make this column required, with each one's definition from the spec.
   const conds = (model.conditions || []).filter((x) => c.conditions && c.conditions.includes(x.name));
   const condRow = conds.length ? `<dt>Required when</dt><dd>${conds.map((x) =>
-    `<a href="${SPEC_URL}${x.source}" target="_blank" rel="noopener">${escapeHtml(x.name)}</a><div class="hint">${escapeHtml(x.description)}</div>`).join('')}</dd>` : row('Required when', c.conditions);
+    `<button class="linkish" data-cond="${escapeHtml(x.anchor)}">${escapeHtml(x.name)}</button><div class="hint">${escapeHtml(x.description)}</div>`).join('')}</dd>` : row('Required when', c.conditions);
   const av = c.allowed_values || [];
   const allowed = av.length > 1 ? `<h4>Allowed values</h4><table>${av.map((r, i) => `<tr>${r.map((cell) =>
     (i ? `<td>${escapeHtml(cell)}</td>` : `<th>${escapeHtml(cell)}</th>`)).join('')}</tr>`).join('')}</table>` : '';

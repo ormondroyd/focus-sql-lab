@@ -169,9 +169,22 @@ conditions = []
 for path in sorted((SPEC / "specification/operating_model_conditions").glob("*.md")):
     text = path.read_text()
     first = text.split("\n", 1)[1].strip().split("\n\n")[0]
-    conditions.append({"id": clean(section(text, "Operating Model Condition ID")),
-                       "name": clean(text.split("\n", 1)[0].lstrip("# ")), "description": clean(first),
-                       "source": rel_path(path)})
+    name = clean(text.split("\n", 1)[0].lstrip("# "))
+    conditions.append({"id": clean(section(text, "Operating Model Condition ID")), "name": name,
+                       "anchor": name.lower().replace(" ", ""),  # how the spec links to it
+                       "description": clean(first), "introduced": clean(section(text, "Version Introduced")),
+                       "source": rel_path(path), "requirements": requirements(text), "used_by": []})
+by_cond = {c["anchor"]: c for c in conditions}
+for c in conditions:
+    for d in datasets:
+        for col in d["columns"]:
+            if col["conditions"] and c["name"] in col["conditions"]:
+                c["used_by"].append([d["id"], col["id"]])
+for d in datasets:  # requirements that name a condition, e.g. "When IncludesUnitPricing evaluates to true"
+    for owner, reqs in [(None, d["requirements"])] + [(col["id"], col["requirements"]) for col in d["columns"]]:
+        for anchor in dict.fromkeys(re.findall(r"\(#operatingmodelconditions\.([^)]+)\)", " ".join(r.get("md", "") for r in reqs))):
+            if anchor in by_cond and [d["id"], owner] not in by_cond[anchor]["used_by"]:
+                by_cond[anchor]["used_by"].append([d["id"], owner])
 
 # Glossary: the defined terms that requirements link to, e.g. #glossary:covered-charge.
 glossary = {}

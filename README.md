@@ -12,7 +12,7 @@ queries in the browser, so the server only serves static files: no database, no 
   join to see the spec's wording, the lab's join SQL and how well the keys match in the chosen data source. Click a
   dataset, column or attribute to see a plain-language summary, the spec's definition, its requirements exactly as
   written (each line marked with the pull request that last changed it), and a profile of its values. Attributes,
-  such as StringHandling or CorrectionHandling, are the shared rule sets the requirements point to. Each dataset, column and join also shows its **history**:
+  such as StringHandling or CorrectionHandling, are the shared rule sets the requirements point to. Operating model conditions, such as Includes Payable Invoices, open the same way: what they mean, which columns and rules depend on them, and their history. Each dataset, column and join also shows its **history**:
   the pull requests that changed its definition file, newest first, with an excerpt of each one's description, the
   issue it addressed, and how much discussion each had, with a summary of the conversation in each pull request and
   issue that had one. Each entry shows its status on GitHub (merged, open, or closed and why), and a "Not merged" list

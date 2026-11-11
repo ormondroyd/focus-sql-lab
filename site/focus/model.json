@@ -12425,164 +12425,1038 @@
   {
    "id": "IncludesAggregationLevelCurrencyDifferences",
    "name": "Includes Aggregation Level Currency Differences",
+   "anchor": "includesaggregationlevelcurrencydifferences",
    "description": "The Includes Aggregation Level Currency Differences operating model condition represents a verifiable state indicating whether the operating model includes the representation of billing currency and payment currency at different aggregation levels on payable invoices.",
-   "source": "specification/operating_model_conditions/includesaggregationlevelcurrencydifferences.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includesaggregationlevelcurrencydifferences.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesAggregationLevelCurrencyDifferences MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesAggregationLevelCurrencyDifferences MUST evaluate to true when the *operating model* includes the representation of *billing currency* and payment currency at different aggregation levels on payable *invoices*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesAggregationLevelCurrencyDifferences MUST evaluate to false when the *operating model* does not include the representation of *billing currency* and payment currency at different aggregation levels on payable *invoices*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "InvoiceDetail",
+     "PaymentCurrencyInvoiceDetailId"
+    ],
+    [
+     "InvoiceDetail",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesAvailabilityZones",
    "name": "Includes Availability Zones",
+   "anchor": "includesavailabilityzones",
    "description": "The Includes Availability Zones operating model condition represents a verifiable state indicating whether the operating model includes deploying resources or services within an availability zone.",
-   "source": "specification/operating_model_conditions/includesavailabilityzones.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includesavailabilityzones.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesAvailabilityZones MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesAvailabilityZones MUST evaluate to true when the *operating model* includes deploying *resources* or *services* within an *availability zone*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesAvailabilityZones MUST evaluate to false when the *operating model* does not include deploying *resources* or *services* within an *availability zone*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "AvailabilityZone"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesBillingPaymentCurrencyDifferences",
    "name": "Includes Billing and Payment Currency Differences",
+   "anchor": "includesbillingandpaymentcurrencydifferences",
    "description": "The Includes Billing and Payment Currency Differences operating model condition represents a verifiable state indicating whether the operating model includes billing and payment in different currencies.",
-   "source": "specification/operating_model_conditions/includesbillingpaymentcurrencydifferences.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includesbillingpaymentcurrencydifferences.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesBillingPaymentCurrencyDifferences MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesBillingPaymentCurrencyDifferences MUST evaluate to true when the *operating model* includes billing and payment in different currencies.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesBillingPaymentCurrencyDifferences MUST evaluate to false when the *operating model* does not include billing and payment in different currencies.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "InvoiceDetail",
+     "PaymentCurrency"
+    ],
+    [
+     "InvoiceDetail",
+     "PaymentCurrencyBilledCost"
+    ],
+    [
+     "InvoiceDetail",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesCapacityReservations",
    "name": "Includes Capacity Reservations",
+   "anchor": "includescapacityreservations",
    "description": "The Includes Capacity Reservations operating model condition represents a verifiable state indicating whether the operating model includes capacity reservations.",
-   "source": "specification/operating_model_conditions/includescapacityreservations.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includescapacityreservations.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesCapacityReservations MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesCapacityReservations MUST evaluate to true when the *operating model* includes *capacity reservations*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesCapacityReservations MUST evaluate to false when the *operating model* does not include *capacity reservations*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "CapacityReservationId"
+    ],
+    [
+     "CostAndUsage",
+     "CapacityReservationStatus"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesCommitmentDiscounts",
    "name": "Includes Commitment Discounts",
+   "anchor": "includescommitmentdiscounts",
    "description": "The Includes Commitment Discounts operating model condition represents a verifiable state indicating whether the operating model includes commitment discounts.",
-   "source": "specification/operating_model_conditions/includescommitmentdiscounts.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includescommitmentdiscounts.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesCommitmentDiscounts MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesCommitmentDiscounts MUST evaluate to true when the *operating model* includes *commitment discounts*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesCommitmentDiscounts MUST evaluate to false when the *operating model* does not include *commitment discounts*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "CommitmentDiscountCategory"
+    ],
+    [
+     "CostAndUsage",
+     "CommitmentDiscountId"
+    ],
+    [
+     "CostAndUsage",
+     "CommitmentDiscountName"
+    ],
+    [
+     "CostAndUsage",
+     "CommitmentDiscountQuantity"
+    ],
+    [
+     "CostAndUsage",
+     "CommitmentDiscountStatus"
+    ],
+    [
+     "CostAndUsage",
+     "CommitmentDiscountType"
+    ],
+    [
+     "CostAndUsage",
+     "CommitmentDiscountUnit"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ],
+    [
+     "SkuPrice",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesCommitmentPrograms",
    "name": "Includes Commitment Programs",
+   "anchor": "includescommitmentprograms",
    "description": "The Includes Commitment Programs operating model condition represents a verifiable state indicating whether the operating model includes commitment programs.",
-   "source": "specification/operating_model_conditions/includescommitmentprograms.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includescommitmentprograms.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesCommitmentPrograms MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesCommitmentPrograms MUST evaluate to true when the *operating model* includes *commitment programs*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesCommitmentPrograms MUST evaluate to false when the *operating model* does not include *commitment programs*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "CommitmentProgramEligibilityDetails"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesConsumptionCurrency",
    "name": "Includes Consumption Currency",
+   "anchor": "includesconsumptioncurrency",
    "description": "The Includes Consumption Currency operating model condition represents a verifiable state indicating whether the operating model includes prices in consumption currency.",
-   "source": "specification/operating_model_conditions/includesconsumptioncurrency.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includesconsumptioncurrency.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesConsumptionCurrency MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesConsumptionCurrency MUST evaluate to true when the *operating model* includes prices in *consumption currency*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesConsumptionCurrency MUST evaluate to false when the *operating model* does not include prices in *consumption currency*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesContractCommitments",
    "name": "Includes Contract Commitments",
+   "anchor": "includescontractcommitments",
    "description": "The Includes Contract Commitments operating model condition represents a verifiable state indicating whether the operating model includes contract commitments.",
-   "source": "specification/operating_model_conditions/includescontractcommitments.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includescontractcommitments.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesContractCommitments MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesContractCommitments MUST evaluate to true when the *operating model* includes *contract commitments*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesContractCommitments MUST evaluate to false when the *operating model* does not include *contract commitments*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "ContractApplied"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesMultipleBillingAccountTypes",
    "name": "Includes Multiple Billing Account Types",
+   "anchor": "includesmultiplebillingaccounttypes",
    "description": "The Includes Multiple Billing Account Types operating model condition represents a verifiable state indicating whether the operating model includes multiple Billing Account Types.",
-   "source": "specification/operating_model_conditions/includesmultiplebillingaccounttypes.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includesmultiplebillingaccounttypes.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesMultipleBillingAccountTypes MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesMultipleBillingAccountTypes MUST evaluate to true when the *operating model* includes multiple BillingAccountTypes.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesMultipleBillingAccountTypes MUST evaluate to false when the *operating model* does not include multiple BillingAccountTypes.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "BillingAccountType"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesMultiplePricingCategories",
    "name": "Includes Multiple Pricing Categories",
+   "anchor": "includesmultiplepricingcategories",
    "description": "The Includes Multiple Pricing Categories operating model condition represents a verifiable state indicating whether the operating model includes multiple pricing categories.",
-   "source": "specification/operating_model_conditions/includesmultiplepricingcategories.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includesmultiplepricingcategories.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesMultiplePricingCategories MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesMultiplePricingCategories MUST evaluate to true when the *operating model* includes multiple pricing categories.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesMultiplePricingCategories MUST evaluate to false when the *operating model* does not include multiple pricing categories.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "PricingCategory"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesMultipleSubAccountTypes",
    "name": "Includes Multiple Sub Account Types",
+   "anchor": "includesmultiplesubaccounttypes",
    "description": "The Includes Multiple Sub Account Types operating model condition represents a verifiable state indicating whether the operating model includes multiple Sub Account Types.",
-   "source": "specification/operating_model_conditions/includesmultiplesubaccounttypes.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includesmultiplesubaccounttypes.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesMultipleSubAccountTypes MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesMultipleSubAccountTypes MUST evaluate to true when the *operating model* includes multiple SubAccountTypes.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesMultipleSubAccountTypes MUST evaluate to false when the *operating model* does not include multiple SubAccountTypes.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "SubAccountType"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesPartialUpfrontPayments",
    "name": "Includes Partial Upfront Payments",
+   "anchor": "includespartialupfrontpayments",
    "description": "The Includes Partial Upfront Payments operating model condition represents a verifiable state indicating whether the operating model includes a partial upfront payment model for contract commitments.",
-   "source": "specification/operating_model_conditions/includespartialupfrontpayments.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includespartialupfrontpayments.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesPartialUpfrontPayments MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesPartialUpfrontPayments MUST evaluate to true when the *operating model* includes a partial upfront payment model for *contract commitments*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesPartialUpfrontPayments MUST evaluate to false when the *operating model* does not include a partial upfront payment model for *contract commitments*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "ContractCommitment",
+     "ContractCommitmentPaymentUpfrontPercentage"
+    ],
+    [
+     "ContractCommitment",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesPayableInvoices",
    "name": "Includes Payable Invoices",
+   "anchor": "includespayableinvoices",
    "description": "The Includes Payable Invoices operating model condition represents a verifiable state indicating whether the operating model includes payable invoices.",
-   "source": "specification/operating_model_conditions/includespayableinvoices.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includespayableinvoices.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesPayableInvoices MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesPayableInvoices MUST evaluate to true when the *operating model* includes payable *invoices*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesPayableInvoices MUST evaluate to false when the *operating model* does not include payable *invoices*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "InvoiceDetailId"
+    ],
+    [
+     "CostAndUsage",
+     "InvoiceId"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesPricingBillingCurrencyDifferences",
    "name": "Includes Pricing-Billing Currency Differences",
+   "anchor": "includespricing-billingcurrencydifferences",
    "description": "The Includes Pricing-Billing Currency Differences operating model condition represents a verifiable state indicating whether the operating model includes pricing and billing in different currencies.",
-   "source": "specification/operating_model_conditions/includespricingbillingcurrencydifferences.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includespricingbillingcurrencydifferences.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesPricingBillingCurrencyDifferences MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesPricingBillingCurrencyDifferences MUST evaluate to true when the *operating model* includes pricing and billing in different currencies.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesPricingBillingCurrencyDifferences MUST evaluate to false when the *operating model* does not include pricing and billing in different currencies.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "PricingCurrency"
+    ],
+    [
+     "ContractCommitment",
+     "PricingCurrency"
+    ],
+    [
+     "ContractCommitment",
+     "PricingCurrencyContractCommitmentCost"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ],
+    [
+     "ContractCommitment",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesProvisionedResources",
    "name": "Includes Provisioned Resources",
+   "anchor": "includesprovisionedresources",
    "description": "The Includes Provisioned Resources operating model condition represents a verifiable state indicating whether the operating model includes provisioned resources.",
-   "source": "specification/operating_model_conditions/includesprovisionedresources.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includesprovisionedresources.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesProvisionedResources MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesProvisionedResources MUST evaluate to true when the *operating model* includes provisioned *resources*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesProvisionedResources MUST evaluate to false when the *operating model* does not include provisioned *resources*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "ResourceId"
+    ],
+    [
+     "CostAndUsage",
+     "ResourceName"
+    ],
+    [
+     "CostAndUsage",
+     "ResourceType"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesPurchaseOrderNumbers",
    "name": "Includes Purchase Order Numbers",
+   "anchor": "includespurchaseordernumbers",
    "description": "The Includes Purchase Order Numbers operating model condition represents a verifiable state indicating whether the operating model includes purchase order numbers.",
-   "source": "specification/operating_model_conditions/includespurchaseordernumbers.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includespurchaseordernumbers.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesPurchaseOrderNumbers MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesPurchaseOrderNumbers MUST evaluate to true when the *operating model* includes purchase order numbers.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesPurchaseOrderNumbers MUST evaluate to false when the *operating model* does not include purchase order numbers.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "InvoiceDetail",
+     "PurchaseOrderNumber"
+    ],
+    [
+     "InvoiceDetail",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesPurchases",
    "name": "Includes Purchases",
+   "anchor": "includespurchases",
    "description": "The Includes Purchases operating model condition represents a verifiable state indicating whether the operating model includes purchases.",
-   "source": "specification/operating_model_conditions/includespurchases.md"
+   "introduced": "Preview: 1.5",
+   "source": "specification/operating_model_conditions/includespurchases.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesPurchases MUST adhere to the following requirements:",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesPurchases MUST evaluate to true when the *operating model* includes purchases.",
+     "line": 11
+    },
+    {
+     "depth": 0,
+     "md": "IncludesPurchases MUST evaluate to false when the *operating model* does not include purchases.",
+     "line": 12
+    }
+   ],
+   "used_by": [
+    [
+     "SkuPrice",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesQuantityTierPricing",
    "name": "Includes Quantity Tier Pricing",
+   "anchor": "includesquantitytierpricing",
    "description": "The Includes Quantity Tier Pricing operating model condition represents a verifiable state indicating whether the operating model includes quantity-based pricing tiers.",
-   "source": "specification/operating_model_conditions/includesquantitytierpricing.md"
+   "introduced": "Preview: 1.5",
+   "source": "specification/operating_model_conditions/includesquantitytierpricing.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesQuantityTierPricing MUST adhere to the following requirements:",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesQuantityTierPricing MUST evaluate to true when the *operating model* includes quantity-based pricing tiers.",
+     "line": 11
+    },
+    {
+     "depth": 0,
+     "md": "IncludesQuantityTierPricing MUST evaluate to false when the *operating model* does not include quantity-based pricing tiers.",
+     "line": 12
+    }
+   ],
+   "used_by": [
+    [
+     "SkuPrice",
+     null
+    ],
+    [
+     "SkuPrice",
+     "SkuPriceId"
+    ]
+   ]
   },
   {
    "id": "IncludesRegions",
    "name": "Includes Regions",
+   "anchor": "includesregions",
    "description": "The Includes Regions operating model condition represents a verifiable state indicating whether the operating model includes deploying resources or services within a region.",
-   "source": "specification/operating_model_conditions/includesregions.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includesregions.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesRegions MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesRegions MUST evaluate to true when the *operating model* includes deploying *resources* or *services* within a region.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesRegions MUST evaluate to false when the *operating model* does not include deploying *resources* or *services* within a region.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "RegionId"
+    ],
+    [
+     "CostAndUsage",
+     "RegionName"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ],
+    [
+     "SkuPrice",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesRequesterAttribution",
    "name": "Includes Requester Attribution",
+   "anchor": "includesrequesterattribution",
    "description": "The Includes Requester Attribution operating model condition represents a verifiable state indicating whether the operating model includes attributing usage or purchase of resources or services to requesters.",
-   "source": "specification/operating_model_conditions/includesrequesterattribution.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includesrequesterattribution.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesRequesterAttribution MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesRequesterAttribution MUST evaluate to true when the *operating model* includes attributing usage or purchase of *resources* or *services* to *requesters*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesRequesterAttribution MUST evaluate to false when the *operating model* does not include attributing usage or purchase of *resources* or *services* to *requesters*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "CredentialId"
+    ],
+    [
+     "CostAndUsage",
+     "PrincipalId"
+    ],
+    [
+     "CostAndUsage",
+     "RequesterDetails"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesResourceTypeAssignment",
    "name": "Includes Resource Type Assignment",
+   "anchor": "includesresourcetypeassignment",
    "description": "The Includes Resource Type Assignment operating model condition represents a verifiable state indicating whether the operating model includes categorizing resources by type.",
-   "source": "specification/operating_model_conditions/includesresourcetypeassignment.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includesresourcetypeassignment.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesResourceTypeAssignment MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesResourceTypeAssignment MUST evaluate to true when the *operating model* includes categorizing *resources* by type.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesResourceTypeAssignment MUST evaluate to false when the *operating model* does not include categorizing *resources* by type.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "ResourceType"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesSplitCostAllocation",
    "name": "Includes Split Cost Allocation",
+   "anchor": "includessplitcostallocation",
    "description": "The Includes Split Cost Allocation operating model condition represents a verifiable state indicating whether the operating model includes split cost allocation.",
-   "source": "specification/operating_model_conditions/includessplitcostallocation.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includessplitcostallocation.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesSplitCostAllocation MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesSplitCostAllocation MUST evaluate to true when the *operating model* includes *split cost allocation*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesSplitCostAllocation MUST evaluate to false when the *operating model* does not include *split cost allocation*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "AllocatedMethodDetails"
+    ],
+    [
+     "CostAndUsage",
+     "AllocatedMethodId"
+    ],
+    [
+     "CostAndUsage",
+     "AllocatedResourceId"
+    ],
+    [
+     "CostAndUsage",
+     "AllocatedResourceName"
+    ],
+    [
+     "CostAndUsage",
+     "AllocatedServiceName"
+    ],
+    [
+     "CostAndUsage",
+     "AllocatedTags"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesSubAccounts",
    "name": "Includes Sub Accounts",
+   "anchor": "includessubaccounts",
    "description": "The Includes Sub Accounts operating model condition represents a verifiable state indicating whether the operating model includes a sub account construct.",
-   "source": "specification/operating_model_conditions/includessubaccounts.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includessubaccounts.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesSubAccounts MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesSubAccounts MUST evaluate to true when the *operating model* includes a *sub account* construct.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesSubAccounts MUST evaluate to false when the *operating model* does not include a *sub account* construct.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "SubAccountId"
+    ],
+    [
+     "CostAndUsage",
+     "SubAccountName"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesTags",
    "name": "Includes Tags",
+   "anchor": "includestags",
    "description": "The Includes Tags operating model condition represents a verifiable state indicating whether the operating model includes tags.",
-   "source": "specification/operating_model_conditions/includestags.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includestags.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesTags MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesTags MUST evaluate to true when the *operating model* includes *tags*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesTags MUST evaluate to false when the *operating model* does not include *tags*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "Tags"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesUnitPricing",
    "name": "Includes Unit Pricing",
+   "anchor": "includesunitpricing",
    "description": "The Includes Unit Pricing operating model condition represents a verifiable state indicating whether the operating model includes unit pricing.",
-   "source": "specification/operating_model_conditions/includesunitpricing.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includesunitpricing.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesUnitPricing MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesUnitPricing MUST evaluate to true when the *operating model* includes *unit pricing*.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesUnitPricing MUST evaluate to false when the *operating model* does not include *unit pricing*.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "ContractedUnitPrice"
+    ],
+    [
+     "CostAndUsage",
+     "ListUnitPrice"
+    ],
+    [
+     "CostAndUsage",
+     "SkuId"
+    ],
+    [
+     "CostAndUsage",
+     "SkuMeter"
+    ],
+    [
+     "CostAndUsage",
+     "SkuPriceDetails"
+    ],
+    [
+     "CostAndUsage",
+     "SkuPriceId"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "IncludesUsageMeasurement",
    "name": "Includes Usage Measurement",
+   "anchor": "includesusagemeasurement",
    "description": "The Includes Usage Measurement operating model condition represents a verifiable state indicating whether the operating model includes the measurement of resource or service usage.",
-   "source": "specification/operating_model_conditions/includesusagemeasurement.md"
+   "introduced": "1.5",
+   "source": "specification/operating_model_conditions/includesusagemeasurement.md",
+   "requirements": [
+    {
+     "depth": -1,
+     "md": "IncludesUsageMeasurement MUST adhere to the following requirements:",
+     "line": 7
+    },
+    {
+     "depth": 0,
+     "md": "IncludesUsageMeasurement MUST evaluate to true when the *operating model* includes the measurement of *resource* or *service* usage.",
+     "line": 9
+    },
+    {
+     "depth": 0,
+     "md": "IncludesUsageMeasurement MUST evaluate to false when the *operating model* does not include the measurement of *resource* or *service* usage.",
+     "line": 10
+    }
+   ],
+   "used_by": [
+    [
+     "CostAndUsage",
+     "ConsumedQuantity"
+    ],
+    [
+     "CostAndUsage",
+     "ConsumedUnit"
+    ],
+    [
+     "CostAndUsage",
+     null
+    ]
+   ]
   },
   {
    "id": "",
    "name": "Operating Model Conditions",
+   "anchor": "operatingmodelconditions",
    "description": "Operating model conditions represent verifiable states of an operating model that determine the requirement for specific data elements to be present in a FOCUS-compliant dataset.",
-   "source": "specification/operating_model_conditions/operating_model_conditions_overview.md"
+   "introduced": "",
+   "source": "specification/operating_model_conditions/operating_model_conditions_overview.md",
+   "requirements": [],
+   "used_by": []
   }
  ],
  "glossary": {

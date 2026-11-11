@@ -35,7 +35,8 @@ model = json.loads((SITE / "focus" / "model.json").read_text())
 paths = sorted({d["source"] for d in model["datasets"]}
                | {c["source"] for d in model["datasets"] for c in d["columns"]}
                | {r["source"] for r in model["relationships"]}
-               | {a["source"] for a in model.get("attributes", [])})
+               | {a["source"] for a in model.get("attributes", [])}
+               | {c["source"] for c in model.get("conditions", [])})
 
 # ---- Which pull requests changed each file -------------------------------------------------------------------
 files = {}
@@ -255,7 +256,8 @@ for n in out_issues:
 # ---- Which pull request last changed each requirement line (git blame) ------------------------------------------
 subjects = dict(line.split(" ", 1) for line in git("log", "--format=%H %s", COMMIT).splitlines() if " " in line)
 req_lines = {}
-for owner in model["datasets"] + [c for d in model["datasets"] for c in d["columns"]] + model.get("attributes", []):
+for owner in (model["datasets"] + [c for d in model["datasets"] for c in d["columns"]] + model.get("attributes", [])
+              + model.get("conditions", [])):
     req_lines.setdefault(owner["source"], set()).update(r["line"] for r in owner.get("requirements", []))
 lines = {}
 for path, wanted in req_lines.items():
