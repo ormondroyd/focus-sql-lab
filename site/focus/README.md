@@ -10,6 +10,7 @@ Everything in this folder is derived from FOCUS project material and is used und
   and the specification's worked examples, typed and stored as Parquet
 - `spec-queries.json`: the specification's example queries, verbatim, with a suggested value for each `?` input
 - `model.json`: datasets, columns and relationships from the specification
+- `history.json`: the pull requests and issues that changed each definition, with excerpts of their descriptions
 
 See [NOTICE.md](../../NOTICE.md) for each file's source, the upstream version used and the changes made.
 Nothing in this folder is edited by hand. The scripts in `tools/` rebuild all of it.

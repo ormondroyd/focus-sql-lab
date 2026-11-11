@@ -196,6 +196,14 @@
   .detail a { color: var(--accent); }
   .detail .linkish { border: 0; background: none; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font-size: 13px; }
   .detail .actions { margin: 8px 0 0; }
+  .detail ul.history { list-style: none; padding: 0; }
+  .detail li.pr { border-top: 1px solid var(--line); padding: 8px 0; }
+  .detail .pr-head .date { font-family: var(--mono); font-size: 11.5px; color: var(--muted); margin-right: 4px; }
+  .detail .pr-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .detail blockquote { margin: 6px 0; padding: 2px 0 2px 10px; border-left: 3px solid var(--line); }
+  .detail blockquote cite { display: block; font-style: normal; font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .detail ul.pr-issues { margin: 4px 0 0; font-size: 12.5px; }
+  .detail details > summary { cursor: pointer; color: var(--accent); margin: 8px 0; }
   .meter { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin: 4px 0 8px; max-width: 360px; }
   .meter span { display: block; height: 100%; background: var(--accent); }
   .detail table { font-size: 12px; min-width: 0; width: auto; }
@@ -1102,6 +1110,45 @@ const tableLabel = (id) => dsById(id).name;
 const specParas = (paras) => paras.map((p) => `<p style="white-space:pre-line">${escapeHtml(p.replace(/^\s*\* /gm, '• '))}</p>`).join('');
 const meter = (share) => `<div class="meter"><span style="width:${Math.max(0, Math.min(100, share))}%"></span></div>`;
 
+// ---- History: the pull requests that changed a definition's file ----------------------------------------
+// Built by tools/extract_history.py from the specification's git history and GitHub. The lab writes no summaries:
+// each one is an excerpt of the pull request's own description, or of its issue's.
+let historyP = null;
+const loadHistory = () => (historyP ??= fetch('focus/history.json').then((r) => (r.ok ? r.json() : null)).catch(() => null));
+const HISTORY = '<h4>History</h4><div id="history"><p class="hint">Loading…</p></div>';
+const plural = (n, word) => `${n.toLocaleString()} ${word}${n === 1 ? '' : 's'}`;
+
+async function fillHistory(path, token) {
+  const h = await loadHistory();
+  const box = $('history');
+  if (token !== detailToken || !box) return;
+  const f = h && h.files[path];
+  if (!f) { box.innerHTML = '<p class="hint">Could not load the history.</p>'; return; }
+  const file = path.split('/').pop();
+  const prs = f.prs.map(([n, a, d]) => ({ n, a, d, ...h.prs[n] })).filter((p) => p.title)
+    .sort((x, y) => y.merged.localeCompare(x.merged) || y.n - x.n);
+  const focused = prs.filter((p) => p.files <= h.wide), wide = prs.filter((p) => p.files > h.wide);
+  const link = (url, text) => `<a href="${url}" target="_blank" rel="noopener">${text}</a>`;
+  const issue = (i) => {
+    const x = h.issues[i];
+    return x ? `<li>${link(x.url, `#${i}`)} ${escapeHtml(x.title)} · ${plural(x.comments, 'comment')}</li>` : '';
+  };
+  const item = (p) => `<li class="pr">
+    <div class="pr-head"><span class="date">${p.merged}</span>${link(p.url, `#${p.n}`)} ${escapeHtml(p.title)}</div>
+    <div class="pr-meta">${p.author ? `${escapeHtml(p.author)} · ` : ''}+${p.a} −${p.d} lines in ${escapeHtml(file)} ·
+      ${plural(p.files, 'file')} changed · ${plural(p.comments, 'comment')} · ${plural(p.reviews, 'review')}</div>
+    ${p.summary ? `<blockquote>${escapeHtml(p.summary)}<cite>From ${p.summary_from === 'pr' ? 'the pull request' : `issue #${p.summary_from.split(' ')[1]}`}</cite></blockquote>` : ''}
+    ${p.issues.length ? `<ul class="pr-issues">${p.issues.map(issue).join('')}</ul>` : ''}</li>`;
+  box.innerHTML = `<p class="hint">The pull requests that changed <code>${escapeHtml(file)}</code>, newest first, from the
+      specification's git history. Each summary is an excerpt of the pull request's own description, or of its issue's.
+      Comment and review counts show how much discussion each had.</p>
+    <ul class="history">${focused.map(item).join('') || '<li class="hint">None that changed only a few files.</li>'}</ul>
+    ${wide.length ? `<details><summary>${plural(wide.length, 'spec-wide change')}: pull requests that changed more than ${h.wide} files</summary>
+      <ul class="history">${wide.map(item).join('')}</ul></details>` : ''}
+    <p>${link(`${h.spec.repo}/commits/working_draft/${path}`, `Every commit to ${escapeHtml(file)} on GitHub`)}${f.unlinked
+      ? ` (${plural(f.unlinked, 'commit')} there name${f.unlinked === 1 ? 's' : ''} no pull request, so ${f.unlinked === 1 ? 'it isn\'t' : 'they aren\'t'} listed here)` : ''}</p>`;
+}
+
 async function relDetail(r, el, token) {
   let spec = [];
   const srcDataset = model.datasets.find((d) => d.source === r.source);
@@ -1120,7 +1167,8 @@ async function relDetail(r, el, token) {
     <h4>Join, written by the lab</h4><pre>${escapeHtml(r.join_sql)}</pre>
     <div class="actions"><button class="primary" data-action="open" data-key="join">Open in Query</button></div>
     <h4>What the specification says</h4>${specParas(spec)}
-    <p>${specLink(r.source)}</p>`;
+    <p>${specLink(r.source)}</p>${HISTORY}`;
+  fillHistory(r.source, token);
   try {
     const s = (await conn.query(r.stats_sql)).toArray()[0];
     const bRows = num((await conn.query(`SELECT count(*) AS n FROM "${r.b}"`)).toArray()[0].n);
@@ -1161,7 +1209,8 @@ async function tableDetail(d, el, token) {
     <h4>Relationships</h4>
     <ul>${rels.map((r) => `<li><button class="linkish" data-rel="${r.id}">${escapeHtml(r.name)}</button></li>`).join('')}</ul>
     <div class="actions"><button class="primary" data-action="open" data-key="summarize">Profile every column</button></div>
-    <p>${specLink(d.source)}</p>`;
+    <p>${specLink(d.source)}</p>${HISTORY}`;
+  fillHistory(d.source, token);
   try {
     const n = num((await conn.query(`SELECT count(*) AS n FROM "${d.id}"`)).toArray()[0].n);
     if (token === detailToken) $('tbl-rows').textContent = n ? `${n.toLocaleString()} (${srcShort()})` : `none (${srcShort()} has no ${d.name} data)`;
@@ -1184,7 +1233,8 @@ async function colDetail(d, c, el, token) {
     <h4>In the loaded data</h4><div id="col-stats"><p class="hint">Profiling…</p></div>
     <div class="actions"><button class="primary" data-action="open" data-key="values">Query its values</button>
       <button class="linkish" data-table="${d.id}" style="margin-left:10px">About ${escapeHtml(d.name)}</button></div>
-    <p>${specLink(c.source)}</p>`;
+    <p>${specLink(c.source)}</p>${HISTORY}`;
+  fillHistory(c.source, token);
   const q = `"${c.id}"`;
   try {
     const s = (await conn.query(`SELECT count(*) AS total, count(${q}) AS non_null, approx_count_distinct(${q}) AS distinct_values,

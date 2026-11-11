@@ -10,7 +10,9 @@ queries in the browser, so the server only serves static files: no database, no 
 - **Response explorer:** pivot and chart any query result by any column, using Perspective (FINOS).
 - **Data model:** the five FOCUS 1.5 datasets with lines between the key columns of every documented join. Click a
   join to see the spec's wording, the lab's join SQL and how well the keys match in the chosen data source. Click a
-  column to see its definition and a profile of its values.
+  column to see its definition and a profile of its values. Each dataset, column and join also shows its **history**:
+  the pull requests that changed its definition file, newest first, with an excerpt of each one's description, the
+  issue it addressed, and how much discussion each had.
 - **Data sources:** switch between the accepted 1.0 sample, two samples proposed in open FOCUS-Sample-Data pull
   requests (1.3 and 1.4), and the specification's 1.5 worked examples. The Data model shows which joins work in each.
 
@@ -42,7 +44,8 @@ Everything the lab made is labelled on the page:
   lack added empty.
 - **Queries:** the 11 practice queries, written in DuckDB SQL.
 - **Data model:** the relationship names, key pairs and join SQL. The specification describes relationships only in
-  prose, which the page quotes.
+  prose, which the page quotes. The history's selection rules (which pull requests changed a file, and calling one that
+  changed more than 15 files "spec-wide") are the lab's; its summaries are excerpts the lab cut, not text it wrote.
 
 ## Repository layout
 
@@ -62,6 +65,7 @@ site/
     data/manifest.json        table list, row counts, column types and the columns the lab added
     spec-queries.json         the specification's example queries, verbatim, with suggested inputs and test results
     model.json                datasets, columns and relationships from the specification
+    history.json              the pull requests and issues behind each definition, with excerpts of their descriptions
 ```
 
 ## Data sources
@@ -92,7 +96,11 @@ in [NOTICE.md](NOTICE.md).
 python -I tools/build_data.py <FOCUS_Spec clone> <raw data folder> site/focus/data
 python -I tools/extract_sql.py <FOCUS_Spec clone> site
 python -I tools/extract_model.py <FOCUS_Spec clone> site
+GH_TOKEN=<GitHub token> python -I tools/extract_history.py <FOCUS_Spec clone with full history> e9cdcc7 site
 ```
+
+`extract_history.py` needs a clone with full history (`git clone --bare`), and a GitHub token to read pull requests and
+issues through the API.
 
 ## Run locally
 
