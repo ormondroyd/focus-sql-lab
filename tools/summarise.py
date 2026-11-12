@@ -288,6 +288,7 @@ for kind, key in due[:LIMIT]:
     print(("skipped " if found else "wrote ") + f"{kind} {key}" + (": " + "; ".join(found) if found else ""))
     if found:
         skipped.append(key)
+        print(f"  draft: {text}")  # kept in the log only, so a skipped draft can still be read
 
 objs["written"] = threads["written"] = TODAY
 objs["about"] = ("Plain-language summaries of the FOCUS specification's dataset, column, attribute, condition, appendix, metadata "
