@@ -187,7 +187,9 @@ adds the specification commit and when the AI summaries were last written. Both 
 which records the refresh time in UTC.
 
 Untick "publish" for a trial run. It rebuilds and lists the files that changed, and keeps the rebuilt JSON as a
-download (`trial-run`, under the run's Artifacts) for 7 days. It writes no summaries and pushes nothing.
+download (`trial-run`, under the run's Artifacts) for 7 days. It pushes nothing. With "summaries" ticked it still
+writes them (and spends on the API), but only into that download: a way to try a model on a few pages or threads
+before publishing.
 
 The history doesn't use `git log --follow`, because its answer depends on the git version: git 2.56, on GitHub's
 runners, walks branching history differently from 2.50. Instead, each file's earlier names come from the renames git
@@ -204,11 +206,14 @@ python -I tools/summarise.py <FOCUS_Spec clone> site                         # d
 GH_TOKEN=... ANTHROPIC_API_KEY=... python -I tools/summarise.py <FOCUS_Spec clone> site --write --limit 50
 ```
 
-`--write` calls the Claude API (Claude Sonnet 5.5, US$2 / $10 per million input / output tokens at list price) and
-prints what it spent. Each summary must pass automatic checks (word limit, they/them pronouns, no URLs or Markdown,
-quotes found word for word in the source); one that fails twice is skipped. The workflow does this only when its
-"summaries" box is ticked, with the `ANTHROPIC_API_KEY` repository secret, up to the "limit" given. The debate notes
-and evidence are curated and aren't refreshed.
+`--write` calls the Claude API and prints what it spent. `--model` picks the model: `claude-sonnet-5-5` (the default,
+US$2 / $10 per million input / output tokens at list price) or `claude-haiku-5-5` (US$0.10 / $0.50, which always
+thinks, so it runs at low effort and its thinking is billed as output). `--only` names the pages or threads to write,
+whether due or not, for comparing models on the same items. Each summary must pass automatic checks (word limit,
+they/them pronouns, no URLs or Markdown, quotes found word for word in the source); one that fails twice is skipped.
+The checks can't tell whether a summary is accurate. The workflow does this only when its "summaries" box is ticked,
+with the `ANTHROPIC_API_KEY` repository secret, up to the "limit" given, and offers the same model and "only" choices.
+The debate notes and evidence are curated and aren't refreshed.
 
 ## Run locally
 

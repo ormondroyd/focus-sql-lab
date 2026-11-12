@@ -2,6 +2,8 @@
 
     python tools/summarise.py <FOCUS_Spec checkout> <site dir>                 dry run: list what's due, with an estimated cost
     python tools/summarise.py <FOCUS_Spec checkout> <site dir> --write [--limit N]   write up to N summaries (default 50)
+        [--model M]       claude-sonnet-5-5 (default) or claude-haiku-5-5
+        [--only K1,K2]    write exactly these page keys or thread numbers, due or not (to compare models, say)
     python tools/summarise.py <FOCUS_Spec checkout> <site dir> --stamp         only write site/focus/refresh.json
     python tools/summarise.py <FOCUS_Spec checkout> <site dir> --init          record the current pages and threads as summarised
 
@@ -29,7 +31,18 @@ LIMIT = int(FLAGS[FLAGS.index("--limit") + 1]) if "--limit" in FLAGS else 50
 BASIS = pathlib.Path(__file__).parent / "summary-basis.json"
 OBJ, THR = SITE / "object-summaries.json", SITE / "thread-summaries.json"
 REPO = "FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec"
-MODEL, PRICE_IN, PRICE_OUT = "claude-sonnet-5-5", 2.0, 10.0  # US$ per million tokens, list price
+# Per model: US$ per million input and output tokens (list price), and the request settings. Sonnet 5.5 turns thinking
+# off with "between_tools", which no other model accepts. Haiku 5.5 always thinks, so it runs at low effort with room in
+# max_tokens for the thinking (billed as output).
+MODELS = {
+    "claude-sonnet-5-5": {"price": (2.0, 10.0), "thinking": {"type": "between_tools"}, "effort": "medium", "max_tokens": 1024},
+    "claude-haiku-5-5": {"price": (0.10, 0.50), "thinking": {"type": "adaptive"}, "effort": "low", "max_tokens": 8000},
+}
+MODEL = FLAGS[FLAGS.index("--model") + 1] if "--model" in FLAGS else "claude-sonnet-5-5"
+if MODEL not in MODELS:
+    sys.exit(f"--model must be one of {', '.join(MODELS)}")
+PRICE_IN, PRICE_OUT = MODELS[MODEL]["price"]
+ONLY = [k.strip() for k in (FLAGS[FLAGS.index("--only") + 1] if "--only" in FLAGS else "").split(",") if k.strip()]
 TODAY = datetime.date.today().isoformat()
 
 model = json.loads((SITE / "focus" / "model.json").read_text())
@@ -92,6 +105,11 @@ changed_pages = [k for k in pages if k in objs["summaries"] and basis["pages"].g
 new_threads = sorted((n for n in due_threads_all if n not in threads["summaries"]), key=int)
 changed_threads = sorted((n for n in due_threads_all if n in threads["summaries"] and basis["threads"].get(n) != counts(n)), key=int)
 due = [("page", k) for k in new_pages + changed_pages] + [("thread", n) for n in new_threads + changed_threads]
+if ONLY:
+    unknown = [k for k in ONLY if k not in pages and k not in due_threads_all]
+    if unknown:
+        sys.exit(f"--only: not a page key or a thread with three or more comments or reviews: {', '.join(unknown)}")
+    due = [("page" if k in pages else "thread", k) for k in ONLY]
 
 
 def estimate(kind, key):
@@ -99,12 +117,14 @@ def estimate(kind, key):
     if kind == "page":
         chars = sum(len((SPEC / f).read_text()) for f in pages[key][1])
         return 900 + chars // 4, 300
-    return 900 + 400 + 250 * weight[key], 200
+    return 900 + min(400 + 250 * weight[key], 30_000), 200  # thread_text() keeps at most 120,000 characters
 
 
 tin, tout = map(sum, zip(*(estimate(*d) for d in due))) if due else (0, 0)
 print(f"Due: {len(new_pages)} new and {len(changed_pages)} changed pages, {len(new_threads)} new and "
-      f"{len(changed_threads)} changed threads ({len(due)} summaries).")
+      f"{len(changed_threads)} changed threads ({len(new_pages + changed_pages + new_threads + changed_threads)} summaries).")
+if ONLY:
+    print(f"--only: writing just these {len(due)}.")
 print(f"Estimated cost of writing all of them with {MODEL}: about {tin:,} input and {tout:,} output tokens, "
       f"US${tin * PRICE_IN / 1e6 + tout * PRICE_OUT / 1e6:.2f} at list price.")
 for kind, key in due[:30]:
@@ -233,9 +253,11 @@ def write_one(system, content, limit):
     """One summary, checked; one retry with the problems named. Returns (text, problems)."""
     global spent_in, spent_out
     messages = [{"role": "user", "content": f"{content}\n\nLength: at most {limit} words."}]
+    m = MODELS[MODEL]
     for attempt in (1, 2):
-        r = client.messages.create(model=MODEL, max_tokens=1024, system=system, messages=messages,
-                                   thinking={"type": "between_tools"}, output_config={"effort": "medium"})
+        # The retry sends back only the text of the first reply, not its thinking, which the API allows.
+        r = client.messages.create(model=MODEL, max_tokens=m["max_tokens"], system=system, messages=messages,
+                                   thinking=m["thinking"], output_config={"effort": m["effort"]})
         spent_in += r.usage.input_tokens
         spent_out += r.usage.output_tokens
         text = "".join(b.text for b in r.content if b.type == "text").strip()
@@ -274,4 +296,4 @@ BASIS.write_text(json.dumps(basis, indent=0, sort_keys=True))
 stamp()
 cost = spent_in * PRICE_IN / 1e6 + spent_out * PRICE_OUT / 1e6
 print(f"Wrote {min(len(due), LIMIT) - len(skipped)}, skipped {len(skipped)}, {max(0, len(due) - LIMIT)} left for the next run. "
-      f"Used {spent_in:,} input and {spent_out:,} output tokens: US${cost:.2f} at list price.")
+      f"Used {spent_in:,} input and {spent_out:,} output tokens with {MODEL}: US${cost:.4f} at list price.")

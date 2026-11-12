@@ -13,8 +13,17 @@ on:
         description: "Most summaries to write in this run"
         type: number
         default: 50
+      model:
+        description: "Model for the summaries"
+        type: choice
+        options: [claude-sonnet-5-5, claude-haiku-5-5]
+        default: claude-sonnet-5-5
+      only:
+        description: "Write only these summaries, due or not: page keys or thread numbers, comma-separated (blank: whatever is due)"
+        type: string
+        default: ""
       publish:
-        description: "Push the result to main. Untick for a trial run: it rebuilds, lists what changed, keeps the rebuilt files for download, writes no summaries and pushes nothing"
+        description: "Push the result to main. Untick for a trial run: it rebuilds, lists what changed and keeps the rebuilt files, with any summaries it wrote, for download. It pushes nothing"
         type: boolean
         default: true
 
@@ -67,13 +76,16 @@ jobs:
         run: tools/refresh.sh .spec .raw
 
       - name: Write summaries for what changed
-        if: ${{ inputs.summaries && inputs.publish }}
+        if: ${{ inputs.summaries }}
         env:
           GH_TOKEN: ${{ github.token }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LIMIT: ${{ inputs.limit }}
+          MODEL: ${{ inputs.model }}
+          ONLY: ${{ inputs.only }}
         run: |
           pip install anthropic
-          python -I tools/summarise.py .spec site --write --limit ${{ inputs.limit }}
+          python -I tools/summarise.py .spec site --write --limit "$LIMIT" --model "$MODEL" --only "$ONLY"
 
       - name: List what changed
         run: |
