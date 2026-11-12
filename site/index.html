@@ -264,8 +264,8 @@
 <header>
   <h1>FOCUS SQL Lab</h1>
   <nav class="apptabs" aria-label="Views">
-    <button data-tab="query" aria-pressed="true">Query</button>
-    <button data-tab="model" aria-pressed="false">Data model</button>
+    <button data-tab="model" aria-pressed="true">Data model</button>
+    <button data-tab="query" aria-pressed="false">Query</button>
     <button data-tab="evidence" aria-pressed="false">Evidence</button>
   </nav>
   <span id="status">Loading DuckDB…</span>
@@ -947,7 +947,7 @@ const AREA = { CostAndUsage: 'cau', SkuPrice: 'sku', InvoiceDetail: 'inv', Contr
 const SHORT = { 'cau-sku': 'SKU Price ID', 'cau-cc': 'Commitment ID', 'cau-inv': 'Invoice ID',
   'cau-bp': 'Billing period', 'inv-bp': 'Billing period', 'sku-cc': 'Contract ID',
   'inv-pay': 'Payment record', 'inv-ref': 'Adjusted invoice' };
-let tab = ['model', 'evidence'].includes(store.get('tab')) ? store.get('tab') : 'query';
+let tab = 'model'; // the page always opens on the Data model
 let modelBuilt = false, selection = null, detailToken = 0, detailSql = {};
 
 const dsById = (id) => model.datasets.find((d) => d.id === id);
