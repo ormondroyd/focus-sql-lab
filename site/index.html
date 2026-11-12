@@ -494,6 +494,7 @@
   <a href="https://github.com/ormondroyd/focus-sql-lab/blob/main/LICENSE">Apache License 2.0</a>, and its writing and curated
   content under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
   (<a href="https://github.com/ormondroyd/focus-sql-lab/blob/main/NOTICE.md">which is which</a>).
+  <span id="refreshed"></span>
 </footer>
 
 <script type="module">
@@ -1989,6 +1990,15 @@ $('ev-filters').addEventListener('click', (e) => { const b = e.target.closest('[
 $('ev-search').addEventListener('input', () => renderEvidence());
 $('ev-list').addEventListener('click', (e) => { const b = e.target.closest('[data-obj]'); if (b) openObject(b.dataset.obj); });
 $('ai-body').addEventListener('click', onAiClick);
+// When the site was last rebuilt from the specification (site/focus/refresh.json, written by tools/summarise.py --stamp).
+fetch('focus/refresh.json').then((r) => (r.ok ? r.json() : null)).then((f) => {
+  if (!f) return;
+  const day = (d) => (d ? new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) : '');
+  const s = f.summaries_written || {};
+  $('refreshed').innerHTML = `<br>Built from the FOCUS_Spec working draft at <a href="${f.spec.repo}/commit/${f.spec.ref}" target="_blank" rel="noopener">${
+    escapeHtml(f.spec.ref)}</a> (${day(f.spec.date)}), refreshed ${day(f.data_refreshed)}. AI summaries last written ${
+    day(s.pages)} (spec pages) and ${day(s.threads)} (GitHub threads).`;
+}).catch(() => {});
 $('quiz-list').addEventListener('click', (e) => { const b = e.target.closest('[data-q]'); if (b) pickQuestion(b.dataset.q); });
 $('quiz-check').addEventListener('click', quizCheck);
 $('quiz-feedback').addEventListener('click', quizFeedback);

@@ -113,6 +113,7 @@ site/
     model.json                datasets, columns and relationships from the specification
     history.json              the pull requests and issues behind each definition, with excerpts of their descriptions
     ai-tokens.json            the AI tokens view: specification extracts, thread status and the lab's notes on the gaps
+    refresh.json              the specification commit the site was built from, and when it was last refreshed
 ```
 
 ## Data sources
@@ -155,16 +156,50 @@ You need Python with `duckdb==1.5.4` (see `tools/requirements.txt`), a clone of 
 and `pr5-1.4/` with the CSV files from each pull request's `FOCUS-1.3/` and `FOCUS-1.4/` folder at the commits listed
 in [NOTICE.md](NOTICE.md).
 
+The quickest way is the refresh script, which runs the five build scripts in order (`extract_model.py` must run before
+`extract_sql.py`, `extract_history.py` and `extract_ai.py`, which read `model.json`) and then lists the AI summaries that
+are due:
+
+```bash
+GH_TOKEN=<GitHub token> PYTHON=<python with duckdb 1.5.4> tools/refresh.sh <FOCUS_Spec clone> <raw data folder> [history cache]
+```
+
+Or one at a time:
+
 ```bash
 python -I tools/build_data.py <FOCUS_Spec clone> <raw data folder> site/focus/data
-python -I tools/extract_sql.py <FOCUS_Spec clone> site
 python -I tools/extract_model.py <FOCUS_Spec clone> site
-GH_TOKEN=<GitHub token> python -I tools/extract_history.py <FOCUS_Spec clone with full history> e9cdcc7 site
+python -I tools/extract_sql.py <FOCUS_Spec clone> site
+GH_TOKEN=<GitHub token> python -I tools/extract_history.py <FOCUS_Spec clone with full history> <commit> site
 GH_TOKEN=<GitHub token> python -I tools/extract_ai.py <FOCUS_Spec clone> site
 ```
 
-`extract_history.py` needs a clone with full history (`git clone --bare`), and a GitHub token to read pull requests and
-issues through the API.
+`extract_history.py` needs a clone with full history (if yours is shallow, set `HISTORY` to a full or bare clone for
+`refresh.sh`), and a GitHub token to read pull requests and issues through the API.
+
+### Refreshing on GitHub
+
+The workflow [.github/workflows/refresh.yml](.github/workflows/refresh.yml) does the same on GitHub, against the latest
+`working_draft`. It runs only when started by hand: Actions, then "Refresh from FOCUS_Spec", then "Run workflow". It
+downloads the sample data at the pinned commits, rebuilds, and pushes to `main` only if something changed, which
+redeploys the site. The page footer shows the specification commit and the refresh dates, from `site/focus/refresh.json`.
+
+### AI summaries
+
+The page and conversation summaries are the only part that needs an AI model, and they're written only for what's new
+or changed. [tools/summarise.py](tools/summarise.py) compares each specification page and each GitHub thread with what
+its summary was written from (recorded in `tools/summary-basis.json`):
+
+```bash
+python -I tools/summarise.py <FOCUS_Spec clone> site                         # dry run: what's due, with an estimated cost
+GH_TOKEN=... ANTHROPIC_API_KEY=... python -I tools/summarise.py <FOCUS_Spec clone> site --write --limit 50
+```
+
+`--write` calls the Claude API (Claude Sonnet 5.5, US$2 / $10 per million input / output tokens at list price) and
+prints what it spent. Each summary must pass automatic checks (word limit, they/them pronouns, no URLs or Markdown,
+quotes found word for word in the source); one that fails twice is skipped. The workflow does this only when its
+"summaries" box is ticked, with the `ANTHROPIC_API_KEY` repository secret, up to the "limit" given. The debate notes
+and evidence are curated and aren't refreshed.
 
 ## Run locally
 

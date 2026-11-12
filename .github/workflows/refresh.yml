@@ -1,0 +1,81 @@
+# Refresh the site from the latest FOCUS_Spec working draft. It runs only when started by hand
+# (Actions > Refresh from FOCUS_Spec > Run workflow), and pushes to main only if something changed.
+name: Refresh from FOCUS_Spec
+
+on:
+  workflow_dispatch:
+    inputs:
+      summaries:
+        description: "Also write AI summaries for new or changed pages and threads (calls the Claude API, which costs money)"
+        type: boolean
+        default: false
+      limit:
+        description: "Most summaries to write in this run"
+        type: number
+        default: 50
+
+permissions:
+  contents: write
+
+concurrency: refresh
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out FOCUS_Spec working_draft, with full history
+        uses: actions/checkout@v4
+        with:
+          repository: FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec
+          ref: working_draft
+          fetch-depth: 0
+          path: .spec
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r tools/requirements.txt
+
+      # The sample data is pinned to the commits NOTICE.md lists, so only the specification side changes.
+      - name: Download the sample data
+        run: |
+          set -euo pipefail
+          raw=https://raw.githubusercontent.com
+          mkdir -p .raw/pr7-1.3 .raw/pr5-1.4
+          curl -fsSL -o .raw/focus_sample_100000.csv.gz \
+            "$raw/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data/adbdd17a132984d6e8583c149c236d2199c3f5bc/FOCUS-1.0/focus_sample_100000.csv.gz"
+          for f in costandusage_aws_1000 costandusage_azure_1000 costandusage_gcp_1000 contractcommitment_aws contractcommitment_azure contractcommitment_gcp; do
+            curl -fsSL -o ".raw/pr7-1.3/focus_sample_$f.csv" \
+              "$raw/guymano/FOCUS-Sample-Data/99917010b27f7c0ca3586f8e0daab7e1c8103dac/FOCUS-1.3/focus_sample_$f.csv"
+          done
+          for f in costandusage contractcommitment invoicedetail billingperiod; do
+            curl -fsSL -o ".raw/pr5-1.4/focus_sample_$f.csv" \
+              "$raw/beau-finopsorg/FOCUS-Sample-Data/4fe60d96737ea06c64851f3a0b2bcd675125b980/FOCUS-1.4/focus_sample_$f.csv"
+          done
+
+      - name: Rebuild from the specification
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: tools/refresh.sh .spec .raw
+
+      - name: Write summaries for what changed
+        if: ${{ inputs.summaries }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          pip install anthropic
+          python -I tools/summarise.py .spec site --write --limit ${{ inputs.limit }}
+
+      - name: Commit and push, if anything changed
+        run: |
+          git add site tools/summary-basis.json
+          if git diff --cached --quiet; then echo "Nothing changed."; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Refresh from FOCUS_Spec working_draft @ $(git -C .spec rev-parse --short=7 HEAD)"
+          git push
