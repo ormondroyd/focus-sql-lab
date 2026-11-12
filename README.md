@@ -62,6 +62,11 @@ Everything the lab made is labelled on the page:
   each FOCUS_Spec issue and pull request in the history that has three or more comments or reviews, written by Claude
   from each thread. Threads with less discussion show only their own description.
 
+## Findings
+
+[findings/spec-inconsistencies.md](findings/spec-inconsistencies.md): inconsistencies in the specification's examples
+found while building the lab, stress-tested, with proposed fixes.
+
 ## What's next
 
 See [BACKLOG.md](BACKLOG.md) for the next things to build.
