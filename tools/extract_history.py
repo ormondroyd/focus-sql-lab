@@ -4,8 +4,12 @@ Usage: GH_TOKEN=<token> python -I extract_history.py <FOCUS_Spec clone with full
 Reads  <site dir>/focus/model.json (each dataset, column and relationship records its source file)
 Writes <site dir>/focus/history.json
 
-For each source file, git log --follow lists the commits that changed it, following renames. The specification merges
-pull requests as single commits whose subject ends "(#N)", which names the pull request. GitHub's API supplies each
+For each source file, git log lists the commits that changed it under its current name or any earlier one. The earlier
+names come from the renames git finds in each commit. This doesn't use git log --follow, whose answer depends on the
+git version: git 2.56 changed how it walks branching history, and it can also cross from a copied file into the
+original's history. A file copied from another one (a column added to a second dataset, say) starts where it was
+created. The specification merges pull requests as single commits whose subject ends "(#N)", which names the pull
+request. GitHub's API supplies each
 pull request's title, author, discussion counts and description, and the same for the issue its title names
 (as in "FR #982: ..."). Each summary is an excerpt of the pull request's own description, or of its issue's where the
 pull request has none. Nothing is written by the lab: the excerpts are cut at a sentence end, with Markdown link and
@@ -39,11 +43,32 @@ paths = sorted({d["source"] for d in model["datasets"]}
                | {c["source"] for c in model.get("conditions", [])}
                | {f for t in model.get("topics", []) for f in t["files"]})
 
+# ---- Every name each file has had ---------------------------------------------------------------------------
+# -l0 lifts the rename limit, so large commits (such as the move of the columns into datasets/) are always searched.
+earlier = {}
+for line in git("log", "-M", "-l0", "--diff-filter=R", "--name-status", "--format=", COMMIT).splitlines():
+    status, *names = line.split("\t")
+    if status.startswith("R") and len(names) == 2:
+        earlier.setdefault(names[1], set()).add(names[0])
+
+
+def names_of(path):
+    seen, todo = set(), [path]
+    while todo:
+        name = todo.pop()
+        if name not in seen:
+            seen.add(name)
+            todo += earlier.get(name, ())
+    return seen
+
+
 # ---- Which pull requests changed each file -------------------------------------------------------------------
+# --full-history keeps commits on branches whose changes a merge didn't keep, as git log --follow did.
 files = {}
 for path in paths:
     prs, unlinked, sha, subject = {}, 0, None, None
-    for line in git("log", "--follow", "--numstat", "--format=@%H\t%s", COMMIT, "--", path).splitlines():
+    for line in git("log", "--full-history", "-M", "-l0", "--numstat", "--format=@%H\t%s", COMMIT, "--",
+                    *sorted(names_of(path))).splitlines():
         if line.startswith("@"):
             sha, subject = line[1:].split("\t", 1)
             continue
@@ -170,13 +195,10 @@ for n in numbers:
 
 # ---- Pull requests that were never merged: closed without merging, or still open ----------------------------
 # They aren't in the git history, so they're matched by the files they changed. A definition file may have had other
-# names (columns used to live in specification/columns/, for example), so every name git's rename tracking knows for
-# each file counts.
+# names (columns used to live in specification/columns/, for example), so every earlier name counts.
 aliases = {}
 for path in paths:
-    names = {line.strip() for line in git("log", "--follow", "--name-only", "--format=", COMMIT, "--", path).splitlines()
-             if line.strip()}
-    for name in names | {path}:
+    for name in names_of(path):
         aliases.setdefault(name, set()).add(path)
 
 UNMERGED = """pullRequests(states: [OPEN, CLOSED], first: 50{after}) {{ pageInfo {{ hasNextPage endCursor }}

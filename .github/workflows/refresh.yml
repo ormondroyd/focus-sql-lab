@@ -13,6 +13,10 @@ on:
         description: "Most summaries to write in this run"
         type: number
         default: 50
+      publish:
+        description: "Push the result to main. Untick for a trial run: it rebuilds, lists what changed, keeps the rebuilt files for download, writes no summaries and pushes nothing"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -63,7 +67,7 @@ jobs:
         run: tools/refresh.sh .spec .raw
 
       - name: Write summaries for what changed
-        if: ${{ inputs.summaries }}
+        if: ${{ inputs.summaries && inputs.publish }}
         env:
           GH_TOKEN: ${{ github.token }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -71,9 +75,24 @@ jobs:
           pip install anthropic
           python -I tools/summarise.py .spec site --write --limit ${{ inputs.limit }}
 
-      - name: Commit and push, if anything changed
+      - name: List what changed
         run: |
           git add site tools/summary-basis.json
+          git diff --cached --stat
+
+      - name: Keep the rebuilt files (trial run)
+        if: ${{ !inputs.publish }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: trial-run
+          path: |
+            site/*.json
+            site/focus/*.json
+          retention-days: 7
+
+      - name: Commit and push, if anything changed
+        if: ${{ inputs.publish }}
+        run: |
           if git diff --cached --quiet; then echo "Nothing changed."; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

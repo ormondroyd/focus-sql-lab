@@ -427,7 +427,7 @@ WHERE d.ReferenceInvoiceId <> d.InvoiceId;"""},
 for r in RELS:
     r.setdefault("stats_sql", stats_sql(r["a"], r["b"], r["keys"]))
 
-commit = subprocess.run(["git", "-C", str(SPEC), "log", "-1", "--format=%h %cs"],
+commit = subprocess.run(["git", "-C", str(SPEC), "log", "-1", "--abbrev=7", "--format=%h %cs"],
                         capture_output=True, text=True).stdout.split()
 model = {
     "spec": {"repo": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec",

@@ -4,7 +4,7 @@
 #
 #   GH_TOKEN=<GitHub token> tools/refresh.sh <FOCUS_Spec clone> <raw data folder> [history cache]
 #
-# The clone needs full history (git blame and git log --follow). If it doesn't have it, set HISTORY to one that does,
+# The clone needs full history (for git log and git blame). If it doesn't have it, set HISTORY to one that does,
 # such as a bare clone. PYTHON picks the interpreter (default: python). The GitHub workflow
 # .github/workflows/refresh.yml runs this when someone starts it by hand.
 set -euo pipefail

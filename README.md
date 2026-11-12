@@ -184,6 +184,13 @@ The workflow [.github/workflows/refresh.yml](.github/workflows/refresh.yml) does
 downloads the sample data at the pinned commits, rebuilds, and pushes to `main` only if something changed, which
 redeploys the site. The page footer shows the specification commit and the refresh dates, from `site/focus/refresh.json`.
 
+Untick "publish" for a trial run. It rebuilds and lists the files that changed, and keeps the rebuilt JSON as a
+download (`trial-run`, under the run's Artifacts) for 7 days. It writes no summaries and pushes nothing.
+
+The history doesn't use `git log --follow`, because its answer depends on the git version: git 2.56, on GitHub's
+runners, walks branching history differently from 2.50. Instead, each file's earlier names come from the renames git
+finds in each commit, and `git log` lists the commits that changed any of them.
+
 ### AI summaries
 
 The page and conversation summaries are the only part that needs an AI model, and they're written only for what's new
