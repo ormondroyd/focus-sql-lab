@@ -30,7 +30,11 @@
     padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
   header h1 { margin: 0; font-size: 17px; letter-spacing: -0.01em; }
   header .sub { color: var(--muted); font-size: 13px; }
-  #status { margin-left: auto; font-size: 13px; color: var(--muted); }
+  .header-end { margin-left: auto; display: flex; align-items: baseline; justify-content: flex-end; flex-wrap: wrap;
+    gap: 4px 12px; font-size: 13px; color: var(--muted); }
+  #refreshed-at time { color: var(--fg); font-variant-numeric: tabular-nums; }
+  #refreshed-at:not([hidden]) + #status { padding-left: 12px; border-left: 1px solid var(--line); }
+  @media (max-width: 640px) { #refreshed-at:not([hidden]) + #status { padding-left: 0; border-left: 0; } }
   #status.ready { color: var(--ok); }
   .layout { display: grid; grid-template-columns: 290px minmax(0, 1fr); min-height: calc(100vh - 50px); }
   aside { border-right: 1px solid var(--line); background: var(--panel); padding: 14px 14px 24px;
@@ -324,7 +328,10 @@
     <button data-tab="ai" aria-pressed="false">AI tokens</button>
   </nav>
   <button id="about-open" class="about-link" type="button">What is this?</button>
-  <span id="status">Loading DuckDB…</span>
+  <span class="header-end">
+    <span id="refreshed-at" hidden></span>
+    <span id="status">Loading DuckDB…</span>
+  </span>
 </header>
 <dialog id="about" aria-labelledby="about-title">
   <button class="about-close" type="button" aria-label="Close">×</button>
@@ -1995,8 +2002,18 @@ fetch('focus/refresh.json').then((r) => (r.ok ? r.json() : null)).then((f) => {
   if (!f) return;
   const day = (d) => (d ? new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) : '');
   const s = f.summaries_written || {};
+  // The refresh time is stored in UTC and shown in the reader's own time zone.
+  const at = f.refreshed_at ? new Date(f.refreshed_at) : null;
+  const when = at && !isNaN(at) ? at.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }) : '';
+  if (when) {
+    const el = $('refreshed-at');
+    el.innerHTML = `Refreshed <time datetime="${escapeHtml(f.refreshed_at)}">${escapeHtml(when)}</time>`;
+    el.title = `Rebuilt from the FOCUS_Spec working draft at ${f.spec.ref} (${day(f.spec.date)})`;
+    el.hidden = false;
+  }
   $('refreshed').innerHTML = `<br>Built from the FOCUS_Spec working draft at <a href="${f.spec.repo}/commit/${f.spec.ref}" target="_blank" rel="noopener">${
-    escapeHtml(f.spec.ref)}</a> (${day(f.spec.date)}), refreshed ${day(f.data_refreshed)}. AI summaries last written ${
+    escapeHtml(f.spec.ref)}</a> (${day(f.spec.date)})${when ? `, refreshed ${escapeHtml(when)}` : ''}. AI summaries last written ${
     day(s.pages)} (spec pages) and ${day(s.threads)} (GitHub threads).`;
 }).catch(() => {});
 $('quiz-list').addEventListener('click', (e) => { const b = e.target.closest('[data-q]'); if (b) pickQuestion(b.dataset.q); });

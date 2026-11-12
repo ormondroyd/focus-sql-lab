@@ -76,8 +76,10 @@ def stamp():
     """site/focus/refresh.json: which spec commit the site was built from, and when things were last refreshed."""
     out = SITE / "focus" / "refresh.json"
     old = json.loads(out.read_text()) if out.exists() else {}
-    data_date = TODAY if "--data" in FLAGS else old.get("data_refreshed", TODAY)
-    out.write_text(json.dumps({"spec": model["spec"], "data_refreshed": data_date,
+    # The time of the rebuild, in UTC; the page shows it in the reader's own time zone.
+    now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    refreshed = now if "--data" in FLAGS else old.get("refreshed_at", now)
+    out.write_text(json.dumps({"spec": model["spec"], "refreshed_at": refreshed,
                                "summaries_written": {"pages": objs.get("written"), "threads": threads.get("written")}}, indent=1))
 
 

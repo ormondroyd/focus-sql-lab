@@ -182,7 +182,9 @@ GH_TOKEN=<GitHub token> python -I tools/extract_ai.py <FOCUS_Spec clone> site
 The workflow [.github/workflows/refresh.yml](.github/workflows/refresh.yml) does the same on GitHub, against the latest
 `working_draft`. It runs only when started by hand: Actions, then "Refresh from FOCUS_Spec", then "Run workflow". It
 downloads the sample data at the pinned commits, rebuilds, and pushes to `main` only if something changed, which
-redeploys the site. The page footer shows the specification commit and the refresh dates, from `site/focus/refresh.json`.
+redeploys the site. The page header shows when the site was last refreshed, in the reader's own time zone, and the footer
+adds the specification commit and when the AI summaries were last written. Both come from `site/focus/refresh.json`,
+which records the refresh time in UTC.
 
 Untick "publish" for a trial run. It rebuilds and lists the files that changed, and keeps the rebuilt JSON as a
 download (`trial-run`, under the run's Artifacts) for 7 days. It writes no summaries and pushes nothing.
