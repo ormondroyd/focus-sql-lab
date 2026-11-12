@@ -3,6 +3,7 @@
     python tools/summarise.py <FOCUS_Spec checkout> <site dir>                 dry run: list what's due, with an estimated cost
     python tools/summarise.py <FOCUS_Spec checkout> <site dir> --write [--limit N]   write up to N summaries (default 50)
         [--model M]       claude-sonnet-5-5 (default) or claude-haiku-5-5
+        [--effort E]      low, medium or high (default: medium for Sonnet, low for Haiku)
         [--only K1,K2]    write exactly these page keys or thread numbers, due or not (to compare models, say)
     python tools/summarise.py <FOCUS_Spec checkout> <site dir> --stamp         only write site/focus/refresh.json
     python tools/summarise.py <FOCUS_Spec checkout> <site dir> --init          record the current pages and threads as summarised
@@ -42,6 +43,10 @@ MODEL = FLAGS[FLAGS.index("--model") + 1] if "--model" in FLAGS else "claude-son
 if MODEL not in MODELS:
     sys.exit(f"--model must be one of {', '.join(MODELS)}")
 PRICE_IN, PRICE_OUT = MODELS[MODEL]["price"]
+if "--effort" in FLAGS:  # how hard Haiku thinks; on Sonnet (thinking off) it only shapes the reply
+    MODELS[MODEL]["effort"] = FLAGS[FLAGS.index("--effort") + 1]
+    if MODELS[MODEL]["effort"] not in ("low", "medium", "high"):
+        sys.exit("--effort must be low, medium or high")
 ONLY = [k.strip() for k in (FLAGS[FLAGS.index("--only") + 1] if "--only" in FLAGS else "").split(",") if k.strip()]
 TODAY = datetime.date.today().isoformat()
 

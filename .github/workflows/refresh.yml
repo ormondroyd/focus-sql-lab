@@ -18,6 +18,11 @@ on:
         type: choice
         options: [claude-sonnet-5-5, claude-haiku-5-5]
         default: claude-sonnet-5-5
+      effort:
+        description: "Effort: how much Haiku thinks before writing (its thinking is billed as output). Default: low for Haiku, medium for Sonnet"
+        type: choice
+        options: [default, low, medium, high]
+        default: default
       only:
         description: "Write only these summaries, due or not: page keys or thread numbers, comma-separated (blank: whatever is due)"
         type: string
@@ -83,9 +88,12 @@ jobs:
           LIMIT: ${{ inputs.limit }}
           MODEL: ${{ inputs.model }}
           ONLY: ${{ inputs.only }}
+          EFFORT: ${{ inputs.effort }}
         run: |
           pip install anthropic
-          python -I tools/summarise.py .spec site --write --limit "$LIMIT" --model "$MODEL" --only "$ONLY"
+          args=(--write --limit "$LIMIT" --model "$MODEL" --only "$ONLY")
+          if [ "$EFFORT" != default ]; then args+=(--effort "$EFFORT"); fi
+          python -I tools/summarise.py .spec site "${args[@]}"
 
       - name: List what changed
         run: |

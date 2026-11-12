@@ -207,8 +207,8 @@ GH_TOKEN=... ANTHROPIC_API_KEY=... python -I tools/summarise.py <FOCUS_Spec clon
 ```
 
 `--write` calls the Claude API and prints what it spent. `--model` picks the model: `claude-sonnet-5-5` (the default,
-US$2 / $10 per million input / output tokens at list price) or `claude-haiku-5-5` (US$0.10 / $0.50, which always
-thinks, so it runs at low effort and its thinking is billed as output). `--only` names the pages or threads to write,
+US$2 / $10 per million input / output tokens at list price) or `claude-haiku-5-5` (US$0.10 / $0.50). Haiku always
+thinks, and its thinking is billed as output; `--effort` (low, the default for Haiku, medium or high) sets how much. `--only` names the pages or threads to write,
 whether due or not, for comparing models on the same items. Each summary must pass automatic checks (word limit,
 they/them pronouns, no URLs or Markdown, quotes found word for word in the source); one that fails twice is skipped.
 The checks can't tell whether a summary is accurate. The workflow does this only when its "summaries" box is ticked,
