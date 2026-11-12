@@ -244,6 +244,23 @@ for p in practice:
               "lab": True, "results": {src: run(p["sql"], [], src) for src in SOURCES_DATA}})
     print("practice", p["id"], p["results"])
 
+# The quiz (tools/quiz.json): every model answer must run and return rows on its data source, a "change it" question's
+# starting query must give a different result, and an ordered top N must not tie at its cut-off.
+quiz = json.loads((pathlib.Path(__file__).parent / "quiz.json").read_text())
+for q in quiz:
+    set_source(q["source"])
+    answer = con.execute(q["answer"]).fetchall()
+    assert answer, f"quiz {q['id']}: the answer returns no rows"
+    if q.get("start"):
+        assert con.execute(q["start"]).fetchall() != answer, f"quiz {q['id']}: the starting query already gives the answer"
+    limit = re.search(r"LIMIT (\d+);?\s*$", q["answer"])
+    if q.get("ordered") and limit:
+        more = con.execute(q["answer"].rstrip("; \n")[: -len(limit.group(0).rstrip("; \n"))] + f" LIMIT {int(limit.group(1)) + 1}").fetchall()
+        assert len(more) <= len(answer) or more[-1][-1] != answer[-1][-1], f"quiz {q['id']}: a tie at the cut-off"
+    q["rows"] = len(answer)
+    print("quiz", q["id"], len(answer), "rows")
+(SITE / "quiz.json").write_text(json.dumps(quiz, indent=1))
+
 (SITE / "focus" / "spec-queries.json").write_text(json.dumps(examples, indent=1))
 (SITE / "practice-queries.json").write_text(json.dumps(practice, indent=1))
 for label, group in (("spec", examples), ("practice", practice)):

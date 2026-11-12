@@ -24,6 +24,9 @@ queries in the browser, so the server only serves static files: no database, no 
   inside SkuPriceDetails, quoted from the specification; the worked examples and the four token queries; the threads
   that shaped it, with their conversations; and where the specification stops today, with the open requests behind
   each gap and their status on GitHub.
+- **Quiz:** 21 SQL questions on the FOCUS data, at two levels. "Write it" asks for a query that answers a common cost
+  question; "Change it" gives a query and asks for a specific change. A check runs your query and the model answer in
+  the browser and compares their results. Hints and model answers are there when you want them.
 
 ## How the spec's queries run unchanged
 
@@ -57,6 +60,8 @@ Everything the lab made is labelled on the page:
   changed more than 15 files "spec-wide") are the lab's; its summaries are excerpts the lab cut, not text it wrote.
 - **Debate notes:** [site/column-notes.json](site/column-notes.json) holds notes on the 11 join-key columns, written
   by Claude (an AI model) from the GitHub threads each note lists. They are the lab's reading of those discussions.
+- **Quiz:** the questions, hints, notes and model answers in [tools/quiz.json](tools/quiz.json), written in DuckDB SQL.
+  `extract_sql.py` tests every model answer and writes `site/quiz.json`.
 - **AI tokens view:** the explanations in the AI tokens tab, and which threads it lists under each gap, are the lab's.
   They live in [tools/extract_ai.py](tools/extract_ai.py). Specification text in the view is quoted as published, and
   the script stops if a quoted sentence is no longer in the specification.
@@ -100,6 +105,7 @@ site/
   thread-summaries.json       summaries of the conversation in each discussed FOCUS_Spec issue and pull request
   object-summaries.json       plain-language summaries of each dataset, column and attribute page
   practice-queries.json       the practice queries, with test results (built from tools/practice.json)
+  quiz.json                   the quiz, with each model answer's tested row count (built from tools/quiz.json)
   focus/                      FOCUS-derived, rebuilt by the tools; not edited by hand
     data/*.parquet            sample data and the specification's worked examples
     data/manifest.json        table list, row counts, column types and the columns the lab added
@@ -125,6 +131,22 @@ source doesn't have points at an empty table with the specification's columns, s
 
 Decimal columns are stored as 64-bit floating point (DOUBLE), one of the precisions the spec's NumericFormat attribute
 allows. Sums of charges and credits can therefore leave tiny remainders instead of exactly zero.
+
+## AI feedback for the quiz (not switched on)
+
+The quiz marks answers without AI, by comparing results. It's ready for an AI explanation of what's wrong, but none is
+switched on.
+
+- Set `QUIZ_FEEDBACK_URL` in `site/index.html` to an endpoint. After a wrong answer the page then shows "Ask for
+  feedback", sends the attempt as a JSON POST and shows the `feedback` string from the JSON reply. The attempt is
+  `{version, at, source, question: {id, level, title, ask, start, answer, ordered}, sql, error, verdict, problems:
+  [{kind, message}], yours: {columns, rowCount, firstRows}, expected: {columns, rowCount, firstRows}}`.
+- The endpoint holds the API key and calls the model. The key can't go in the page, which anyone can read. Anyone can
+  also press the button, so the endpoint needs a rate limit and a daily spending cap.
+- The page keeps the same records in the browser (the last 200), and "Download your attempts" saves them as JSON.
+- One feedback request is roughly 2,000 input tokens and 250 output tokens. At list prices that's about US$0.007 with
+  Claude Sonnet 5.5 ($2 / $10 per million input / output tokens), US$0.013 with Opus 5.5 ($4 / $20) and US$0.0003 with
+  Haiku 5.5 ($0.10 / $0.50).
 
 ## Rebuild
 

@@ -151,6 +151,34 @@
   #ai .gap p { margin: 4px 0; }
   #ai .gap ul { list-style: none; padding: 0; margin: 6px 0 0; font-size: 12.5px; }
   #ai .gap li { margin: 3px 0; }
+  #quiz { padding: 14px 16px 32px; }
+  .quiz-wrap { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 18px; max-width: 1200px; }
+  .quiz-list h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 4px 0 6px; }
+  .quiz-list ol { list-style: none; padding: 0; margin: 0 0 14px; }
+  .quiz-list button { display: flex; gap: 6px; width: 100%; text-align: left; border: 0; background: none; padding: 5px 6px;
+    border-radius: 6px; font-size: 13px; color: var(--fg); }
+  .quiz-list button[aria-current="true"] { background: var(--panel); box-shadow: 0 0 0 1px var(--line); font-weight: 600; }
+  .quiz-list .mark { width: 1em; flex: none; color: var(--muted); }
+  .quiz-list .mark.solved { color: var(--accent); }
+  .quiz-main h2 { margin: 2px 0 6px; font-size: 18px; }
+  .quiz-level { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .quiz-ask { font-size: 14px; line-height: 1.5; margin: 4px 0; max-width: 80ch; }
+  .quiz-concepts .tag { margin-right: 4px; }
+  textarea#quiz-editor { width: 100%; min-height: 200px; resize: vertical; padding: 10px 12px; margin-top: 10px;
+    font-family: var(--mono); font-size: 13px; line-height: 1.5; tab-size: 2;
+    border: 1px solid var(--line); border-radius: 8px; background: var(--code-bg); color: var(--fg); }
+  textarea#quiz-editor:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  #quiz-result p, #quiz-extra p { margin: 6px 0; line-height: 1.5; max-width: 85ch; }
+  #quiz-result h4, #quiz-extra h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 14px 0 6px; }
+  .verdict { font-weight: 600; font-size: 15px; padding: 6px 10px; border-radius: 6px; display: inline-block; border: 1px solid var(--line); }
+  .verdict.ok { color: var(--accent); border-color: var(--accent); }
+  .quiz-table { max-height: 320px; margin: 4px 0 8px; }
+  .quiz-table table { font-size: 12px; }
+  pre.quiz-sql { font-family: var(--mono); font-size: 12.5px; white-space: pre-wrap; background: var(--code-bg);
+    border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; margin: 6px 0; }
+  .quiz-foot { font-size: 12px; color: var(--muted); margin-top: 18px; max-width: 85ch; line-height: 1.5; }
+  .quiz-foot .linkish, #quiz-result .linkish { border: 0; background: none; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font-size: inherit; }
+  @media (max-width: 760px) { .quiz-wrap { grid-template-columns: 1fr; } }
   .about-link { border: 0; background: none; color: var(--accent); text-decoration: underline; cursor: pointer; font-size: 13px; padding: 4px 6px; }
   #about { max-width: 640px; width: calc(100% - 32px); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px 14px;
     background: var(--panel); color: var(--fg); font-size: 14px; line-height: 1.55; }
@@ -291,6 +319,7 @@
   <nav class="apptabs" aria-label="Views">
     <button data-tab="model" aria-pressed="true">Data model</button>
     <button data-tab="query" aria-pressed="false">Query</button>
+    <button data-tab="quiz" aria-pressed="false">Quiz</button>
     <button data-tab="evidence" aria-pressed="false">Evidence</button>
     <button data-tab="ai" aria-pressed="false">AI tokens</button>
   </nav>
@@ -430,6 +459,29 @@
   <div id="ev-list"><p class="hint">Loading…</p></div>
 </section>
 <section id="ai" hidden><div id="ai-body"><p class="hint">Loading…</p></div></section>
+<section id="quiz" hidden>
+  <div class="quiz-wrap">
+    <nav class="quiz-list" id="quiz-list" aria-label="Quiz questions"><p class="hint">Loading…</p></nav>
+    <div class="quiz-main">
+      <div id="quiz-q"></div>
+      <textarea id="quiz-editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Your SQL"></textarea>
+      <div class="actions">
+        <button id="quiz-check" class="primary">Check</button>
+        <span class="kbd">⌘/Ctrl + Enter</span>
+        <button id="quiz-hint">Hint</button>
+        <button id="quiz-answer">Show the answer</button>
+        <button id="quiz-reset">Start again</button>
+        <button id="quiz-feedback" hidden>Ask for feedback</button>
+      </div>
+      <div id="quiz-result"></div>
+      <div id="quiz-extra"></div>
+      <p class="quiz-foot">The questions and model answers are the lab's, written in DuckDB SQL. A check compares your
+        query's result with the model answer's: the same number of columns, the same rows (in order only where the question
+        says so) and numbers within 0.01. Column names don't have to match. Your progress and attempts stay in this
+        browser. <button class="linkish" id="quiz-download">Download your attempts</button></p>
+    </div>
+  </div>
+</section>
 <footer>
   Data: <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data">FOCUS-Sample-Data</a> (the accepted 1.0 sample, and samples proposed in its open pull requests #5 and #7) and the worked examples and example queries in the
   <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec">FOCUS specification</a>, licensed under
@@ -645,6 +697,7 @@ async function init() {
   if (!saved) run();
   if (tab === 'model') renderModel();
   if (tab === 'ai') renderAi();
+  if (tab === 'quiz') renderQuiz();
   if (tab === 'evidence') renderEvidence(); // again, now topic names are known
 }
 
@@ -1035,9 +1088,182 @@ function showTab(t) {
   $('model').hidden = t !== 'model';
   $('evidence').hidden = t !== 'evidence';
   $('ai').hidden = t !== 'ai';
+  $('quiz').hidden = t !== 'quiz';
   if (t === 'model') renderModel();
   if (t === 'evidence') renderEvidence();
   if (t === 'ai') renderAi();
+  if (t === 'quiz') renderQuiz();
+}
+
+// ---- Quiz: write or change a query, checked by comparing its result with the model answer's (site/quiz.json) ----------
+// AI feedback is off. To add it, set QUIZ_FEEDBACK_URL to an endpoint that takes one attempt record (quizRecord, below)
+// as a JSON POST and answers {"feedback": "..."}. The endpoint holds the API key and calls the model; this page never
+// does, because anything in the page is public.
+const QUIZ_FEEDBACK_URL = null;
+const QUIZ_PROGRESS = 'quiz-progress', QUIZ_ATTEMPTS = 'quiz-attempts', QUIZ_SQL = 'quiz-sql:';
+const QUIZ_LEVELS = { 1: 'Write it', 2: 'Change it' };
+const QUIZ_BLANK = 'SELECT\n  \nFROM CostAndUsage\n';
+let quizP = null, quiz = null, quizQ = null, quizBusy = false, quizLast = null;
+const loadQuiz = () => (quizP ??= fetch('quiz.json').then((r) => (r.ok ? r.json() : null)).catch(() => null));
+const quizProgress = () => { try { return JSON.parse(store.get(QUIZ_PROGRESS) || '{}'); } catch { return {}; } };
+
+function setProgress(id, state) { // solved beats shown, which beats tried
+  const p = quizProgress(), rank = { tried: 1, shown: 2, solved: 3 };
+  if ((rank[state] || 0) > (rank[p[id]] || 0)) { p[id] = state; store.set(QUIZ_PROGRESS, JSON.stringify(p)); }
+}
+
+async function renderQuiz() {
+  if (!conn || !manifest || !model) return; // init() calls this again once the data is loaded
+  quiz ??= await loadQuiz();
+  if (!quiz) { $('quiz-q').innerHTML = '<p class="hint">Could not load the quiz.</p>'; return; }
+  if (!quizQ) pickQuestion(store.get('quiz-current'));
+  else renderQuizList();
+}
+
+function renderQuizList() {
+  const p = quizProgress(), mark = { solved: '✓', shown: '◐', tried: '•' };
+  const label = { solved: 'solved', shown: 'answer shown', tried: 'tried' };
+  $('quiz-list').innerHTML = [1, 2].map((lv) => `<h3>${QUIZ_LEVELS[lv]}</h3><ol>${quiz.filter((q) => q.level === lv).map((q) =>
+    `<li><button data-q="${q.id}" aria-current="${quizQ && quizQ.id === q.id}"><span class="mark ${p[q.id] || ''}" title="${
+      label[p[q.id]] || 'not tried'}">${mark[p[q.id]] || ''}</span>${escapeHtml(q.title)}</button></li>`).join('')}</ol>`).join('')
+    + `<p class="hint">${quiz.filter((q) => p[q.id] === 'solved').length} of ${quiz.length} solved</p>`;
+}
+
+function pickQuestion(id) {
+  const q = quiz.find((x) => x.id === id) || quiz[0];
+  quizQ = q;
+  store.set('quiz-current', q.id);
+  $('quiz-q').innerHTML = `<div class="quiz-level">${QUIZ_LEVELS[q.level]}${q.ordered ? ' · row order is checked' : ''}</div>
+    <h2>${escapeHtml(q.title)}</h2><p class="quiz-ask">${escapeHtml(q.ask)}</p>
+    <p class="hint">Runs on ${escapeHtml(manifest.sources[q.source].label)}, as the CostAndUsage table.${
+      q.level === 2 ? ' The editor starts with the query to change.' : ''}</p>
+    <div class="quiz-concepts">${q.concepts.map((c) => `<span class="tag">${escapeHtml(c)}</span>`).join('')}</div>`;
+  $('quiz-editor').value = store.get(QUIZ_SQL + q.id) ?? q.start ?? QUIZ_BLANK;
+  $('quiz-result').innerHTML = '';
+  $('quiz-extra').innerHTML = '';
+  $('quiz-feedback').hidden = true;
+  quizLast = null;
+  renderQuizList();
+}
+
+// Run SQL and keep every column by position, so two columns with the same name don't collide.
+async function quizRun(sql) {
+  const res = await conn.query(sql);
+  const fields = res.schema.fields, cols = fields.map((_, i) => res.getChildAt(i));
+  return { fields, rows: Array.from({ length: res.numRows }, (_, r) => cols.map((c) => c.get(r))) };
+}
+
+// A value as the check sees it: numbers rounded to 2 places, dates without a midnight time, text as it is.
+function quizCell(v, f) {
+  const s = fmt(v, f);
+  if (s === null) return null;
+  if (isNumericType(f.type)) { const n = Number(s); return Number.isFinite(n) ? Math.round(n * 100) / 100 : s; }
+  return s.replace(/ 00:00:00$/, '');
+}
+
+function compareResults(yours, expected, ordered) {
+  const norm = (r) => r.rows.map((row) => row.map((v, i) => quizCell(v, r.fields[i])));
+  const a = norm(yours), b = norm(expected), problems = [], notes = [];
+  const names = (r) => r.fields.map((f) => f.name);
+  if (yours.fields.length !== expected.fields.length) problems.push({ kind: 'columns', message:
+    `Your result has ${plural(yours.fields.length, 'column')}; the answer has ${expected.fields.length}: ${names(expected).join(', ')}.` });
+  if (a.length !== b.length) problems.push({ kind: 'rows', message: `Your result has ${plural(a.length, 'row')}; the answer has ${
+    b.length}. ${a.length > b.length ? 'Too many: is a filter, a LIMIT or a HAVING missing, or an extra column in the GROUP BY?'
+      : 'Too few: is a filter too strict, or a GROUP BY column missing?'}` });
+  if (!problems.length) {
+    const same = (x, y) => x.every((v, i) => v === y[i] || (typeof v === 'number' && typeof y[i] === 'number' && Math.abs(v - y[i]) <= 0.011));
+    const sorted = (rows) => [...rows].sort((x, y) => (JSON.stringify(x) < JSON.stringify(y) ? -1 : 1));
+    const differ = (x, y) => x.map((row, i) => (same(row, y[i]) ? -1 : i)).filter((i) => i >= 0);
+    const [sa, sb] = [sorted(a), sorted(b)], unorderedDiff = differ(sa, sb);
+    if (unorderedDiff.length) problems.push({ kind: 'values', message: `The same shape, but ${plural(unorderedDiff.length, 'row')} ${
+      unorderedDiff.length === 1 ? 'differs' : 'differ'} from the answer's.`, rows: unorderedDiff.slice(0, 3).map((i) => [sa[i], sb[i]]) });
+    else if (ordered && differ(a, b).length) problems.push({ kind: 'order', message: 'The right rows, in the wrong order. This question checks the order.' });
+  }
+  const lower = (r) => names(r).map((n) => n.toLowerCase());
+  if (yours.fields.length === expected.fields.length && lower(yours).some((n, i) => n !== lower(expected)[i])) {
+    notes.push(`Your column names differ from the answer's (${names(expected).join(', ')}). That's fine: the check compares values.`);
+  }
+  return { ok: !problems.length, problems, notes };
+}
+
+// A result as a table. With formatted = true the rows already hold display values (the check's own), so fmt is skipped.
+function quizTable(fields, rows, max = 10, formatted = false) {
+  const cell = (v) => (v === null ? '<td class="null">null</td>' : `<td>${escapeHtml(String(v))}</td>`);
+  return `<div class="results quiz-table"><table><thead><tr>${fields.map((f) => `<th>${escapeHtml(f.name)}</th>`).join('')}</tr></thead><tbody>${
+    rows.slice(0, max).map((r) => `<tr>${r.map((v, i) => cell(formatted ? v : fmt(v, fields[i]))).join('')}</tr>`).join('')}</tbody></table></div>${
+    rows.length > max ? `<p class="hint">First ${max} of ${rows.length} rows.</p>` : ''}`;
+}
+
+// One attempt, as stored in this browser, offered for download, and sent to the feedback endpoint when there is one.
+function quizRecord(q, sql, yours, expected, verdict, error) {
+  const result = (r) => r && { columns: r.fields.map((f) => f.name), rowCount: r.rows.length,
+    firstRows: r.rows.slice(0, 20).map((row) => row.map((v, i) => fmt(v, r.fields[i]))) };
+  return { version: 1, at: new Date().toISOString(), source: q.source,
+    question: { id: q.id, level: q.level, title: q.title, ask: q.ask, start: q.start || null, answer: q.answer, ordered: !!q.ordered },
+    sql, error, verdict: verdict.ok ? 'correct' : error ? 'error' : 'wrong',
+    problems: verdict.problems.map(({ kind, message }) => ({ kind, message })),
+    yours: result(yours), expected: result(expected) };
+}
+
+function saveAttempt(rec) {
+  let list;
+  try { list = JSON.parse(store.get(QUIZ_ATTEMPTS) || '[]'); } catch { list = []; }
+  list.push(rec);
+  store.set(QUIZ_ATTEMPTS, JSON.stringify(list.slice(-200)));
+}
+
+async function quizCheck() {
+  const q = quizQ, sql = $('quiz-editor').value;
+  if (!q || !sql.trim() || quizBusy || !conn) return;
+  quizBusy = true;
+  $('quiz-check').disabled = true;
+  $('quiz-result').innerHTML = '<p class="hint">Checking…</p>';
+  $('quiz-extra').innerHTML = '';
+  try {
+    if ($('dataset').value !== q.source) await setDataset(q.source, `Switched to ${manifest.sources[q.source].short} for the quiz.`);
+    const expected = await quizRun(q.answer);
+    let yours = null, error = null;
+    try { yours = await quizRun(sql); } catch (err) { error = String(err && err.message ? err.message : err); }
+    const verdict = error ? { ok: false, problems: [{ kind: 'error', message: error }], notes: [] } : compareResults(yours, expected, q.ordered);
+    quizLast = quizRecord(q, sql, yours, expected, verdict, error);
+    saveAttempt(quizLast);
+    setProgress(q.id, verdict.ok ? 'solved' : 'tried');
+    renderQuizList();
+    $('quiz-result').innerHTML = `<div class="verdict ${verdict.ok ? 'ok' : 'no'}">${verdict.ok ? 'Correct' : error ? 'Your query didn’t run' : 'Not yet'}</div>
+      ${verdict.problems.map((p) => `${p.kind === 'error' ? `<pre class="quiz-sql">${escapeHtml(p.message)}</pre>` : `<p>${escapeHtml(p.message)}</p>`}${p.rows ? `<p class="hint">Your row, then the answer's:</p>${
+        quizTable(expected.fields, p.rows.flat(), 6, true)}` : ''}`).join('')}
+      ${verdict.notes.map((n) => `<p class="hint">${escapeHtml(n)}</p>`).join('')}
+      ${verdict.ok ? `<p>${escapeHtml(q.note)}</p><details><summary>Compare with the model answer</summary><pre class="quiz-sql">${escapeHtml(q.answer)}</pre></details>` : ''}
+      ${yours ? `<h4>Your result</h4>${quizTable(yours.fields, yours.rows)}` : ''}
+      ${!verdict.ok ? `<details><summary>The expected result</summary>${quizTable(expected.fields, expected.rows)}</details>` : ''}`;
+    $('quiz-feedback').hidden = !QUIZ_FEEDBACK_URL || verdict.ok;
+  } catch (err) {
+    $('quiz-result').innerHTML = `<p class="hint">The check failed: ${escapeHtml(String(err && err.message ? err.message : err))}</p>`;
+  } finally {
+    quizBusy = false;
+    $('quiz-check').disabled = false;
+  }
+}
+
+async function quizFeedback() {
+  if (!QUIZ_FEEDBACK_URL || !quizLast) return;
+  $('quiz-extra').innerHTML = '<p class="hint">Asking for feedback…</p>';
+  try {
+    const r = await fetch(QUIZ_FEEDBACK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(quizLast), signal: AbortSignal.timeout(30000) });
+    const j = r.ok ? await r.json() : null;
+    $('quiz-extra').innerHTML = j && j.feedback ? `<h4>Feedback</h4><p>${escapeHtml(j.feedback).replace(/\n/g, '<br>')}</p>`
+      : `<p class="hint">No feedback came back (status ${r.status}).</p>`;
+  } catch {
+    $('quiz-extra').innerHTML = '<p class="hint">Couldn’t reach the feedback service.</p>';
+  }
+}
+
+function quizDownload() {
+  const blob = new Blob([store.get(QUIZ_ATTEMPTS) || '[]'], { type: 'application/json' });
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'focus-quiz-attempts.json' });
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
 // ---- AI tokens: how FOCUS records token charges, and where it stops (site/focus/ai-tokens.json, built by tools/extract_ai.py)
@@ -1763,6 +1989,32 @@ $('ev-filters').addEventListener('click', (e) => { const b = e.target.closest('[
 $('ev-search').addEventListener('input', () => renderEvidence());
 $('ev-list').addEventListener('click', (e) => { const b = e.target.closest('[data-obj]'); if (b) openObject(b.dataset.obj); });
 $('ai-body').addEventListener('click', onAiClick);
+$('quiz-list').addEventListener('click', (e) => { const b = e.target.closest('[data-q]'); if (b) pickQuestion(b.dataset.q); });
+$('quiz-check').addEventListener('click', quizCheck);
+$('quiz-feedback').addEventListener('click', quizFeedback);
+$('quiz-download').addEventListener('click', quizDownload);
+$('quiz-hint').addEventListener('click', () => { if (quizQ) $('quiz-extra').innerHTML = `<p><b>Hint:</b> ${escapeHtml(quizQ.hint)}</p>`; });
+$('quiz-answer').addEventListener('click', () => {
+  if (!quizQ) return;
+  setProgress(quizQ.id, 'shown');
+  renderQuizList();
+  $('quiz-extra').innerHTML = `<h4>The model answer</h4><pre class="quiz-sql">${escapeHtml(quizQ.answer)}</pre><p>${escapeHtml(quizQ.note)}</p>`;
+});
+$('quiz-reset').addEventListener('click', () => {
+  if (!quizQ) return;
+  store.set(QUIZ_SQL + quizQ.id, quizQ.start ?? QUIZ_BLANK);
+  pickQuestion(quizQ.id);
+});
+$('quiz-editor').addEventListener('input', () => { if (quizQ) store.set(QUIZ_SQL + quizQ.id, $('quiz-editor').value); });
+$('quiz-editor').addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); quizCheck(); }
+  else if (e.key === 'Tab' && !e.shiftKey) {
+    e.preventDefault();
+    const ed = $('quiz-editor'), { selectionStart: s, selectionEnd: f, value } = ed;
+    ed.value = value.slice(0, s) + '  ' + value.slice(f);
+    ed.selectionStart = ed.selectionEnd = s + 2;
+  }
+});
 $('model-dataset').addEventListener('change', () => setDataset($('model-dataset').value));
 showTab(tab);
 
