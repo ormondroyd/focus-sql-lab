@@ -135,7 +135,22 @@
     box-shadow: 0 0 0 1px var(--line); }
 
   /* Data model view */
-  #model, #evidence { padding: 14px 16px 32px; }
+  #model, #evidence, #ai { padding: 14px 16px 32px; }
+  #ai-body { max-width: 1000px; }
+  #ai .ai-intro { margin: 0 0 12px; color: var(--muted); font-size: 13px; max-width: 80ch; line-height: 1.5; }
+  #ai .detail { min-height: 0; margin-bottom: 12px; line-height: 1.5; }
+  #ai .detail h3 { margin-bottom: 6px; }
+  #ai .detail ul.how { padding-left: 18px; margin: 4px 0 8px; }
+  #ai .detail ul.how li { margin: 4px 0; }
+  #ai .cols { margin: 4px 0; }
+  #ai .cols b { font-weight: 600; margin-right: 4px; }
+  #ai .table-wrap { overflow-x: auto; }
+  #ai .gaps { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+  #ai .gap { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+  #ai .gap h4 { margin-top: 2px; color: var(--fg); text-transform: none; letter-spacing: 0; font-size: 13.5px; }
+  #ai .gap p { margin: 4px 0; }
+  #ai .gap ul { list-style: none; padding: 0; margin: 6px 0 0; font-size: 12.5px; }
+  #ai .gap li { margin: 3px 0; }
   .about-link { border: 0; background: none; color: var(--accent); text-decoration: underline; cursor: pointer; font-size: 13px; padding: 4px 6px; }
   #about { max-width: 640px; width: calc(100% - 32px); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px 14px;
     background: var(--panel); color: var(--fg); font-size: 14px; line-height: 1.55; }
@@ -277,6 +292,7 @@
     <button data-tab="model" aria-pressed="true">Data model</button>
     <button data-tab="query" aria-pressed="false">Query</button>
     <button data-tab="evidence" aria-pressed="false">Evidence</button>
+    <button data-tab="ai" aria-pressed="false">AI tokens</button>
   </nav>
   <button id="about-open" class="about-link" type="button">What is this?</button>
   <span id="status">Loading DuckDB…</span>
@@ -413,6 +429,7 @@
   </div>
   <div id="ev-list"><p class="hint">Loading…</p></div>
 </section>
+<section id="ai" hidden><div id="ai-body"><p class="hint">Loading…</p></div></section>
 <footer>
   Data: <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS-Sample-Data">FOCUS-Sample-Data</a> (the accepted 1.0 sample, and samples proposed in its open pull requests #5 and #7) and the worked examples and example queries in the
   <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec">FOCUS specification</a>, licensed under
@@ -627,6 +644,7 @@ async function init() {
   setStatus(`Ready · ${total.toLocaleString()} rows in ${names.length} tables`, true);
   if (!saved) run();
   if (tab === 'model') renderModel();
+  if (tab === 'ai') renderAi();
   if (tab === 'evidence') renderEvidence(); // again, now topic names are known
 }
 
@@ -1016,8 +1034,98 @@ function showTab(t) {
   document.querySelector('.layout').hidden = t !== 'query';
   $('model').hidden = t !== 'model';
   $('evidence').hidden = t !== 'evidence';
+  $('ai').hidden = t !== 'ai';
   if (t === 'model') renderModel();
   if (t === 'evidence') renderEvidence();
+  if (t === 'ai') renderAi();
+}
+
+// ---- AI tokens: how FOCUS records token charges, and where it stops (site/focus/ai-tokens.json, built by tools/extract_ai.py)
+let aiP = null;
+const loadAi = () => (aiP ??= fetch('focus/ai-tokens.json').then((r) => (r.ok ? r.json() : null)).catch(() => null));
+
+async function renderAi() {
+  if (!model || !examples.length) return; // init() calls this again once the model is loaded
+  const [ai, sums, ev] = await Promise.all([loadAi(), loadSummaries(), loadEvidence()]);
+  const box = $('ai-body');
+  if (!ai) { box.innerHTML = '<p class="hint">Could not load the AI tokens view.</p>'; return; }
+  const said = (sums && sums.summaries) || {};
+  const state = (t) => {
+    const label = t.state === 'closed' && t.reason ? `closed as ${t.reason.replace(/_/g, ' ')}` : t.state;
+    return `<span class="state ${t.state}" title="Status on GitHub, checked ${ai.checked}">${escapeHtml(label)}${t.closed ? ` ${t.closed}` : ''}</span>`;
+  };
+  const threadLine = (n) => { const t = ai.threads[n];
+    return t ? `<li>${state(t)}<a href="${t.url}" target="_blank" rel="noopener">#${n}</a> ${escapeHtml(t.title)} <span class="hint">· opened ${t.opened}</span></li>` : ''; };
+  const col = (id) => `<button class="linkish" data-obj="column:CostAndUsage.${id}">${id}</button>`;
+  const quote = (q) => `<blockquote class="spec-def">${q.thread ? escapeHtml(q.text) : reqText(q.text)}<cite>${q.thread
+    ? `From <a href="${GH_ISSUE}${q.source.slice(1)}" target="_blank" rel="noopener">${q.source}</a>${q.context ? `: ${escapeHtml(q.context)}` : ''}`
+    : `From the specification: ${specLink(`specification/${q.source}`, q.source.split('/').pop())}`}</cite></blockquote>`;
+  const p = ai.properties, f = ai.feature;
+  const aiThreads = new Set([...ai.decided, ...ai.gaps.flatMap((g) => g.threads)]);
+  const evItems = ((ev && ev.items) || []).filter((i) => (i.threads || []).some((n) => aiThreads.has(n)));
+
+  box.innerHTML = `
+    <p class="ai-intro">How FOCUS 1.5 records charges for using AI models, which are often billed in tokens, and where the
+      specification stops today. Quoted text is the specification's, as published. The rest is the lab's reading, linked to
+      the GitHub threads behind it. Thread statuses are GitHub's, checked ${escapeHtml(ai.checked)}.</p>
+
+    <div class="detail"><h3>How a token charge is recorded</h3>
+      <ul class="how">${ai.how.map((t) => `<li>${escapeHtml(t)}</li>`).join('')}</ul>
+      ${quote({ text: f.description, source: f.source })}
+      <p class="cols"><b>Columns the AI Model Billing feature depends on:</b> ${f.dependent.map(col).join(', ')}</p>
+      <p class="cols"><b>Supporting columns:</b> ${f.supporting.map(col).join(', ')}</p>
+      <p class="cols"><b>Who made the request:</b> ${ai.requester.map(col).join(', ')}</p></div>
+
+    <div class="detail"><h3>The model and token properties</h3>
+      <p class="hint" style="margin:0 0 6px">The FOCUS-defined keys inside ${col('SkuPriceDetails')} that describe AI models and
+        tokens, from the specification's table. That column's panel lists all its requirements, with their history.</p>
+      <div class="table-wrap"><table><thead><tr><th>Key</th><th>Description</th><th>Type</th><th>Values</th></tr></thead><tbody>
+        ${p.rows.map((r) => `<tr><td><code>${escapeHtml(r.key)}</code></td><td>${escapeHtml(r.description)}</td><td>${escapeHtml(r.type)}</td><td>${escapeHtml(r.values)}</td></tr>`).join('')}
+      </tbody></table></div>
+      <details><summary>The specification's note on TokenDirection and TokenCacheAction</summary>
+        ${quote({ text: p.note, source: p.source })}</details></div>
+
+    <div class="detail"><h3>Worked examples and queries</h3>
+      <p class="cols"><b>Examples in the appendix:</b> ${ai.examples.map(objButton).join(', ')}</p>
+      <p class="cols"><b>The specification's token queries</b> (each opens in the Query tab and runs):</p>
+      <ul class="how">${ai.queries.map((id) => { const e = examples.find((x) => x.id === id);
+        return e ? `<li><button class="linkish" data-query="${id}">${escapeHtml(e.title)}</button> <span class="hint">· ${escapeHtml(e.feature)} · ${
+          plural(e.results.examples?.rows || 0, 'row')} on the worked examples</span></li>` : ''; }).join('')}</ul></div>
+
+    <div class="detail"><h3>Where it stops</h3>
+      <div class="gaps">${ai.gaps.map((g) => `<div class="gap"><h4>${escapeHtml(g.title)}</h4><p>${linkRefs(g.text)}</p>
+        ${g.quotes.map(quote).join('')}${g.threads.length ? `<ul>${g.threads.map(threadLine).join('')}</ul>` : ''}</div>`).join('')}</div></div>
+
+    <div class="detail"><h3>How it got here</h3>
+      <p class="hint" style="margin:0">The feature requests and pull requests behind today's model, in the order they were opened.</p>
+      <ul class="history">${ai.decided.map((n) => { const t = ai.threads[n];
+        return `<li class="pr"><div class="pr-head">${state(t)}<a href="${t.url}" target="_blank" rel="noopener">#${n}</a> ${escapeHtml(t.title)}</div>
+          <div class="pr-meta">${t.kind === 'pr' ? 'Pull request' : 'Issue'} opened ${t.opened} · ${plural(t.comments, 'comment')}</div>
+          ${said[n] ? `<p class="conv"><span class="conv-label">The conversation</span>${linkRefs(said[n])}</p>` : ''}</li>`; }).join('')}</ul></div>
+
+    ${evItems.length ? `<div class="detail"><h3>What practitioners asked for</h3>
+      <p class="hint" style="margin:0 0 4px">From the Evidence tab: what these threads say about users' needs.</p>
+      ${evItems.map((i) => `<div class="ev-mini"><span class="tag">${EV_KINDS[i.category]}</span>${linkRefs(i.statement)}${
+        i.quote ? ` <em>“${escapeHtml(i.quote)}”</em>` : ''} <span class="hint">${escapeHtml(i.date || '')} · ${threadLinks(i.threads || [])}</span></div>`).join('')}</div>` : ''}`;
+}
+
+function onAiClick(e) {
+  const q = e.target.closest('[data-query]');
+  if (q) { showTab('query'); pickExample(q.dataset.query, true); window.scrollTo({ top: 0 }); return; }
+  const o = e.target.closest('[data-obj]');
+  if (o) return openObject(o.dataset.obj);
+  // Links inside quoted specification text
+  const c = e.target.closest('[data-col]');
+  if (c) return openObject(`column:${c.dataset.ds}.${c.dataset.col}`);
+  const t = e.target.closest('[data-table]');
+  if (t) return openObject(`dataset:${t.dataset.table}`);
+  const topic = e.target.closest('[data-topic]');
+  if (topic) return openObject(`topic:${topic.dataset.topic}`);
+  const feature = e.target.closest('[data-feature]');
+  if (feature) return openFeature(feature.dataset.feature);
+  const a = e.target.closest('[data-attr]'), cond = e.target.closest('[data-cond]');
+  if (a || cond) { showTab('model'); select(a ? { type: 'attr', id: a.dataset.attr } : { type: 'cond', id: cond.dataset.cond }, true);
+    $('model-detail').scrollIntoView({ block: 'start' }); }
 }
 
 // ---- Evidence: how the working group found and weighed user needs (site/evidence.json) --------------------
@@ -1654,6 +1762,7 @@ $('about').addEventListener('click', (e) => { if (e.target === $('about')) $('ab
 $('ev-filters').addEventListener('click', (e) => { const b = e.target.closest('[data-kind]'); if (b) { evKind = b.dataset.kind; renderEvidence(); } });
 $('ev-search').addEventListener('input', () => renderEvidence());
 $('ev-list').addEventListener('click', (e) => { const b = e.target.closest('[data-obj]'); if (b) openObject(b.dataset.obj); });
+$('ai-body').addEventListener('click', onAiClick);
 $('model-dataset').addEventListener('change', () => setDataset($('model-dataset').value));
 showTab(tab);
 

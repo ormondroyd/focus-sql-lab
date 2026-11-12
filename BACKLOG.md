@@ -4,10 +4,10 @@ The next things to build.
 
 ## 1. Refresh automatically
 
-Today the site refreshes only when someone reruns the four build scripts and pushes.
+Today the site refreshes only when someone reruns the five build scripts and pushes.
 
 - A scheduled job (for example a weekly GitHub Action) updates the FOCUS_Spec clones, reruns `build_data.py`,
-  `extract_sql.py`, `extract_model.py` and `extract_history.py` against the latest `working_draft` commit, and pushes
+  `extract_sql.py`, `extract_model.py`, `extract_history.py` and `extract_ai.py` against the latest `working_draft` commit, and pushes
   if anything changed. Coolify redeploys on push.
 - Summaries are regenerated on change, not wholesale: record a hash of each spec page and each thread the summaries were
   written from, and write new summaries only for pages and threads that are new or have changed
@@ -16,18 +16,7 @@ Today the site refreshes only when someone reruns the four build scripts and pus
 
 Done when a new pull request or a changed spec page appears on the site, summarised, without anyone running a script.
 
-## 2. AI tokens view
-
-One place that shows how FOCUS models AI token usage today, and where it stops.
-
-- The columns and `SkuPriceDetails` keys involved (model, token direction, cache action), with definitions.
-- The spec's AI appendix examples, the worked-example rows and the token queries.
-- The threads that shaped them (for example #2018, #2099, #2442, #2606).
-- Gaps, stated plainly: token properties live inside a JSON column rather than as columns; no column measures energy, so
-  "tokens per watt" has nowhere to go; "cost per intelligence" needs outcome data that billing doesn't carry; public
-  token data is limited to the spec's own examples.
-
-## 3. Licensing mapping experiment
+## 2. Licensing mapping experiment
 
 Generate synthetic software-licensing data (entitlements, subscription and support terms, part numbers, processor- or
 user-based metrics, sub-capacity usage), express it in FOCUS (for example part number as `SkuId`, licence metric as

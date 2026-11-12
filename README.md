@@ -20,6 +20,10 @@ queries in the browser, so the server only serves static files: no database, no 
   11 join-key columns also have a note on the debate behind them.
 - **Data sources:** switch between the accepted 1.0 sample, two samples proposed in open FOCUS-Sample-Data pull
   requests (1.3 and 1.4), and the specification's 1.5 worked examples. The Data model shows which joins work in each.
+- **AI tokens:** how FOCUS 1.5 records charges for using AI models: the columns, and the model and token properties
+  inside SkuPriceDetails, quoted from the specification; the worked examples and the four token queries; the threads
+  that shaped it, with their conversations; and where the specification stops today, with the open requests behind
+  each gap and their status on GitHub.
 
 ## How the spec's queries run unchanged
 
@@ -53,6 +57,9 @@ Everything the lab made is labelled on the page:
   changed more than 15 files "spec-wide") are the lab's; its summaries are excerpts the lab cut, not text it wrote.
 - **Debate notes:** [site/column-notes.json](site/column-notes.json) holds notes on the 11 join-key columns, written
   by Claude (an AI model) from the GitHub threads each note lists. They are the lab's reading of those discussions.
+- **AI tokens view:** the explanations in the AI tokens tab, and which threads it lists under each gap, are the lab's.
+  They live in [tools/extract_ai.py](tools/extract_ai.py). Specification text in the view is quoted as published, and
+  the script stops if a quoted sentence is no longer in the specification.
 - **Evidence:** [site/evidence.json](site/evidence.json), shown in the Evidence tab: pain points, who asked, how the working
   group found out, use cases and trade-offs, curated by Claude from the FOCUS_Spec issues and conversation summaries.
   Quotes are verbatim.
@@ -99,6 +106,7 @@ site/
     spec-queries.json         the specification's example queries, verbatim, with suggested inputs and test results
     model.json                datasets, columns and relationships from the specification
     history.json              the pull requests and issues behind each definition, with excerpts of their descriptions
+    ai-tokens.json            the AI tokens view: specification extracts, thread status and the lab's notes on the gaps
 ```
 
 ## Data sources
@@ -130,6 +138,7 @@ python -I tools/build_data.py <FOCUS_Spec clone> <raw data folder> site/focus/da
 python -I tools/extract_sql.py <FOCUS_Spec clone> site
 python -I tools/extract_model.py <FOCUS_Spec clone> site
 GH_TOKEN=<GitHub token> python -I tools/extract_history.py <FOCUS_Spec clone with full history> e9cdcc7 site
+GH_TOKEN=<GitHub token> python -I tools/extract_ai.py <FOCUS_Spec clone> site
 ```
 
 `extract_history.py` needs a clone with full history (`git clone --bare`), and a GitHub token to read pull requests and
