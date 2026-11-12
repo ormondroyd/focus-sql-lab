@@ -37,4 +37,3 @@ licensing and where it strains. Licensing is a scope area FOCUS lists as under d
 ## Open questions
 
 - Keep the 1.0 sample mapped to FOCUS 1.5 with its 1.5-only columns empty, or drop those columns, or show it as plain 1.0?
-- Choose a licence for the original files (everything outside `site/focus/`).

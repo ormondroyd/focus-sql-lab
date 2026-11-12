@@ -67,6 +67,12 @@ Everything the lab made is labelled on the page:
 [findings/spec-inconsistencies.md](findings/spec-inconsistencies.md): inconsistencies in the specification's examples
 found while building the lab, stress-tested, with proposed fixes.
 
+## Licence
+
+Code is under the [Apache License 2.0](LICENSE); the lab's writing and curated content are under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); everything in `site/focus/` is derived from FOCUS and is under
+CC BY 4.0. [NOTICE.md](NOTICE.md) lists which files are which.
+
 ## What's next
 
 See [BACKLOG.md](BACKLOG.md) for the next things to build.

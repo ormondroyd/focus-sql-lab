@@ -23,7 +23,15 @@ Everything outside `site/focus/`:
 - `tools/*.py`: the build scripts
 - `Dockerfile`, `nginx.conf`, `README.md`, `NOTICE.md`
 
-No licence has been chosen yet for this original material.
+Licences for this original material:
+
+- **Code** (`site/index.html`, `site/lab-setup.sql`, `tools/`, `Dockerfile`, `nginx.conf`): the
+  [Apache License 2.0](LICENSE).
+- **Writing and curated content** (`site/object-summaries.json`, `site/thread-summaries.json`,
+  `site/column-notes.json`, `site/evidence.json`, `tools/practice.json`, `findings/`, `README.md`, `BACKLOG.md`,
+  `NOTICE.md`): [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/).
+  Short quotations from FOCUS_Spec issues inside `site/evidence.json` remain their authors' and are quoted with
+  links to their source.
 
 ## Material derived from FOCUS: `site/focus/`
 
