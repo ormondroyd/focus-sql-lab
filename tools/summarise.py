@@ -24,29 +24,17 @@ import os
 import pathlib
 import re
 import sys
-import urllib.request
 
 SPEC, SITE = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
 FLAGS = sys.argv[3:]
 LIMIT = int(FLAGS[FLAGS.index("--limit") + 1]) if "--limit" in FLAGS else 50
 BASIS = pathlib.Path(__file__).parent / "summary-basis.json"
 OBJ, THR = SITE / "object-summaries.json", SITE / "thread-summaries.json"
-REPO = "FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec"
-# Per model: US$ per million input and output tokens (list price), and the request settings. Sonnet 5.5 turns thinking
-# off with "between_tools", which no other model accepts. Haiku 5.5 always thinks, so it runs at low effort with room in
-# max_tokens for the thinking (billed as output).
-MODELS = {
-    "claude-sonnet-5-5": {"price": (2.0, 10.0), "thinking": {"type": "between_tools"}, "effort": "medium", "max_tokens": 1024},
-    "claude-haiku-5-5": {"price": (0.10, 0.50), "thinking": {"type": "adaptive"}, "effort": "low", "max_tokens": 8000},
-}
-MODEL = FLAGS[FLAGS.index("--model") + 1] if "--model" in FLAGS else "claude-sonnet-5-5"
-if MODEL not in MODELS:
-    sys.exit(f"--model must be one of {', '.join(MODELS)}")
-PRICE_IN, PRICE_OUT = MODELS[MODEL]["price"]
-if "--effort" in FLAGS:  # how hard Haiku thinks; on Sonnet (thinking off) it only shapes the reply
-    MODELS[MODEL]["effort"] = FLAGS[FLAGS.index("--effort") + 1]
-    if MODELS[MODEL]["effort"] not in ("low", "medium", "high"):
-        sys.exit("--effort must be low, medium or high")
+sys.path.insert(0, str(pathlib.Path(__file__).parent))  # python -I leaves the script's folder off the path
+from common import cut, gh, gh_all, model_from, problems  # noqa: E402
+
+MODEL, SETTINGS = model_from(FLAGS)
+PRICE_IN, PRICE_OUT = SETTINGS["price"]
 ONLY = [k.strip() for k in (FLAGS[FLAGS.index("--only") + 1] if "--only" in FLAGS else "").split(",") if k.strip()]
 TODAY = datetime.date.today().isoformat()
 
@@ -175,61 +163,6 @@ Rules:
 
 Reply with the summary text only."""
 
-GENDERED = re.compile(r"\b(he|she|him|her|his|hers|himself|herself)\b", re.I)
-norm = lambda s: re.sub(r"\s+", " ", s.replace("’", "'").replace("“", '"').replace("”", '"')).strip().lower()
-
-
-MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December"
-# The people in a thread, from the headers thread_text() writes.
-PEOPLE = re.compile(r"^(?:Comment|Review|Inline comment) by ([A-Za-z0-9][A-Za-z0-9-]*)|^(?:Pull request|Issue) opened by ([A-Za-z0-9][A-Za-z0-9-]*)", re.M)
-
-
-def problems(text, limit, source, thread=False):
-    found = []
-    if thread:
-        for user in {a or b for a, b in PEOPLE.findall(source)}:
-            for m in re.finditer(rf"(?<![A-Za-z0-9-]){re.escape(user)}(?![A-Za-z0-9-])", text, re.I):
-                if m.group(0) != user:
-                    found.append(f"it writes the username {user} as {m.group(0)}; write it exactly as shown")
-                    break
-        if re.search(rf"\b\d{{4}}-\d{{2}}-\d{{2}}\b|\b(?:{MONTHS}) \d{{1,2}}(?:st|nd|rd|th)?\b", text):
-            found.append("write dates as 29 October 2026, or as a month and year")
-    if not text:
-        found.append("the reply was empty")
-    if len(text.split()) > limit:
-        found.append(f"it has {len(text.split())} words; the limit is {limit}")
-    if GENDERED.search(text):
-        found.append("it uses he or she; use the username or they/them")
-    if re.search(r"https?://|www\.", text):
-        found.append("it contains a URL")
-    if re.search(r"\*\*|`|^\s*[-*•] |\[[^\]]+\]\(|^#+ ", text, re.M):
-        found.append("it contains Markdown or a list")
-    for q in re.findall(r"[\"“]([^\"”]{12,})[\"”]", text):
-        if norm(q) not in norm(source):
-            found.append(f"the quote \"{q[:60]}\" isn't in the source word for word")
-    return found
-
-
-def gh(path):
-    req = urllib.request.Request(f"https://api.github.com/repos/{REPO}/{path}",
-                                 headers={"Authorization": f"Bearer {os.environ['GH_TOKEN']}", "Accept": "application/vnd.github+json"})
-    with urllib.request.urlopen(req) as r:
-        return json.load(r)
-
-
-def gh_all(path):
-    out, page = [], 1
-    while True:
-        batch = gh(f"{path}?per_page=100&page={page}")
-        out += batch
-        if len(batch) < 100:
-            return out
-        page += 1
-
-
-def cut(s, n=3000):
-    s = (s or "").strip()
-    return s if len(s) <= n else s[:n] + " […cut]"
 
 
 def thread_text(n):
@@ -272,7 +205,7 @@ def write_one(system, content, limit, thread=False):
     """One summary, checked; one retry with the problems named. Returns (text, problems)."""
     global spent_in, spent_out
     messages = [{"role": "user", "content": f"{content}\n\nLength: at most {limit} words."}]
-    m = MODELS[MODEL]
+    m = SETTINGS
     for attempt in (1, 2):
         # The retry sends back only the text of the first reply, not its thinking, which the API allows.
         r = client.messages.create(model=MODEL, max_tokens=m["max_tokens"], system=system, messages=messages,

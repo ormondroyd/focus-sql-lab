@@ -1,0 +1,43 @@
+# Every morning, rebuild site/recent.json: the FOCUS_Spec issues and pull requests people discussed in the last two
+# weeks, with AI summaries of what is new (Claude Haiku 5.5 at high effort; it calls the Claude API, which costs
+# money). It can also be started by hand: Actions > Daily discussions > Run workflow.
+name: Daily discussions
+
+on:
+  schedule:
+    - cron: "30 19 * * *"  # 19:30 UTC, 05:30 in Brisbane
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: refresh  # shared with "Refresh from FOCUS_Spec", so the two never push at the same time
+
+jobs:
+  recent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install anthropic
+
+      - name: Summarise the last two weeks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -I tools/recent.py site --write --model claude-haiku-5-5 --effort high
+
+      - name: Commit and push, if anything changed
+        run: |
+          git add site/recent.json
+          if git diff --cached --quiet; then echo "Nothing changed."; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Recent discussion, $(date -u +%Y-%m-%d)"
+          git pull --rebase
+          git push

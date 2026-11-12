@@ -19,6 +19,11 @@ Everything outside `site/focus/`:
 - `site/thread-summaries.json`: summaries of the conversation in the FOCUS_Spec issues and pull requests shown in the
   Data model's history that have three or more comments or reviews, written by an AI model from each thread.
   They paraphrase those discussions and name participants by their GitHub usernames.
+- `site/recent.json`: the FOCUS_Spec issues and pull requests people opened, commented on or reviewed in the last two
+  weeks, rebuilt daily from GitHub: titles, links, authors, dates, labels, status changes posted by the repository's
+  automation, short plain-text excerpts of each comment and review, and a summary of each thread's fortnight and a
+  one-line gist of each comment and review, written by an AI model. They paraphrase those discussions and name
+  participants by their GitHub usernames.
 - `tools/practice.json`: the practice queries, which are built into `site/practice-queries.json`
 - `tools/*.py`: the build scripts
 - `Dockerfile`, `nginx.conf`, `README.md`, `NOTICE.md`

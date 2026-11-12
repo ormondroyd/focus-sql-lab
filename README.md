@@ -27,6 +27,12 @@ queries in the browser, so the server only serves static files: no database, no 
 - **Quiz:** 21 SQL questions on the FOCUS data, at two levels. "Write it" asks for a query that answers a common cost
   question; "Change it" gives a query and asks for a specific change. A check runs your query and the model answer in
   the browser and compares their results. Hints and model answers are there when you want them.
+- **Recent** (also at `#recent`): the FOCUS_Spec issues and pull requests people opened, commented on or reviewed in
+  the last two weeks, newest activity first, rebuilt every morning. Each card has a summary of the fortnight, the
+  comments and reviews as a reply tree with a one-line gist of each and a link to it on GitHub, the status changes the
+  repository's automation posted, and links to the parts of the data model the thread touches (from a pull request's
+  changed files, and the column and dataset names in the text). Each of those parts lists its recent threads in turn.
+  Anything older links out to the thread on GitHub.
 
 ## How the spec's queries run unchanged
 
@@ -106,6 +112,7 @@ site/
   object-summaries.json       plain-language summaries of each dataset, column and attribute page
   practice-queries.json       the practice queries, with test results (built from tools/practice.json)
   quiz.json                   the quiz, with each model answer's tested row count (built from tools/quiz.json)
+  recent.json                 the last two weeks of FOCUS_Spec discussion, rebuilt daily by tools/recent.py
   focus/                      FOCUS-derived, rebuilt by the tools; not edited by hand
     data/*.parquet            sample data and the specification's worked examples
     data/manifest.json        table list, row counts, column types and the columns the lab added
@@ -214,6 +221,22 @@ they/them pronouns, no URLs or Markdown, quotes found word for word in the sourc
 The checks can't tell whether a summary is accurate. The workflow does this only when its "summaries" box is ticked,
 with the `ANTHROPIC_API_KEY` repository secret, up to the "limit" given, and offers the same model and "only" choices.
 The debate notes and evidence are curated and aren't refreshed.
+
+### Recent discussion, daily
+
+[tools/recent.py](tools/recent.py) builds `site/recent.json` from GitHub: every FOCUS_Spec issue and pull request that
+someone opened, commented on or reviewed in the last 14 days. For each thread it makes one call to the model (Claude
+Haiku 5.5 at high effort by default, with JSON output) for a summary of the fortnight and a gist of each comment and
+review, checked like the other summaries; parts that fail twice fall back to a plain excerpt. A thread is summarised
+again only when it gains comments or reviews from people. The workflow
+[.github/workflows/daily.yml](.github/workflows/daily.yml) runs it every day at 19:30 UTC (05:30 in Brisbane) and
+pushes the result; it can also be started by hand. It shares a queue with the refresh, so the two never push at once.
+
+```bash
+GH_TOKEN=... python -I tools/recent.py site                                   # dry run: what's in the window, what's due
+GH_TOKEN=... ANTHROPIC_API_KEY=... python -I tools/recent.py site --write     # summarise and write site/recent.json
+GH_TOKEN=... python -I tools/recent.py site --write --no-ai                   # write it without calling the API
+```
 
 ## Run locally
 

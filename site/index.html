@@ -139,7 +139,7 @@
     box-shadow: 0 0 0 1px var(--line); }
 
   /* Data model view */
-  #model, #evidence, #ai { padding: 14px 16px 32px; }
+  #model, #evidence, #ai, #recent { padding: 14px 16px 32px; }
   #ai-body { max-width: 1000px; }
   #ai .ai-intro { margin: 0 0 12px; color: var(--muted); font-size: 13px; max-width: 80ch; line-height: 1.5; }
   #ai .detail { min-height: 0; margin-bottom: 12px; line-height: 1.5; }
@@ -209,6 +209,37 @@
   .ev-card .linkish, .detail .ev-mini .linkish { border: 0; background: none; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font-size: 12px; }
   .detail .ev-mini { border-top: 1px solid var(--line); padding: 6px 0; font-size: 12.5px; }
   .detail .ev-mini .tag { margin-right: 6px; }
+  /* Recent: one card per thread, its last two weeks as a reply tree */
+  #recent .rc-bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 10px; }
+  #recent .rc-bar p { margin: 0 0 4px; color: var(--muted); font-size: 13px; max-width: 90ch; flex-basis: 100%; }
+  #recent .rc-filters { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+  #recent .rc-filters button { border: 1px solid var(--line); background: transparent; color: var(--fg); border-radius: 14px; padding: 3px 10px; font-size: 12.5px; }
+  #recent .rc-filters button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  #recent input[type=search] { max-width: 280px; }
+  #recent-list { display: flex; flex-direction: column; gap: 10px; max-width: 980px; }
+  .rc { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 13px; scroll-margin-top: 12px; }
+  .rc.flash { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .rc-top { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+  .rc .tag { margin-left: 0; }
+  .rc .tag.st-merged, .rc .tag.st-completed { color: var(--ok); border-color: var(--ok); }
+  .rc-title { font-weight: 600; font-size: 14px; color: var(--fg); text-decoration: none; overflow-wrap: anywhere; }
+  .rc-title:hover { text-decoration: underline; }
+  .rc-meta { font-size: 12px; color: var(--muted); margin-top: 3px; overflow-wrap: anywhere; }
+  .rc-sum { margin: 8px 0 6px; line-height: 1.55; max-width: 80ch; }
+  .rc-links { font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .rc-links a, .rc-foot a, .rc .ev-h a, .rc .ev-t a { color: var(--accent); }
+  .rc .linkish { border: 0; background: none; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font-size: 12px; }
+  .rc details { margin-top: 6px; }
+  .rc summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
+  .tree, .tree ol { list-style: none; margin: 4px 0 0; padding: 0; }
+  .tree ol { margin-left: 6px; padding-left: 12px; border-left: 2px solid var(--line); }
+  .tree li { margin: 7px 0; }
+  .tree .ev-h { font-size: 12px; color: var(--muted); }
+  .tree .ev-h b { color: var(--fg); font-weight: 600; }
+  .tree .ev-t { margin-top: 1px; line-height: 1.5; max-width: 80ch; }
+  .tree .ev-t.excerpt { color: var(--muted); }
+  .tree li.status .ev-h { font-size: 11.5px; }
+  .rc-foot { font-size: 12px; color: var(--muted); margin-top: 8px; }
   .model-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
   .model-head p { margin: 0; color: var(--muted); font-size: 13px; max-width: 78ch; }
   .model-head label { font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
@@ -326,6 +357,7 @@
     <button data-tab="quiz" aria-pressed="false">Quiz</button>
     <button data-tab="evidence" aria-pressed="false">Evidence</button>
     <button data-tab="ai" aria-pressed="false">AI tokens</button>
+    <button data-tab="recent" aria-pressed="false">Recent</button>
   </nav>
   <button id="about-open" class="about-link" type="button">What is this?</button>
   <span class="header-end">
@@ -466,6 +498,14 @@
   <div id="ev-list"><p class="hint">Loading…</p></div>
 </section>
 <section id="ai" hidden><div id="ai-body"><p class="hint">Loading…</p></div></section>
+<section id="recent" hidden>
+  <div class="rc-bar">
+    <p id="recent-about">What the FOCUS working group discussed on GitHub in the last two weeks.</p>
+    <div class="rc-filters" id="recent-filters" role="group" aria-label="Kind of thread"></div>
+    <input id="recent-search" type="search" placeholder="Filter by title, person or column" aria-label="Filter the threads">
+  </div>
+  <div id="recent-list"><p class="hint">Loading…</p></div>
+</section>
 <section id="quiz" hidden>
   <div class="quiz-wrap">
     <nav class="quiz-list" id="quiz-list" aria-label="Quiz questions"><p class="hint">Loading…</p></nav>
@@ -707,6 +747,7 @@ async function init() {
   if (tab === 'ai') renderAi();
   if (tab === 'quiz') renderQuiz();
   if (tab === 'evidence') renderEvidence(); // again, now topic names are known
+  if (tab === 'recent') renderRecent();
 }
 
 async function setDataset(key, why = '') {
@@ -1069,7 +1110,7 @@ const AREA = { CostAndUsage: 'cau', SkuPrice: 'sku', InvoiceDetail: 'inv', Contr
 const SHORT = { 'cau-sku': 'SKU Price ID', 'cau-cc': 'Commitment ID', 'cau-inv': 'Invoice ID',
   'cau-bp': 'Billing period', 'inv-bp': 'Billing period', 'sku-cc': 'Contract ID',
   'inv-pay': 'Payment record', 'inv-ref': 'Adjusted invoice' };
-let tab = 'model'; // the page always opens on the Data model
+let tab = location.hash === '#recent' ? 'recent' : 'model'; // the page opens on the Data model, or on Recent at #recent
 let modelBuilt = false, selection = null, detailToken = 0, detailSql = {};
 
 const dsById = (id) => model.datasets.find((d) => d.id === id);
@@ -1097,10 +1138,14 @@ function showTab(t) {
   $('evidence').hidden = t !== 'evidence';
   $('ai').hidden = t !== 'ai';
   $('quiz').hidden = t !== 'quiz';
+  $('recent').hidden = t !== 'recent';
+  // Only the Recent tab has an address of its own (#recent), so it can be bookmarked.
+  if ((location.hash === '#recent') !== (t === 'recent')) history.replaceState(null, '', t === 'recent' ? '#recent' : location.pathname + location.search);
   if (t === 'model') renderModel();
   if (t === 'evidence') renderEvidence();
   if (t === 'ai') renderAi();
   if (t === 'quiz') renderQuiz();
+  if (t === 'recent') renderRecent();
 }
 
 // ---- Quiz: write or change a query, checked by comparing its result with the model answer's (site/quiz.json) ----------
@@ -1391,6 +1436,82 @@ async function renderEvidence() {
     </div>`).join('') || '<p class="hint">Nothing matches.</p>';
 }
 
+// ---- Recent: what the working group discussed on GitHub in the last two weeks (site/recent.json, rebuilt daily) ------
+let recentP = null, recentKind = 'all';
+const loadRecent = () => (recentP ??= fetch('recent.json').then((r) => (r.ok ? r.json() : null)).catch(() => null));
+const shortDate = (iso) => (iso ? new Date(iso.length === 10 ? iso + 'T12:00:00Z' : iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '');
+const RC_KINDS = [['all', 'All'], ['pr', 'Pull requests'], ['issue', 'Issues'], ['model', 'Linked to the model']];
+const RC_VERB = { approved: 'approved', 'changes requested': 'requested changes', commented: 'reviewed', dismissed: 'review dismissed' };
+
+async function renderRecent() {
+  const d = await loadRecent();
+  if (!d) { $('recent-list').innerHTML = '<p class="hint">Could not load the recent discussion.</p>'; return; }
+  const updated = new Date(d.generated_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+  $('recent-about').innerHTML = `${escapeHtml(d.about)} Updated <time datetime="${escapeHtml(d.generated_at)}">${
+    escapeHtml(updated)}</time>, covering activity since ${shortDate(d.since)}. Older discussion is on GitHub: each card links to its thread.`;
+  const counts = { all: d.threads.length, pr: 0, issue: 0, model: 0 };
+  d.threads.forEach((t) => { counts[t.kind]++; if (t.objects.length) counts.model++; });
+  $('recent-filters').innerHTML = RC_KINDS.map(([k, label]) =>
+    `<button data-rkind="${k}" aria-pressed="${k === recentKind}">${label} · ${counts[k]}</button>`).join('');
+  const q = $('recent-search').value.trim().toLowerCase();
+  const inWindow = new Set(d.threads.map((t) => t.number));
+  const shown = d.threads.filter((t) => (recentKind === 'all' || (recentKind === 'model' ? t.objects.length : t.kind === recentKind))
+    && (!q || [`#${t.number}`, t.title, t.summary || '', t.author, ...t.labels, ...t.objects.map(objLabel),
+      ...t.events.map((e) => e.author || '')].join(' ').toLowerCase().includes(q)));
+  $('recent-list').innerHTML = shown.map((t) => recentCard(t, inWindow, d.since)).join('') || '<p class="hint">Nothing matches.</p>';
+}
+
+function recentEvent(t, e) {
+  const link = `<a href="${escapeHtml(e.url)}" target="_blank" rel="noopener" title="Open on GitHub">${shortDate(e.at)} ↗</a>`;
+  if (e.kind === 'status') return `<div class="ev-h">${escapeHtml(e.lines.join(' · '))} · ${link}</div>`;
+  const verb = e.kind === 'opened' ? `opened the ${t.kind === 'pr' ? 'pull request' : 'issue'}`
+    : e.kind === 'review' ? RC_VERB[e.state] || e.state
+    : e.kind === 'inline' ? `commented on ${e.path.split('/').pop()}` : 'commented';
+  const gist = (t.gists || {})[e.id];
+  return `<div class="ev-h"><b>${escapeHtml(e.author)}</b> ${escapeHtml(verb)} · ${link}</div>${
+    gist ? `<div class="ev-t">${linkRefs(gist)}</div>` : e.excerpt ? `<div class="ev-t excerpt">${escapeHtml(e.excerpt)}</div>` : ''}`;
+}
+
+function recentCard(t, inWindow, since) {
+  const ids = new Set(t.events.map((e) => e.id)), kids = {};
+  t.events.forEach((e) => { if (e.parent && ids.has(e.parent)) (kids[e.parent] ||= []).push(e); });
+  const roots = t.events.filter((e) => !(e.parent && ids.has(e.parent)));
+  const node = (e) => `<li${e.kind === 'status' ? ' class="status"' : ''}>${recentEvent(t, e)}${
+    kids[e.id] ? `<ol>${kids[e.id].map(node).join('')}</ol>` : ''}</li>`;
+  const people = t.events.filter((e) => e.kind !== 'status').length, statuses = t.events.length - people;
+  const refs = t.refs.map((r) => inWindow.has(r.n)
+    ? `<button class="linkish" data-recent="${r.n}" title="${escapeHtml(r.title || '')}">#${r.n}</button>`
+    : `<a href="${GH_ISSUE}${r.n}" target="_blank" rel="noopener" title="${escapeHtml(r.title || '')}">#${r.n} ↗</a>`).join(' ');
+  return `<article class="rc" id="recent-${t.number}">
+    <div class="rc-top"><span class="tag">${t.kind === 'pr' ? 'Pull request' : 'Issue'}</span><span class="tag st-${
+      escapeHtml(t.state.replace(/ /g, '-'))}">${escapeHtml(t.state)}</span>
+      <a class="rc-title" href="${escapeHtml(t.url)}" target="_blank" rel="noopener">#${t.number} ${escapeHtml(t.title)}</a></div>
+    <div class="rc-meta">Opened by ${escapeHtml(t.author)} on ${shortDate(t.opened)} · last activity ${shortDate(t.last)}${
+      t.labels.length ? ' · ' + escapeHtml(t.labels.join(', ')) : ''}</div>
+    ${t.summary ? `<p class="rc-sum">${linkRefs(t.summary)}</p>` : '<p class="rc-sum hint">No summary yet: see the items below.</p>'}
+    ${t.objects.length || t.refs.length ? `<div class="rc-links">${t.objects.length ? `In the model: ${t.objects.map(objButton).join(', ')}` : ''}${
+      t.objects.length && t.refs.length ? '<br>' : ''}${t.refs.length ? `Mentions: ${refs}` : ''}</div>` : ''}
+    <details${people <= 3 ? ' open' : ''}><summary>${people === 1 ? '1 comment or review' : `${people} comments and reviews`}${
+      statuses ? ` · ${plural(statuses, 'status change')}` : ''}</summary><ol class="tree">${roots.map(node).join('')}</ol></details>
+    ${t.earlier ? `<div class="rc-foot">${plural(t.earlier, 'earlier comment')}, from before ${shortDate(since)}: <a href="${
+      escapeHtml(t.url)}" target="_blank" rel="noopener">read the whole thread on GitHub ↗</a></div>` : ''}
+  </article>`;
+}
+
+// Show one thread's card, from a mention or from a part of the model.
+async function jumpRecent(n) {
+  recentKind = 'all';
+  $('recent-search').value = '';
+  showTab('recent');
+  await renderRecent();
+  const card = $(`recent-${n}`);
+  if (!card) return;
+  card.scrollIntoView({ block: 'start' });
+  card.classList.add('flash');
+  setTimeout(() => card.classList.remove('flash'), 1600);
+}
+
 // Open a part of the model from anywhere: "column:CostAndUsage.InvoiceId", "dataset:InvoiceDetail", "attribute:…", "condition:…", "topic:…"
 function openObject(key) {
   const [kind, rest] = [key.slice(0, key.indexOf(':')), key.slice(key.indexOf(':') + 1)];
@@ -1405,12 +1526,15 @@ function openObject(key) {
 
 // In a dataset, column, attribute, condition or topic panel: the evidence items that concern it.
 async function fillEvidence(key, token) {
-  const ev = await loadEvidence();
+  const [ev, recent] = await Promise.all([loadEvidence(), loadRecent()]);
   const box = $('obj-evidence');
-  if (token !== detailToken || !box || !ev) return;
-  const items = ev.items.filter((i) => (i.objects || []).includes(key));
-  box.innerHTML = items.length ? `<h4>Evidence</h4>${items.map((i) => `<div class="ev-mini"><span class="tag">${EV_KINDS[i.category]}</span>${
-    linkRefs(i.statement)} <span class="hint">${escapeHtml(i.date || '')} · ${threadLinks(i.threads || [])}</span></div>`).join('')}` : '';
+  if (token !== detailToken || !box) return;
+  const items = ev ? ev.items.filter((i) => (i.objects || []).includes(key)) : [];
+  const threads = recent ? recent.threads.filter((t) => t.objects.includes(key)) : [];
+  box.innerHTML = (threads.length ? `<h4>Discussed in the last two weeks</h4>${threads.map((t) => `<div class="ev-mini"><button class="linkish" data-recent="${
+    t.number}">#${t.number}</button> ${escapeHtml(t.title)} <span class="hint">· last activity ${shortDate(t.last)}</span></div>`).join('')}` : '')
+    + (items.length ? `<h4>Evidence</h4>${items.map((i) => `<div class="ev-mini"><span class="tag">${EV_KINDS[i.category]}</span>${
+    linkRefs(i.statement)} <span class="hint">${escapeHtml(i.date || '')} · ${threadLinks(i.threads || [])}</span></div>`).join('')}` : '');
 }
 
 function colRow(ds, c, isKey) {
@@ -1550,6 +1674,8 @@ function onModelClick(e) {
 }
 
 function onDetailClick(e) {
+  const recent = e.target.closest('[data-recent]');
+  if (recent) return jumpRecent(Number(recent.dataset.recent));
   const open = e.target.closest('[data-action="open"]');
   if (open) return openInQuery(detailSql[open.dataset.key]);
   const attr = e.target.closest('[data-attr]');
@@ -1997,6 +2123,15 @@ $('ev-filters').addEventListener('click', (e) => { const b = e.target.closest('[
 $('ev-search').addEventListener('input', () => renderEvidence());
 $('ev-list').addEventListener('click', (e) => { const b = e.target.closest('[data-obj]'); if (b) openObject(b.dataset.obj); });
 $('ai-body').addEventListener('click', onAiClick);
+$('recent-filters').addEventListener('click', (e) => { const b = e.target.closest('[data-rkind]'); if (b) { recentKind = b.dataset.rkind; renderRecent(); } });
+$('recent-search').addEventListener('input', () => renderRecent());
+$('recent-list').addEventListener('click', (e) => {
+  const r = e.target.closest('[data-recent]');
+  if (r) return jumpRecent(Number(r.dataset.recent));
+  const o = e.target.closest('[data-obj]');
+  if (o) openObject(o.dataset.obj);
+});
+window.addEventListener('hashchange', () => { if (location.hash === '#recent') showTab('recent'); });
 // When the site was last rebuilt from the specification (site/focus/refresh.json, written by tools/summarise.py --stamp).
 fetch('focus/refresh.json').then((r) => (r.ok ? r.json() : null)).then((f) => {
   if (!f) return;
