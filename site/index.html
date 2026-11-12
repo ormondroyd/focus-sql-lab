@@ -136,6 +136,16 @@
 
   /* Data model view */
   #model, #evidence { padding: 14px 16px 32px; }
+  .about-link { border: 0; background: none; color: var(--accent); text-decoration: underline; cursor: pointer; font-size: 13px; padding: 4px 6px; }
+  #about { max-width: 640px; width: calc(100% - 32px); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px 14px;
+    background: var(--panel); color: var(--fg); font-size: 14px; line-height: 1.55; }
+  #about::backdrop { background: rgba(0, 0, 0, 0.45); }
+  #about h2 { margin: 0 0 8px; font-size: 18px; }
+  #about h3 { margin: 14px 0 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  #about ul { padding-left: 18px; margin: 4px 0; }
+  #about li { margin: 4px 0; }
+  #about a { color: var(--accent); }
+  #about .about-close { position: absolute; top: 8px; right: 12px; border: 0; background: none; font-size: 22px; color: var(--muted); cursor: pointer; }
   #evidence .ev-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 10px; }
   #evidence .ev-head p { margin: 0 0 4px; color: var(--muted); font-size: 13px; max-width: 80ch; flex-basis: 100%; }
   #evidence .ev-filters { display: inline-flex; flex-wrap: wrap; gap: 4px; }
@@ -268,8 +278,41 @@
     <button data-tab="query" aria-pressed="false">Query</button>
     <button data-tab="evidence" aria-pressed="false">Evidence</button>
   </nav>
+  <button id="about-open" class="about-link" type="button">What is this?</button>
   <span id="status">Loading DuckDB…</span>
 </header>
+<dialog id="about" aria-labelledby="about-title">
+  <button class="about-close" type="button" aria-label="Close">×</button>
+  <h2 id="about-title">What is this?</h2>
+  <p><b>FOCUS</b> is an open standard for cloud and software billing data: one agreed shape for a bill, so that cost
+    data from cloud providers, SaaS vendors and others can be read and compared the same way.</p>
+  <p>This lab is a place to get to know FOCUS properly. Not just what the model says today, but how it got here: the
+    proposals, the debates, the ideas that didn't make it, and what the people behind it learned from the users who
+    asked for each change.</p>
+  <h3>What you can do here</h3>
+  <ul>
+    <li><b>Data model.</b> Explore the FOCUS datasets and how they join. Click any dataset, column, rule or condition
+      for a plain-English explanation, the specification's own wording, its requirements exactly as written, and its
+      history: the pull requests that shaped it, what was argued, how each conversation ended, and what was never merged.</li>
+    <li><b>Query.</b> Run the specification's own example queries, exactly as published, against real sample data,
+      right in your browser. Switch between the official sample, two proposed newer ones and the spec's worked
+      examples to see which joins hold up.</li>
+    <li><b>Evidence.</b> See how FOCUS decides what to build: the problems users raised, who asked, how the working
+      group found out, and what it traded off.</li>
+  </ul>
+  <h3>Where to start</h3>
+  <p>In the Data model, open <b>Cost and Usage</b>, then <b>BilledCost</b>. Its history tells the story of a year-long
+    debate about what a cost really is.</p>
+  <h3>Good to know</h3>
+  <ul>
+    <li>Everything runs in your browser. There's no sign-in and nothing is stored.</li>
+    <li>It's built from public material: the FOCUS specification and its GitHub history, and the FinOps Foundation's
+      sample data. It isn't affiliated with the FinOps Foundation.</li>
+    <li>The plain-English summaries were written with AI from those sources. The specification's own text and links
+      to every source are always alongside.</li>
+    <li>It's open source: <a href="https://github.com/ormondroyd/focus-sql-lab">see it on GitHub</a>.</li>
+  </ul>
+</dialog>
 <div class="layout">
   <aside>
     <section>
@@ -1605,6 +1648,9 @@ async function colDetail(d, c, el, token) {
 }
 
 document.querySelectorAll('.apptabs button').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
+$('about-open').addEventListener('click', () => $('about').showModal());
+$('about').querySelector('.about-close').addEventListener('click', () => $('about').close());
+$('about').addEventListener('click', (e) => { if (e.target === $('about')) $('about').close(); }); // click outside to close
 $('ev-filters').addEventListener('click', (e) => { const b = e.target.closest('[data-kind]'); if (b) { evKind = b.dataset.kind; renderEvidence(); } });
 $('ev-search').addEventListener('input', () => renderEvidence());
 $('ev-list').addEventListener('click', (e) => { const b = e.target.closest('[data-obj]'); if (b) openObject(b.dataset.obj); });
