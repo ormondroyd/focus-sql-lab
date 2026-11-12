@@ -1,5 +1,5 @@
 {
- "about": "Written by Claude (an AI model) for this lab, from the GitHub issues and pull requests listed with each note. This is the lab's reading of those discussions, not FOCUS text: check a thread before quoting it. Covers the 11 columns the Data model draws as join keys.",
+ "about": "Written by an AI model for this lab, from the GitHub issues and pull requests listed with each note. This is the lab's reading of those discussions, not FOCUS text: check a thread before quoting it. Covers the 11 columns the Data model draws as join keys.",
  "written": "2026-11-11",
  "columns": {
   "ServiceProviderName": {

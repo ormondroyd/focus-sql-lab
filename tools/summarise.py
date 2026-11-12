@@ -122,7 +122,7 @@ def estimate(kind, key):
     if kind == "page":
         chars = sum(len((SPEC / f).read_text()) for f in pages[key][1])
         return 900 + chars // 4, 300
-    return 900 + min(400 + 250 * weight[key], 30_000), 200  # thread_text() keeps at most 120,000 characters
+    return 900 + min(400 + 250 * weight[key], 150_000), 200  # thread_text() keeps at most 600,000 characters
 
 
 tin, tout = map(sum, zip(*(estimate(*d) for d in due))) if due else (0, 0)
@@ -151,7 +151,8 @@ Cover, in plain English and the past tense:
 
 Rules:
 - State only what the thread says. Don't speculate, evaluate or add background knowledge. If the thread doesn't record the outcome, say "The thread doesn't record the outcome."
-- Name people only by their GitHub username exactly as shown. Never guess real names. Refer to people by username or with they/them, never he or she.
+- Name people only by their GitHub username exactly as shown, with the same capital and small letters even at the start of a sentence. Never guess real names. Refer to people by username or with they/them, never he or she.
+- Write dates as 29 October 2026, or as a month and year (October 2026).
 - Refer to other issues and pull requests as #123. No URLs, no Markdown, no emoji, no bullet lists.
 - Paraphrase. Quote at most 10 words, and only when the exact wording matters.
 - Skip bot comments, CLA notices and routine housekeeping (scheduling, moving to member review, reassigning) unless they record a decision or the outcome.
@@ -178,8 +179,21 @@ GENDERED = re.compile(r"\b(he|she|him|her|his|hers|himself|herself)\b", re.I)
 norm = lambda s: re.sub(r"\s+", " ", s.replace("’", "'").replace("“", '"').replace("”", '"')).strip().lower()
 
 
-def problems(text, limit, source):
+MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December"
+# The people in a thread, from the headers thread_text() writes.
+PEOPLE = re.compile(r"^(?:Comment|Review|Inline comment) by ([A-Za-z0-9][A-Za-z0-9-]*)|^(?:Pull request|Issue) opened by ([A-Za-z0-9][A-Za-z0-9-]*)", re.M)
+
+
+def problems(text, limit, source, thread=False):
     found = []
+    if thread:
+        for user in {a or b for a, b in PEOPLE.findall(source)}:
+            for m in re.finditer(rf"(?<![A-Za-z0-9-]){re.escape(user)}(?![A-Za-z0-9-])", text, re.I):
+                if m.group(0) != user:
+                    found.append(f"it writes the username {user} as {m.group(0)}; write it exactly as shown")
+                    break
+        if re.search(rf"\b\d{{4}}-\d{{2}}-\d{{2}}\b|\b(?:{MONTHS}) \d{{1,2}}(?:st|nd|rd|th)?\b", text):
+            found.append("write dates as 29 October 2026, or as a month and year")
     if not text:
         found.append("the reply was empty")
     if len(text.split()) > limit:
@@ -241,7 +255,7 @@ def thread_text(n):
             if not bot(c["user"]):
                 events.append((c["created_at"], f"Inline comment by {c['user']['login']} on {c['path']}, {c['created_at'][:10]}:\n{cut(c['body'], 1500)}"))
     text = "\n\n".join(head + [e for _, e in sorted(events)])
-    return text[:120_000]
+    return text[:600_000]  # about 150,000 tokens: the longest thread so far (#2424) is about 400,000 characters
 
 
 def page_text(key):
@@ -254,7 +268,7 @@ client = anthropic.Anthropic()
 spent_in = spent_out = 0
 
 
-def write_one(system, content, limit):
+def write_one(system, content, limit, thread=False):
     """One summary, checked; one retry with the problems named. Returns (text, problems)."""
     global spent_in, spent_out
     messages = [{"role": "user", "content": f"{content}\n\nLength: at most {limit} words."}]
@@ -266,7 +280,7 @@ def write_one(system, content, limit):
         spent_in += r.usage.input_tokens
         spent_out += r.usage.output_tokens
         text = "".join(b.text for b in r.content if b.type == "text").strip()
-        found = problems(text, limit, content) if r.stop_reason == "end_turn" else [f"the reply stopped early ({r.stop_reason})"]
+        found = problems(text, limit, content, thread) if r.stop_reason == "end_turn" else [f"the reply stopped early ({r.stop_reason})"]
         if not found or attempt == 2:
             return text, found
         messages += [{"role": "assistant", "content": text},
@@ -275,16 +289,22 @@ def write_one(system, content, limit):
 
 skipped = []
 for kind, key in due[:LIMIT]:
-    if kind == "page":
-        text, found = write_one(PAGE_RULES, page_text(key), LIMITS.get(pages[key][0], 160))
-        if not found:
-            objs["summaries"][key] = text
-            basis["pages"][key] = page_hash(pages[key][1])
-    else:
-        text, found = write_one(THREAD_RULES, thread_text(key), 70 if weight[key] < 20 else 130)
-        if not found:
-            threads["summaries"][key] = text
-            basis["threads"][key] = counts(key)
+    # An error on one item (the API, or GitHub's rate limit) skips it rather than losing the run; a bad key stops it.
+    try:
+        if kind == "page":
+            text, found = write_one(PAGE_RULES, page_text(key), LIMITS.get(pages[key][0], 160))
+            if not found:
+                objs["summaries"][key] = text
+                basis["pages"][key] = page_hash(pages[key][1])
+        else:
+            text, found = write_one(THREAD_RULES, thread_text(key), 70 if weight[key] < 20 else 130, thread=True)
+            if not found:
+                threads["summaries"][key] = text
+                basis["threads"][key] = counts(key)
+    except anthropic.AuthenticationError:
+        raise
+    except Exception as e:
+        text, found = "", [f"error: {type(e).__name__}: {str(e)[:200]}"]
     print(("skipped " if found else "wrote ") + f"{kind} {key}" + (": " + "; ".join(found) if found else ""))
     if found:
         skipped.append(key)
@@ -292,9 +312,9 @@ for kind, key in due[:LIMIT]:
 
 objs["written"] = threads["written"] = TODAY
 objs["about"] = ("Plain-language summaries of the FOCUS specification's dataset, column, attribute, condition, appendix, metadata "
-                 "and schema pages, written by Claude (an AI model) from each page, and rewritten when the page changes.")
+                 "and schema pages, written by an AI model from each page, and rewritten when the page changes.")
 threads["about"] = ("Summaries of the conversation in each FOCUS_Spec issue and pull request in the Data model's history that has "
-                    "three or more comments or reviews, written by Claude (an AI model) from each thread, and rewritten when it "
+                    "three or more comments or reviews, written by an AI model from each thread, and rewritten when it "
                     "gains comments or reviews. They paraphrase the discussion and name participants by GitHub username.")
 OBJ.write_text(json.dumps(objs, indent=1, ensure_ascii=False))
 THR.write_text(json.dumps(threads, indent=1, ensure_ascii=False))

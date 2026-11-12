@@ -9,15 +9,15 @@ Everything outside `site/focus/`:
 
 - `site/index.html`: the page (query editor, response explorer, data model view)
 - `site/lab-setup.sql`: what the lab adds to DuckDB so the specification's queries run as published
-- `site/column-notes.json`: notes on the debate behind the 11 join-key columns, written by Claude (an AI model) from
+- `site/column-notes.json`: notes on the debate behind the 11 join-key columns, written by an AI model from
   the FOCUS_Spec GitHub issues and pull requests each note lists. They paraphrase those discussions and name
   participants by their GitHub usernames.
-- `site/evidence.json`: evidence items curated by Claude (an AI model) from FOCUS_Spec issues and the conversation
+- `site/evidence.json`: evidence items curated by an AI model from FOCUS_Spec issues and the conversation
   summaries; quotes are verbatim from the issue named, and organisations are named only as the issues name them.
 - `site/object-summaries.json`: plain-language summaries of the specification's dataset, column, attribute, appendix, metadata and schema pages,
-  written by Claude (an AI model) from each page at `working_draft` @ `e9cdcc7`. They paraphrase the specification.
+  written by an AI model from each page at `working_draft` @ `e9cdcc7`. They paraphrase the specification.
 - `site/thread-summaries.json`: summaries of the conversation in the FOCUS_Spec issues and pull requests shown in the
-  Data model's history that have three or more comments or reviews, written by Claude (an AI model) from each thread.
+  Data model's history that have three or more comments or reviews, written by an AI model from each thread.
   They paraphrase those discussions and name participants by their GitHub usernames.
 - `tools/practice.json`: the practice queries, which are built into `site/practice-queries.json`
 - `tools/*.py`: the build scripts

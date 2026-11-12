@@ -1,5 +1,5 @@
 {
- "about": "Summaries of the conversation in each FOCUS_Spec issue and pull request in the Data model's history that has three or more comments or reviews, written by Claude (an AI model) from each thread as it stood on 2026-11-11. They paraphrase the discussion and name participants by GitHub username.",
+ "about": "Summaries of the conversation in each FOCUS_Spec issue and pull request in the Data model's history that has three or more comments or reviews, written by an AI model from each thread as it stood on 2026-11-11. They paraphrase the discussion and name participants by GitHub username.",
  "written": "2026-11-11",
  "summaries": {
   "42": "udam-f2 opened this PR adding the ResourceId column specification and supporting notes for #5. Review was mostly editorial: flanakin suggested wording, asked whether to adopt a style guide, preferred \"provider\" to \"vendor\" and proposed moving action items into issues. udam-f2 said the supporting notes were meant to show the discussion behind the column, not spec text, and that the folder structure would evolve. It merged in May 2023.",

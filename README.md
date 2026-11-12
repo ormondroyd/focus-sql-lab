@@ -59,19 +59,19 @@ Everything the lab made is labelled on the page:
   prose, which the page quotes. The history's selection rules (which pull requests changed a file, and calling one that
   changed more than 15 files "spec-wide") are the lab's; its summaries are excerpts the lab cut, not text it wrote.
 - **Debate notes:** [site/column-notes.json](site/column-notes.json) holds notes on the 11 join-key columns, written
-  by Claude (an AI model) from the GitHub threads each note lists. They are the lab's reading of those discussions.
+  by an AI model from the GitHub threads each note lists. They are the lab's reading of those discussions.
 - **Quiz:** the questions, hints, notes and model answers in [tools/quiz.json](tools/quiz.json), written in DuckDB SQL.
   `extract_sql.py` tests every model answer and writes `site/quiz.json`.
 - **AI tokens view:** the explanations in the AI tokens tab, and which threads it lists under each gap, are the lab's.
   They live in [tools/extract_ai.py](tools/extract_ai.py). Specification text in the view is quoted as published, and
   the script stops if a quoted sentence is no longer in the specification.
 - **Evidence:** [site/evidence.json](site/evidence.json), shown in the Evidence tab: pain points, who asked, how the working
-  group found out, use cases and trade-offs, curated by Claude from the FOCUS_Spec issues and conversation summaries.
+  group found out, use cases and trade-offs, curated by an AI model from the FOCUS_Spec issues and conversation summaries.
   Quotes are verbatim.
 - **Plain-language summaries:** [site/object-summaries.json](site/object-summaries.json) summarises each dataset,
-  column, attribute, appendix, metadata and schema page of the specification, written by Claude from that page.
+  column, attribute, appendix, metadata and schema page of the specification, written by an AI model from that page.
 - **Conversation summaries:** [site/thread-summaries.json](site/thread-summaries.json) summarises the conversation in
-  each FOCUS_Spec issue and pull request in the history that has three or more comments or reviews, written by Claude
+  each FOCUS_Spec issue and pull request in the history that has three or more comments or reviews, written by an AI model
   from each thread. Threads with less discussion show only their own description.
 
 ## Findings
