@@ -1,7 +1,14 @@
 # Inconsistencies in the FOCUS specification's examples
 
 Found while building this lab against the FOCUS_Spec `working_draft` at `e9cdcc7` (the 1.5 candidate, November 2026),
-then re-checked against the page text. None has been reported upstream.
+then re-checked against the page text.
+
+**Status (checked 14 November 2026): the maintainers are already fixing all four confirmed findings**, in the editorial
+clean-up for the 1.5 release, which followed a review of the full 1.5 specification on 4 November:
+[issue #2832](https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2832) and [pull request #2846](https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2846) correct the contract period examples (finding 1,
+including a link in Contract Commitment Period End that pointed at Contract Period Start), and
+[issue #2834](https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2834) and [pull request #2869](https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2869) correct the metadata examples (findings 3 to 5).
+Both pull requests were open when checked. The systemic fix below, issue #1974, is still open.
 
 Why examples matter: the specification explains many rules with worked examples (for example, sample dates to show what
 "inclusive start, exclusive end" means, or sample metadata to show its structure). Implementers learn from and copy
