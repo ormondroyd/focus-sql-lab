@@ -236,7 +236,7 @@ RULES = """You write a daily digest of GitHub threads from the FOCUS specificati
 Return:
 - summary: a plain-spoken paragraph of at most 140 words, written the way you'd explain the thread to a colleague over coffee rather than as a list of events. Get across:
   - what is being proposed or asked, and why: the problem or need behind it, as the thread, its description and the issue it implements tell it;
-  - the nuance that matters: the real point of debate, the trade-off or the subtle distinction, and who is on which side (by GitHub username);
+  - the nuance that matters: the main point under discussion, the trade-off or the subtle distinction, and who is on which side (by GitHub username);
   - what it would mean in practice if it goes ahead, for people producing or using FOCUS data or for the specification, as the thread describes it;
   - how people feel about it, said plainly (for example "support looks solid", "people agree on the goal but not the wording", "this seems to be stalling"), with the evidence: who backs it, who has doubts or pushes back, or that there has been little reaction so far;
   - where it stands after the last two weeks, and what happens next if the thread says.
@@ -248,6 +248,7 @@ Rules:
 - Name people only by their GitHub username exactly as shown, with the same capital and small letters even at the start of a sentence. Never guess real names. Refer to people by username or with they/them, never he or she.
 - Refer to other issues and pull requests as #123. No URLs, no Markdown, no emoji.
 - Write dates as 29 October 2026, or as a month and year (October 2026).
+- Keep the tone measured and matter-of-fact, as the working group would describe itself: no dramatic framing such as "the real debate", "the crux", "battle" or "clash".
 - Paraphrase. Quote at most 10 words, and only when the exact wording matters.
 - The summary is at most 140 words. Each gist is at most 30 words."""
 
