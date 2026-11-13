@@ -214,6 +214,20 @@
   .log-open { border: 0; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer;
     text-decoration: underline dotted; text-underline-offset: 3px; }
   .log-open:hover { color: var(--accent); }
+  .cost-open { border: 0; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer;
+    text-decoration: underline dotted; text-underline-offset: 3px; }
+  .cost-open:hover { color: var(--accent); }
+  #cost-pop { position: fixed; inset: auto; margin: 0; width: min(440px, calc(100vw - 24px)); padding: 12px 14px;
+    background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); font-size: 12.5px; line-height: 1.5; }
+  #cost-pop h4 { margin: 0 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  #cost-pop h4 + p { margin: 0 0 6px; }
+  #cost-pop table { width: 100%; min-width: 0; font-size: 12.5px; margin: 0 0 10px; }
+  #cost-pop th, #cost-pop td { position: static; white-space: normal; max-width: none; padding: 4px 8px 4px 0; background: none;
+    font-family: inherit; vertical-align: top; }
+  #cost-pop td.num, #cost-pop th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  #cost-pop tr.total td { font-weight: 600; border-bottom: 0; }
+  #cost-pop .hint { margin: 0; }
   :is(#evidence, #ref) .ev-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 10px; }
   :is(#evidence, #ref) .ev-head p { margin: 0 0 4px; color: var(--muted); font-size: 13px; max-width: 80ch; flex-basis: 100%; }
   :is(#evidence, #ref) .ev-filters { display: inline-flex; flex-wrap: wrap; gap: 4px; }
@@ -401,6 +415,7 @@
   <button id="about-open" class="about-link" type="button">What is this?</button>
   <span class="header-end">
     <span id="refreshed-at" hidden></span>
+    <div id="cost-pop" popover></div>
     <span id="status">Loading DuckDB…</span>
   </span>
 </header>
@@ -522,10 +537,6 @@
 </section>
 <section id="ref" hidden>
   <div class="ev-head">
-    <p>What the datasets' and columns' requirements point to: the operating model conditions that make a Conditional
-      column or rule apply, the attributes (rule sets shared across datasets and columns), and the supporting material
-      (the appendix, metadata, and the JSON schemas behind the JSON columns). Names and descriptions are the
-      specification's. Click a name to preview it alongside.</p>
     <div class="ev-filters" id="ref-filters" role="group" aria-label="Kind of entry"></div>
     <input id="ref-search" type="search" placeholder="Search the reference" aria-label="Search the reference">
     <div class="view-switch" data-for="ref" role="group" aria-label="Show as"></div>
@@ -1188,7 +1199,8 @@ function moveDetail(t) {
   (t === 'ref' ? $('ref-side') : document.querySelector('#model .model-bottom')).appendChild($('model-detail'));
   detailOwner = t;
   selection = tabSelection[t];
-  if (model) { applySelection(); renderDetail(); }
+  if (model) applySelection();
+  renderDetail(); // with nothing selected this only writes the tab's own hint, so it is safe before the model loads
 }
 
 function showTab(t) {
@@ -2344,7 +2356,7 @@ $('recent-list').addEventListener('click', (e) => {
   if (o) openObject(o.dataset.obj);
 });
 window.addEventListener('hashchange', () => { if (location.hash === '#recent') showTab('recent'); });
-document.addEventListener('click', (e) => { if (e.target.closest('.log-open')) openLog(); });
+document.addEventListener('click', (e) => { if (e.target.closest('.log-open')) { if ($('cost-pop').matches(':popover-open')) $('cost-pop').hidePopover(); openLog(); } });
 $('log').querySelector('.about-close').addEventListener('click', () => $('log').close());
 $('log').addEventListener('click', (e) => { if (e.target === $('log')) $('log').close(); }); // click outside to close
 // When the site was last rebuilt from the specification (site/focus/refresh.json, written by tools/summarise.py --stamp).
@@ -2356,7 +2368,7 @@ fetch('focus/refresh.json').then((r) => (r.ok ? r.json() : null)).then((f) => {
   const at = f.refreshed_at ? new Date(f.refreshed_at) : null;
   const when = at && !isNaN(at) ? at.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric',
     hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }) : '';
-  if (when) {
+  if (when && !$('refreshed-at').dataset.fromLog) { // the update log, below, gives a fuller line when it loads
     const el = $('refreshed-at');
     el.innerHTML = `<button class="log-open" type="button" title="Rebuilt from the FOCUS_Spec working draft at ${escapeHtml(f.spec.ref)} (${
       day(f.spec.date)}). Open the update log">Refreshed <time datetime="${escapeHtml(f.refreshed_at)}">${escapeHtml(when)}</time></button>`;
@@ -2365,6 +2377,76 @@ fetch('focus/refresh.json').then((r) => (r.ok ? r.json() : null)).then((f) => {
   $('refreshed').innerHTML = `<br>Built from the FOCUS_Spec working draft at <a href="${f.spec.repo}/commit/${f.spec.ref}" target="_blank" rel="noopener">${
     escapeHtml(f.spec.ref)}</a> (${day(f.spec.date)})${when ? `, refreshed ${escapeHtml(when)}` : ''}. AI summaries last written ${
     day(s.pages)} (spec pages) and ${day(s.threads)} (GitHub threads).`;
+}).catch(() => {});
+
+// The cost pop-up: what each model did and cost, for the latest update and to date (from site/update-log.json).
+const tokens = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `${Math.round(n / 1e3)}k` : String(n || 0));
+function costBreakdown(runs, latest, what, when) {
+  // Add up each model's tokens and cost, and what it did: the run's own model writes; its fallback takes the escalations.
+  const tally = (list) => {
+    const m = {}, did = { attempted: 0, first_pass: 0, escalated: 0, escalated_passed: 0, failed: 0 };
+    let primary = null, fallback = null, withFallback = 0, escWithFallback = 0;
+    for (const r of list) {
+      for (const [k, v] of Object.entries(r.spend || {})) {
+        const t = (m[k] ??= { input: 0, output: 0, cost: 0 });
+        t.input += v.input || 0; t.output += v.output || 0; t.cost += v.cost || 0;
+      }
+      if (r.attempted !== undefined) {
+        Object.keys(did).forEach((k) => { did[k] += r[k] || 0; });
+        primary ??= r.model; if (r.fallback) { fallback ??= r.fallback; withFallback += r.attempted; escWithFallback += r.escalated || 0; }
+      }
+    }
+    return { m, did, primary, fallback, withFallback, escWithFallback };
+  };
+  const table = (t, showDid) => {
+    const rows = Object.entries(t.m).sort((a, b) => b[1].cost - a[1].cost).map(([k, v]) => {
+      let role = '';
+      if (showDid && k === t.primary) role = `Wrote ${t.did.attempted}; ${t.did.first_pass} passed the checks first time`;
+      else if (showDid && k === t.fallback) role = `Took the ${t.did.escalated} escalated (${t.withFallback ? (100 * t.escWithFallback / t.withFallback).toFixed(1) : 0}%); ${t.did.escalated_passed} passed`;
+      return `<tr><td>${escapeHtml(modelName(k))}${role ? `<div class="hint">${role}</div>` : ''}</td>
+        <td class="num">${tokens(v.input)} in<br>${tokens(v.output)} out</td><td class="num">${usd(v.cost)}</td></tr>`;
+    }).join('');
+    const total = Object.values(t.m).reduce((n, v) => n + v.cost, 0);
+    return rows ? `<table><thead><tr><th>Model</th><th class="num">Tokens</th><th class="num">Cost</th></tr></thead><tbody>${rows}
+      <tr class="total"><td>Total</td><td></td><td class="num">${usd(total)}</td></tr></tbody></table>` : '<p class="hint">No API calls in this update.</p>';
+  };
+  const now = tally(latest), all = tally(runs);
+  const escNote = all.withFallback ? `${all.escWithFallback} of ${all.withFallback} AI tasks (${(100 * all.escWithFallback / all.withFallback).toFixed(1)}%) escalated to ${
+    modelName(all.fallback)} since the fallback was added.` : '';
+  return `<h4>This update</h4><p>${escapeHtml(what)}, ${escapeHtml(when)}.</p>${table(now, true)}
+    <h4>To date</h4><p>${runs.length} logged runs. ${escNote}</p>${table(all, false)}
+    <p class="hint">At list price, from the update log. <button class="log-open" type="button">Open the update log</button></p>`;
+}
+// Place the pop-up under the cost it explains, kept on screen.
+$('cost-pop').addEventListener('beforetoggle', (e) => {
+  if (e.newState !== 'open') return;
+  const b = document.querySelector('.cost-open');
+  if (!b) return;
+  const r = b.getBoundingClientRect(), w = Math.min(440, window.innerWidth - 24);
+  $('cost-pop').style.top = `${r.bottom + 6}px`;
+  $('cost-pop').style.left = `${Math.max(12, Math.min(r.right - w, window.innerWidth - w - 12))}px`;
+});
+
+// The header's "Updated" line: the newest run in site/update-log.json, of any kind, what it cost in API calls at list
+// price (every entry the same GitHub run logged), and the running total.
+fetch('update-log.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((d) => {
+  const runs = (d && d.runs) || [];
+  if (!runs.length) return;
+  const last = runs[0];
+  const at = new Date(last.at);
+  if (isNaN(at)) return;
+  const same = last.run ? runs.filter((r) => r.run === last.run) : [last];
+  const cost = same.reduce((n, r) => n + (r.cost || 0), 0), total = runs.reduce((n, r) => n + (r.cost || 0), 0);
+  const when = at.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+  const what = [...new Set([...same].reverse().map((r) => LOG_TASK[r.task] || r.task))] // in the order they ran
+    .map((t, i) => (i ? t[0].toLowerCase() + t.slice(1) : t)).join(', then ');
+  const el = $('refreshed-at');
+  el.dataset.fromLog = '1';
+  el.innerHTML = `<button class="log-open" type="button" title="${escapeHtml(`${what}. Open the update log`)}">Updated <time datetime="${
+    escapeHtml(last.at)}">${escapeHtml(when)}</time></button> · <button class="cost-open" type="button" popovertarget="cost-pop" title="Cost by model">update cost <b>${
+    usd(cost)}</b> · ${usd(total)} to date</button>`;
+  el.hidden = false;
+  $('cost-pop').innerHTML = costBreakdown(runs, same, what, when);
 }).catch(() => {});
 $('quiz-list').addEventListener('click', (e) => { const b = e.target.closest('[data-q]'); if (b) pickQuestion(b.dataset.q); });
 $('quiz-check').addEventListener('click', quizCheck);

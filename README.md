@@ -190,9 +190,10 @@ GH_TOKEN=<GitHub token> python -I tools/extract_ai.py <FOCUS_Spec clone> site
 The workflow [.github/workflows/refresh.yml](.github/workflows/refresh.yml) does the same on GitHub, against the latest
 `working_draft`. It runs only when started by hand: Actions, then "Refresh from FOCUS_Spec", then "Run workflow". It
 downloads the sample data at the pinned commits, rebuilds, and pushes to `main` only if something changed, which
-redeploys the site. The page header shows when the site was last refreshed, in the reader's own time zone, and the footer
-adds the specification commit and when the AI summaries were last written. Both come from `site/focus/refresh.json`,
-which records the refresh time in UTC.
+redeploys the site. The page header shows when the site was last updated by any run (a refresh or the daily Recent
+rebuild), in the reader's own time zone, with that update's cost in API calls and the total to date; both come from
+`site/update-log.json`. The footer adds the specification commit and when the AI summaries were last written, from
+`site/focus/refresh.json`, which records the refresh time in UTC.
 
 Untick "publish" for a trial run. It rebuilds and lists the files that changed, and keeps the rebuilt JSON as a
 download (`trial-run`, under the run's Artifacts) for 7 days. It pushes nothing. With "summaries" ticked it still
@@ -241,8 +242,10 @@ pushes the result; it can also be started by hand. It shares a queue with the re
 Every rebuild (`summarise.py --stamp --data`) and every batch of AI-written text (`summarise.py --write`,
 `recent.py --write`) adds an entry to `site/update-log.json`: when it ran, the GitHub run, what it did, how many items
 passed first time, how many (and what share) were escalated to the fallback model and how many of those passed, and the
-tokens and cost per model at list price. The page shows it when you click the refresh time in the header (or the
-"Updated" time on the Recent tab), with the total spend and the overall share escalated.
+tokens and cost per model at list price. The page shows it when you click the update time in the header (or the
+"Updated" time on the Recent tab), with the total spend and the overall share escalated. Clicking the cost in the header
+opens a breakdown by model for the latest update and to date: what the main model wrote and how much passed first time,
+what went to the fallback, and the tokens and cost of each.
 
 ```bash
 GH_TOKEN=... python -I tools/recent.py site                                   # dry run: what's in the window, what's due
