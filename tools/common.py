@@ -1,5 +1,6 @@
 """Shared by summarise.py and recent.py: the models they can use, the checks every AI-written text must pass, and
 reading FOCUS_Spec from GitHub's REST API (GH_TOKEN)."""
+import datetime
 import json
 import os
 import re
@@ -29,6 +30,61 @@ def model_from(flags, default="claude-sonnet-5-5"):
         if settings["effort"] not in ("low", "medium", "high"):
             sys.exit("--effort must be low, medium or high")
     return name, settings
+
+
+# A text the first model fails twice gets two more tries on the fallback (--fallback MODEL, or none). The default
+# fallback is Claude Sonnet 5.5, unless that is already the first model.
+FALLBACK = "claude-sonnet-5-5"
+
+
+def fallback_from(flags, primary):
+    name = flags[flags.index("--fallback") + 1] if "--fallback" in flags else (FALLBACK if primary != FALLBACK else "none")
+    if name == "none":
+        return None, None
+    if name not in MODELS:
+        sys.exit(f"--fallback must be none or one of {', '.join(MODELS)}")
+    return name, dict(MODELS[name])
+
+
+class Spend:
+    """Tokens used and their cost at list price, per model."""
+
+    def __init__(self):
+        self.tokens = {}
+
+    def add(self, model, usage):
+        t = self.tokens.setdefault(model, [0, 0])
+        t[0] += usage.input_tokens
+        t[1] += usage.output_tokens
+
+    def cost(self, model=None):
+        return sum(i * MODELS[m]["price"][0] / 1e6 + o * MODELS[m]["price"][1] / 1e6
+                   for m, (i, o) in self.tokens.items() if model in (None, m))
+
+    def report(self):
+        return {m: {"input": i, "output": o, "cost": round(self.cost(m), 4)} for m, (i, o) in self.tokens.items()}
+
+    def line(self):
+        parts = [f"{m}: {i:,} input and {o:,} output tokens, US${self.cost(m):.4f}" for m, (i, o) in self.tokens.items()]
+        return ("; ".join(parts) or "no API calls") + f". In all US${self.cost():.4f} at list price."
+
+
+def escalation(attempted, first_pass, escalated, escalated_passed, failed):
+    """The counts the update log shows for a batch of AI-written texts."""
+    return {"attempted": attempted, "first_pass": first_pass, "escalated": escalated,
+            "escalated_passed": escalated_passed, "failed": failed,
+            "escalated_pct": round(100 * escalated / attempted, 1) if attempted else 0.0}
+
+
+def log_run(site, entry):
+    """Add an entry to <site>/update-log.json, newest first: what ran, what it did and what it cost."""
+    path = site / "update-log.json"
+    log = json.loads(path.read_text()) if path.exists() else {"runs": []}
+    run = os.environ.get("GITHUB_RUN_ID")
+    url = f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/{os.environ.get('GITHUB_REPOSITORY')}/actions/runs/{run}" if run else None
+    log["runs"].insert(0, {"at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), **entry, "run": url})
+    log["runs"] = log["runs"][:400]
+    path.write_text(json.dumps(log, indent=1, ensure_ascii=False))
 
 
 # ---- checks -----------------------------------------------------------------------------------------------------
@@ -61,8 +117,10 @@ def problems(text, limit, source, thread=False):
         found.append("it contains a URL")
     if re.search(r"\*\*|`|^\s*[-*•] |\[[^\]]+\]\(|^#+ ", text, re.M):
         found.append("it contains Markdown or a list")
-    for q in re.findall(r"[\"“]([^\"”]{12,})[\"”]", text):
-        if norm(q) not in norm(source):
+    # Every quoted stretch, taken in pairs from the start, so the words between two short quotes ("row" ... "line
+    # item") are never read as a quote. Only quotes of 12 characters or more are checked.
+    for q in re.findall(r"[\"“]([^\"”]+)[\"”]", text):
+        if len(q) >= 12 and norm(q) not in norm(source):
             found.append(f"the quote \"{q[:60]}\" isn't in the source word for word")
     return found
 

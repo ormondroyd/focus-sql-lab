@@ -34,7 +34,7 @@ jobs:
 
       - name: Commit and push, if anything changed
         run: |
-          git add site/recent.json
+          git add site/recent.json site/update-log.json
           if git diff --cached --quiet; then echo "Nothing changed."; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

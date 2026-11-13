@@ -4,6 +4,7 @@
     python tools/summarise.py <FOCUS_Spec checkout> <site dir> --write [--limit N]   write up to N summaries (default 50)
         [--model M]       claude-sonnet-5-5 (default) or claude-haiku-5-5
         [--effort E]      low, medium or high (default: medium for Sonnet, low for Haiku)
+        [--fallback M]    the model for a summary the first one fails twice (default claude-sonnet-5-5; none to skip)
         [--only K1,K2]    write exactly these page keys or thread numbers, due or not (to compare models, say)
     python tools/summarise.py <FOCUS_Spec checkout> <site dir> --stamp         only write site/focus/refresh.json
     python tools/summarise.py <FOCUS_Spec checkout> <site dir> --init          record the current pages and threads as summarised
@@ -14,8 +15,10 @@ reviews). tools/summary-basis.json records what each was written from: a hash of
 review counts. A page whose hash changes, or a thread that gains comments or reviews, is due again.
 
 --write calls the Claude API (ANTHROPIC_API_KEY) and costs money; nothing else here does. It also needs GH_TOKEN to read
-threads. Every summary must pass the checks in problems() (word limit, they/them, no URLs or Markdown, quotes verbatim);
-one that fails twice is skipped and reported.
+threads. Every summary must pass the checks in problems() (word limit, they/them, no URLs or Markdown, quotes verbatim).
+One that fails twice is escalated to the fallback model for two more tries, and skipped and reported if it fails those.
+Each summary records the model that wrote it ("written_by"), and each --write and --stamp --data adds an entry to
+<site dir>/update-log.json, with the share of summaries escalated and the cost per model.
 """
 import datetime
 import hashlib
@@ -31,9 +34,10 @@ LIMIT = int(FLAGS[FLAGS.index("--limit") + 1]) if "--limit" in FLAGS else 50
 BASIS = pathlib.Path(__file__).parent / "summary-basis.json"
 OBJ, THR = SITE / "object-summaries.json", SITE / "thread-summaries.json"
 sys.path.insert(0, str(pathlib.Path(__file__).parent))  # python -I leaves the script's folder off the path
-from common import cut, gh, gh_all, model_from, problems  # noqa: E402
+from common import Spend, cut, escalation, fallback_from, gh, gh_all, log_run, model_from, problems  # noqa: E402
 
 MODEL, SETTINGS = model_from(FLAGS)
+FALLBACK, FALLBACK_SETTINGS = fallback_from(FLAGS, MODEL)
 PRICE_IN, PRICE_OUT = SETTINGS["price"]
 ONLY = [k.strip() for k in (FLAGS[FLAGS.index("--only") + 1] if "--only" in FLAGS else "").split(",") if k.strip()]
 TODAY = datetime.date.today().isoformat()
@@ -91,6 +95,8 @@ def stamp():
 
 if "--stamp" in FLAGS:
     stamp()
+    if "--data" in FLAGS:  # a rebuild from the specification (tools/refresh.sh)
+        log_run(SITE, {"task": "rebuild", "spec": model["spec"].get("ref"), "spec_date": model["spec"].get("date")})
     sys.exit()
 
 new_pages = [k for k in pages if k not in objs["summaries"]]
@@ -198,47 +204,61 @@ def page_text(key):
 
 
 client = anthropic.Anthropic()
-spent_in = spent_out = 0
+spend = Spend()
 
 
-def write_one(system, content, limit, thread=False):
-    """One summary, checked; one retry with the problems named. Returns (text, problems)."""
-    global spent_in, spent_out
+def attempt(model, settings, system, content, limit, thread):
+    """One model's try at a summary, checked, with one retry naming the problems. Returns (text, problems)."""
     messages = [{"role": "user", "content": f"{content}\n\nLength: at most {limit} words."}]
-    m = SETTINGS
-    for attempt in (1, 2):
+    for n in (1, 2):
         # The retry sends back only the text of the first reply, not its thinking, which the API allows.
-        r = client.messages.create(model=MODEL, max_tokens=m["max_tokens"], system=system, messages=messages,
-                                   thinking=m["thinking"], output_config={"effort": m["effort"]})
-        spent_in += r.usage.input_tokens
-        spent_out += r.usage.output_tokens
+        r = client.messages.create(model=model, max_tokens=settings["max_tokens"], system=system, messages=messages,
+                                   thinking=settings["thinking"], output_config={"effort": settings["effort"]})
+        spend.add(model, r.usage)
         text = "".join(b.text for b in r.content if b.type == "text").strip()
         found = problems(text, limit, content, thread) if r.stop_reason == "end_turn" else [f"the reply stopped early ({r.stop_reason})"]
-        if not found or attempt == 2:
+        if not found or n == 2:
             return text, found
         messages += [{"role": "assistant", "content": text},
                      {"role": "user", "content": "That summary fails these checks: " + "; ".join(found) + ". Rewrite it so it passes, following the same rules. Reply with the summary text only."}]
 
 
-skipped = []
+def write_one(system, content, limit, thread=False):
+    """A summary from the first model, or from the fallback if the first fails twice. Returns (text, problems, model, escalated)."""
+    text, found = attempt(MODEL, SETTINGS, system, content, limit, thread)
+    if not found or not FALLBACK:
+        return text, found, MODEL, False
+    print(f"  escalated to {FALLBACK}: {'; '.join(found)[:200]}")
+    text, found = attempt(FALLBACK, FALLBACK_SETTINGS, system, content, limit, thread)
+    return text, found, FALLBACK, True
+
+
+skipped, tally = [], {"first_pass": 0, "escalated": 0, "escalated_passed": 0}
 for kind, key in due[:LIMIT]:
     # An error on one item (the API, or GitHub's rate limit) skips it rather than losing the run; a bad key stops it.
+    escalated = False
     try:
         if kind == "page":
-            text, found = write_one(PAGE_RULES, page_text(key), LIMITS.get(pages[key][0], 160))
+            text, found, writer, escalated = write_one(PAGE_RULES, page_text(key), LIMITS.get(pages[key][0], 160))
             if not found:
                 objs["summaries"][key] = text
+                objs.setdefault("written_by", {})[key] = writer
                 basis["pages"][key] = page_hash(pages[key][1])
         else:
-            text, found = write_one(THREAD_RULES, thread_text(key), 70 if weight[key] < 20 else 130, thread=True)
+            text, found, writer, escalated = write_one(THREAD_RULES, thread_text(key), 70 if weight[key] < 20 else 130, thread=True)
             if not found:
                 threads["summaries"][key] = text
+                threads.setdefault("written_by", {})[key] = writer
                 basis["threads"][key] = counts(key)
     except anthropic.AuthenticationError:
         raise
     except Exception as e:
         text, found = "", [f"error: {type(e).__name__}: {str(e)[:200]}"]
-    print(("skipped " if found else "wrote ") + f"{kind} {key}" + (": " + "; ".join(found) if found else ""))
+    tally["first_pass"] += not found and not escalated
+    tally["escalated"] += escalated
+    tally["escalated_passed"] += escalated and not found
+    print(("skipped " if found else "wrote ") + f"{kind} {key}" + (f" (with {writer})" if escalated and not found else "")
+          + (": " + "; ".join(found) if found else ""))
     if found:
         skipped.append(key)
         print(f"  draft: {text}")  # kept in the log only, so a skipped draft can still be read
@@ -253,6 +273,11 @@ OBJ.write_text(json.dumps(objs, indent=1, ensure_ascii=False))
 THR.write_text(json.dumps(threads, indent=1, ensure_ascii=False))
 BASIS.write_text(json.dumps(basis, indent=0, sort_keys=True))
 stamp()
-cost = spent_in * PRICE_IN / 1e6 + spent_out * PRICE_OUT / 1e6
-print(f"Wrote {min(len(due), LIMIT) - len(skipped)}, skipped {len(skipped)}, {max(0, len(due) - LIMIT)} left for the next run. "
-      f"Used {spent_in:,} input and {spent_out:,} output tokens with {MODEL}: US${cost:.4f} at list price.")
+done = due[:LIMIT]
+counts_ = escalation(len(done), tally["first_pass"], tally["escalated"], tally["escalated_passed"], len(skipped))
+log_run(SITE, {"task": "summaries", "model": MODEL, "effort": SETTINGS["effort"], "fallback": FALLBACK,
+               "pages": sum(1 for k, _ in done if k == "page"), "threads": sum(1 for k, _ in done if k == "thread"),
+               **counts_, "left": max(0, len(due) - LIMIT), "spend": spend.report(), "cost": round(spend.cost(), 4)})
+print(f"Wrote {len(done) - len(skipped)}, skipped {len(skipped)}, {max(0, len(due) - LIMIT)} left for the next run. "
+      f"Escalated {tally['escalated']} of {len(done)} ({counts_['escalated_pct']}%) to {FALLBACK or 'no fallback'}, "
+      f"{tally['escalated_passed']} of them written. {spend.line()}")

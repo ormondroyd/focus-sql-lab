@@ -23,7 +23,7 @@ import sys
 from collections import Counter, defaultdict
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))  # python -I leaves the script's folder off the path
-from common import cut, gh_all, is_bot, model_from, norm, problems  # noqa: E402
+from common import Spend, cut, escalation, fallback_from, gh_all, is_bot, log_run, model_from, norm, problems  # noqa: E402
 
 SITE, FLAGS = pathlib.Path(sys.argv[1]), sys.argv[2:]
 DAYS = 14
@@ -31,6 +31,7 @@ NOW = datetime.datetime.now(datetime.timezone.utc)
 SINCE = (NOW - datetime.timedelta(days=DAYS)).strftime("%Y-%m-%dT%H:%M:%SZ")
 OUT = SITE / "recent.json"
 MODEL, SETTINGS = model_from(FLAGS, default="claude-haiku-5-5")
+FALLBACK, FALLBACK_SETTINGS = fallback_from(FLAGS, MODEL)
 SUMMARY_WORDS, GIST_WORDS = 90, 30
 
 model = json.loads((SITE / "focus" / "model.json").read_text())
@@ -217,12 +218,31 @@ SCHEMA = {"type": "object", "additionalProperties": False, "required": ["summary
     "gists": {"type": "array", "items": {"type": "object", "additionalProperties": False, "required": ["id", "gist"],
                                          "properties": {"id": {"type": "string"}, "gist": {"type": "string"}}}}}}
 
-spent_in = spent_out = 0
-written = partly = failed = 0
+spend = Spend()
+written = partly = failed = first_pass = escalated = escalated_passed = 0
 if "--no-ai" not in FLAGS and due:
     import anthropic
 
     client = anthropic.Anthropic()
+
+    def attempt(model, settings, src, ids):
+        """One model's try at a thread, with one retry naming the problems. Returns (problems, summary, gists)."""
+        messages = [{"role": "user", "content": src}]
+        for n in (1, 2):
+            r = client.messages.create(model=model, max_tokens=16000, system=RULES, messages=messages,
+                                       thinking=settings["thinking"],
+                                       output_config={"effort": settings["effort"], "format": {"type": "json_schema", "schema": SCHEMA}})
+            spend.add(model, r.usage)
+            reply = next((b.text for b in r.content if b.type == "text"), "")
+            if r.stop_reason != "end_turn":
+                found, summary, gists = [f"the reply stopped early ({r.stop_reason})"], None, {}
+            else:
+                found, summary, gists = review(json.loads(reply), src, ids)
+            if not found or n == 2:
+                return found, summary, gists
+            messages += [{"role": "assistant", "content": reply},
+                         {"role": "user", "content": "That reply fails these checks: " + "; ".join(found)
+                          + ". Rewrite it so every part passes, following the same rules."}]
 
     def review(data, src, ids):
         """The checks' findings, and the parts that pass."""
@@ -243,30 +263,29 @@ if "--no-ai" not in FLAGS and due:
     for t in due:
         src = source_text(t)
         ids = [e["id"] for e in t["events"] if e["kind"] != "status"]
-        messages = [{"role": "user", "content": src}]
+        up = False
         try:
-            for attempt in (1, 2):
-                r = client.messages.create(model=MODEL, max_tokens=16000, system=RULES, messages=messages,
-                                           thinking=SETTINGS["thinking"],
-                                           output_config={"effort": SETTINGS["effort"], "format": {"type": "json_schema", "schema": SCHEMA}})
-                spent_in += r.usage.input_tokens
-                spent_out += r.usage.output_tokens
-                reply = next((b.text for b in r.content if b.type == "text"), "")
-                if r.stop_reason != "end_turn":
-                    found, summary, gists = [f"the reply stopped early ({r.stop_reason})"], None, {}
-                else:
-                    found, summary, gists = review(json.loads(reply), src, ids)
-                if not found:
-                    break
-                messages += [{"role": "assistant", "content": reply},
-                             {"role": "user", "content": "That reply fails these checks: " + "; ".join(found)
-                              + ". Rewrite it so every part passes, following the same rules."}]
+            found, summary, gists = attempt(MODEL, SETTINGS, src, ids)
+            writers = {MODEL} if summary or gists else set()
+            if found and FALLBACK:
+                # Escalate the whole thread; keep whichever parts pass, preferring the fallback's.
+                up = True
+                print(f"#{t['number']}: escalated to {FALLBACK}: {'; '.join(found)[:200]}")
+                found2, summary2, gists2 = attempt(FALLBACK, FALLBACK_SETTINGS, src, ids)
+                if summary2 or gists2:
+                    writers.add(FALLBACK)
+                summary = summary2 or summary
+                gists = {**gists, **gists2}
+                found = [] if summary and all(i in gists for i in ids) else found2 or ["some parts failed on both models"]
         except anthropic.AuthenticationError:
             raise
         except Exception as e:  # one thread's error (the API, or GitHub's rate limit) doesn't lose the run
-            found, summary, gists = [f"error: {type(e).__name__}: {str(e)[:200]}"], None, {}
+            found, summary, gists, writers = [f"error: {type(e).__name__}: {str(e)[:200]}"], None, {}, set()
+        first_pass += not found and not up
+        escalated += up
+        escalated_passed += up and not found
         if summary:
-            t["summary"], t["gists"] = summary, gists
+            t["summary"], t["gists"], t["written_by"] = summary, gists, sorted(writers)
             written += not found
             partly += bool(found)
         else:
@@ -274,6 +293,8 @@ if "--no-ai" not in FLAGS and due:
             if t["number"] in kept and kept[t["number"]].get("summary"):  # keep yesterday's rather than nothing
                 t["summary"], t["gists"] = kept[t["number"]]["summary"], kept[t["number"]].get("gists", {})
                 t["stale"] = True
+            elif gists:  # no summary, but keep the gists that passed (it's tried again tomorrow)
+                t["gists"], t["written_by"] = gists, sorted(writers)
         print(f"#{t['number']}: " + ("written" if summary and not found else "written, some gists failed" if summary else "not written")
               + (": " + "; ".join(found)[:300] if found else ""))
 
@@ -291,7 +312,11 @@ OUT.write_text(json.dumps({
               "the repository's own automation."),
     "threads": feed,
 }, indent=1, ensure_ascii=False))
-cost = spent_in * p_in / 1e6 + spent_out * p_out / 1e6
-print(f"Wrote {OUT}: {len(feed)} threads. Summaries: {written} written, {partly} with some gists missing, {failed} failed, "
-      f"{len(feed) - len(due)} kept. Used {spent_in:,} input and {spent_out:,} output tokens with {MODEL}: "
-      f"US${cost:.4f} at list price.")
+counts_ = escalation(len(due), first_pass, escalated, escalated_passed, partly + failed)
+if "--no-ai" not in FLAGS:
+    log_run(SITE, {"task": "recent", "model": MODEL, "effort": SETTINGS["effort"], "fallback": FALLBACK,
+                   "threads": len(feed), "kept": len(feed) - len(due), **counts_, "partly": partly,
+                   "spend": spend.report(), "cost": round(spend.cost(), 4)})
+print(f"Wrote {OUT}: {len(feed)} threads. Summaries: {written} written in full, {partly} with some gists missing, "
+      f"{failed} failed, {len(feed) - len(due)} kept. Escalated {escalated} of {len(due)} ({counts_['escalated_pct']}%) "
+      f"to {FALLBACK or 'no fallback'}, {escalated_passed} of them in full. {spend.line()}")

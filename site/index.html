@@ -193,6 +193,27 @@
   #about li { margin: 4px 0; }
   #about a { color: var(--accent); }
   #about .about-close { position: absolute; top: 8px; right: 12px; border: 0; background: none; font-size: 22px; color: var(--muted); cursor: pointer; }
+  /* Update log: opened from the header's refresh time */
+  #log { max-width: 720px; width: calc(100% - 32px); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px 14px;
+    background: var(--panel); color: var(--fg); font-size: 13.5px; line-height: 1.5; }
+  #log::backdrop { background: rgba(0, 0, 0, 0.45); }
+  #log h2 { margin: 0 0 6px; font-size: 18px; }
+  #log a { color: var(--accent); }
+  #log .about-close { position: absolute; top: 8px; right: 12px; border: 0; background: none; font-size: 22px; color: var(--muted); cursor: pointer; }
+  #log .log-totals { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 10px 0 12px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; }
+  #log .log-totals div { font-size: 12px; color: var(--muted); }
+  #log .log-totals b { display: block; font-size: 16px; color: var(--fg); font-variant-numeric: tabular-nums; }
+  #log ol { list-style: none; margin: 0; padding: 0; }
+  #log li { border-top: 1px solid var(--line); padding: 8px 0; }
+  #log .log-h { display: flex; flex-wrap: wrap; gap: 2px 10px; align-items: baseline; }
+  #log .log-h .when { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  #log .log-d { margin-top: 2px; color: var(--fg); }
+  #log .log-note { margin-top: 2px; font-size: 12px; color: var(--muted); }
+  #log .tag { margin-left: 0; }
+  #log .tag.esc { border-color: var(--warn-line); background: var(--warn-bg); color: var(--fg); }
+  .log-open { border: 0; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer;
+    text-decoration: underline dotted; text-underline-offset: 3px; }
+  .log-open:hover { color: var(--accent); }
   #evidence .ev-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 10px; }
   #evidence .ev-head p { margin: 0 0 4px; color: var(--muted); font-size: 13px; max-width: 80ch; flex-basis: 100%; }
   #evidence .ev-filters { display: inline-flex; flex-wrap: wrap; gap: 4px; }
@@ -365,6 +386,11 @@
     <span id="status">Loading DuckDB…</span>
   </span>
 </header>
+<dialog id="log" aria-labelledby="log-title">
+  <button class="about-close" type="button" aria-label="Close">×</button>
+  <h2 id="log-title">Update log</h2>
+  <div id="log-body"><p class="hint">Loading…</p></div>
+</dialog>
 <dialog id="about" aria-labelledby="about-title">
   <button class="about-close" type="button" aria-label="Close">×</button>
   <h2 id="about-title">What is this?</h2>
@@ -1448,8 +1474,8 @@ async function renderRecent() {
   if (!d) { $('recent-list').innerHTML = '<p class="hint">Could not load the recent discussion.</p>'; return; }
   const updated = new Date(d.generated_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric',
     hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
-  $('recent-about').innerHTML = `${escapeHtml(d.about)} Updated <time datetime="${escapeHtml(d.generated_at)}">${
-    escapeHtml(updated)}</time>, covering activity since ${shortDate(d.since)}. Older discussion is on GitHub: each card links to its thread.`;
+  $('recent-about').innerHTML = `${escapeHtml(d.about)} <button class="log-open" type="button" title="Open the update log">Updated <time datetime="${
+    escapeHtml(d.generated_at)}">${escapeHtml(updated)}</time></button>, covering activity since ${shortDate(d.since)}. Older discussion is on GitHub: each card links to its thread.`;
   const counts = { all: d.threads.length, pr: 0, issue: 0, model: 0 };
   d.threads.forEach((t) => { counts[t.kind]++; if (t.objects.length) counts.model++; });
   $('recent-filters').innerHTML = RC_KINDS.map(([k, label]) =>
@@ -1497,6 +1523,53 @@ function recentCard(t, inWindow, since) {
     ${t.earlier ? `<div class="rc-foot">${plural(t.earlier, 'earlier comment')}, from before ${shortDate(since)}: <a href="${
       escapeHtml(t.url)}" target="_blank" rel="noopener">read the whole thread on GitHub ↗</a></div>` : ''}
   </article>`;
+}
+
+// ---- Update log (site/update-log.json): every rebuild and batch of AI-written text, with escalations and cost --------
+const MODEL_NAME = { 'claude-haiku-5-5': 'Claude Haiku 5.5', 'claude-sonnet-5-5': 'Claude Sonnet 5.5' };
+const modelName = (m) => MODEL_NAME[m] || m;
+const usd = (n) => `US$${(n || 0).toFixed(n && n < 0.1 ? 4 : 2)}`;
+const LOG_TASK = { rebuild: 'Rebuilt from the specification', summaries: 'Spec page and thread summaries', recent: 'Recent discussion' };
+
+function logEntry(r) {
+  const when = new Date(r.at).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+  const where = r.run ? `<a href="${escapeHtml(r.run)}" target="_blank" rel="noopener">GitHub run ↗</a>` : '<span class="hint">run locally</span>';
+  const byModel = Object.entries(r.spend || {}).map(([m, s]) => `${modelName(m)} ${usd(s.cost)}`).join(', ');
+  let what = '';
+  if (r.task === 'rebuild') {
+    what = `From the FOCUS_Spec working draft at <a href="https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/commit/${
+      escapeHtml(r.spec || '')}" target="_blank" rel="noopener">${escapeHtml(r.spec || '')}</a>${r.spec_date ? ` (${shortDate(r.spec_date)})` : ''}.`;
+  } else {
+    const items = r.task === 'recent'
+      ? `${plural(r.threads, 'thread')} in the window, ${r.kept} unchanged; ${r.attempted} summarised.`
+      : `${r.attempted === 1 ? '1 summary' : `${r.attempted} summaries`} due (${r.pages} pages, ${r.threads} threads).`;
+    const first = `${modelName(r.model)}${r.effort ? ` (${r.effort} effort)` : ''} wrote ${r.first_pass} that passed the checks first time.`;
+    const esc = r.fallback ? ` ${r.escalated} (${r.escalated_pct}%) went to ${modelName(r.fallback)}, which passed ${r.escalated_passed}.` : '';
+    const left = r.failed ? ` ${r.failed} ${r.task === 'recent' ? 'kept a plain excerpt for some parts' : 'skipped'}.` : '';
+    what = `${items} ${first}${esc}${left} Cost ${usd(r.cost)}${byModel && Object.keys(r.spend).length > 1 ? ` (${byModel})` : ''} at list price.`;
+  }
+  const tag = r.attempted ? `<span class="tag${r.escalated ? ' esc' : ''}">Escalated ${r.fallback ? `${r.escalated_pct}%` : '— no fallback'}</span>` : '';
+  return `<li><div class="log-h"><b>${escapeHtml(LOG_TASK[r.task] || r.task)}</b>${tag}<span class="when">${escapeHtml(when)}</span>${where}</div>
+    <div class="log-d">${what}</div>${r.note ? `<div class="log-note">${escapeHtml(r.note)}</div>` : ''}</li>`;
+}
+
+async function openLog() {
+  const box = $('log-body');
+  $('log').showModal();
+  const d = await fetch('update-log.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  if (!d) { box.innerHTML = '<p class="hint">Could not load the update log.</p>'; return; }
+  const ai = d.runs.filter((r) => r.attempted !== undefined && r.fallback);
+  const attempted = ai.reduce((n, r) => n + r.attempted, 0), escalated = ai.reduce((n, r) => n + r.escalated, 0);
+  const cost = d.runs.reduce((n, r) => n + (r.cost || 0), 0);
+  box.innerHTML = `<p class="hint" style="margin:0">${escapeHtml(d.about || '')}</p>
+    <div class="log-totals">
+      <div><b>${usd(cost)}</b>API spend at list price</div>
+      <div><b>${attempted ? `${(100 * escalated / attempted).toFixed(1)}%` : '—'}</b>${attempted
+        ? `${escalated} of ${attempted} AI tasks escalated to ${modelName('claude-sonnet-5-5')} since the fallback was added`
+        : `escalated to ${modelName('claude-sonnet-5-5')}: no runs since the fallback was added`}</div>
+      <div><b>${d.runs.length}</b>runs logged</div>
+    </div>
+    <ol>${d.runs.map(logEntry).join('')}</ol>`;
 }
 
 // Show one thread's card, from a mention or from a part of the model.
@@ -2132,6 +2205,9 @@ $('recent-list').addEventListener('click', (e) => {
   if (o) openObject(o.dataset.obj);
 });
 window.addEventListener('hashchange', () => { if (location.hash === '#recent') showTab('recent'); });
+document.addEventListener('click', (e) => { if (e.target.closest('.log-open')) openLog(); });
+$('log').querySelector('.about-close').addEventListener('click', () => $('log').close());
+$('log').addEventListener('click', (e) => { if (e.target === $('log')) $('log').close(); }); // click outside to close
 // When the site was last rebuilt from the specification (site/focus/refresh.json, written by tools/summarise.py --stamp).
 fetch('focus/refresh.json').then((r) => (r.ok ? r.json() : null)).then((f) => {
   if (!f) return;
@@ -2143,8 +2219,8 @@ fetch('focus/refresh.json').then((r) => (r.ok ? r.json() : null)).then((f) => {
     hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }) : '';
   if (when) {
     const el = $('refreshed-at');
-    el.innerHTML = `Refreshed <time datetime="${escapeHtml(f.refreshed_at)}">${escapeHtml(when)}</time>`;
-    el.title = `Rebuilt from the FOCUS_Spec working draft at ${f.spec.ref} (${day(f.spec.date)})`;
+    el.innerHTML = `<button class="log-open" type="button" title="Rebuilt from the FOCUS_Spec working draft at ${escapeHtml(f.spec.ref)} (${
+      day(f.spec.date)}). Open the update log">Refreshed <time datetime="${escapeHtml(f.refreshed_at)}">${escapeHtml(when)}</time></button>`;
     el.hidden = false;
   }
   $('refreshed').innerHTML = `<br>Built from the FOCUS_Spec working draft at <a href="${f.spec.repo}/commit/${f.spec.ref}" target="_blank" rel="noopener">${

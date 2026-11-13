@@ -113,6 +113,7 @@ site/
   practice-queries.json       the practice queries, with test results (built from tools/practice.json)
   quiz.json                   the quiz, with each model answer's tested row count (built from tools/quiz.json)
   recent.json                 the last two weeks of FOCUS_Spec discussion, rebuilt daily by tools/recent.py
+  update-log.json             every rebuild and batch of AI-written text: what it did, escalations and cost
   focus/                      FOCUS-derived, rebuilt by the tools; not edited by hand
     data/*.parquet            sample data and the specification's worked examples
     data/manifest.json        table list, row counts, column types and the columns the lab added
@@ -217,8 +218,10 @@ GH_TOKEN=... ANTHROPIC_API_KEY=... python -I tools/summarise.py <FOCUS_Spec clon
 US$2 / $10 per million input / output tokens at list price) or `claude-haiku-5-5` (US$0.10 / $0.50). Haiku always
 thinks, and its thinking is billed as output; `--effort` (low, the default for Haiku, medium or high) sets how much. `--only` names the pages or threads to write,
 whether due or not, for comparing models on the same items. Each summary must pass automatic checks (word limit,
-they/them pronouns, no URLs or Markdown, quotes found word for word in the source); one that fails twice is skipped.
-The checks can't tell whether a summary is accurate. The workflow does this only when its "summaries" box is ticked,
+they/them pronouns, usernames and dates as written, no URLs or Markdown, quotes found word for word in the source).
+One that fails twice is escalated to the fallback model (`--fallback`, Claude Sonnet 5.5 by default, `none` to turn it
+off) for two more tries, and skipped if it fails those too; each summary records the model that wrote it
+(`written_by`). The checks can't tell whether a summary is accurate. The workflow does this only when its "summaries" box is ticked,
 with the `ANTHROPIC_API_KEY` repository secret, up to the "limit" given, and offers the same model and "only" choices.
 The debate notes and evidence are curated and aren't refreshed.
 
@@ -227,10 +230,19 @@ The debate notes and evidence are curated and aren't refreshed.
 [tools/recent.py](tools/recent.py) builds `site/recent.json` from GitHub: every FOCUS_Spec issue and pull request that
 someone opened, commented on or reviewed in the last 14 days. For each thread it makes one call to the model (Claude
 Haiku 5.5 at high effort by default, with JSON output) for a summary of the fortnight and a gist of each comment and
-review, checked like the other summaries; parts that fail twice fall back to a plain excerpt. A thread is summarised
-again only when it gains comments or reviews from people. The workflow
+review, checked like the other summaries. A thread with any part that fails twice goes to the fallback model (Claude
+Sonnet 5.5) for two more tries, keeping whichever parts pass; an item with no passing gist shows a plain excerpt. A
+thread is summarised again only when it gains comments or reviews from people, or still has no summary. The workflow
 [.github/workflows/daily.yml](.github/workflows/daily.yml) runs it every day at 19:30 UTC (05:30 in Brisbane) and
 pushes the result; it can also be started by hand. It shares a queue with the refresh, so the two never push at once.
+
+### Update log
+
+Every rebuild (`summarise.py --stamp --data`) and every batch of AI-written text (`summarise.py --write`,
+`recent.py --write`) adds an entry to `site/update-log.json`: when it ran, the GitHub run, what it did, how many items
+passed first time, how many (and what share) were escalated to the fallback model and how many of those passed, and the
+tokens and cost per model at list price. The page shows it when you click the refresh time in the header (or the
+"Updated" time on the Recent tab), with the total spend and the overall share escalated.
 
 ```bash
 GH_TOKEN=... python -I tools/recent.py site                                   # dry run: what's in the window, what's due

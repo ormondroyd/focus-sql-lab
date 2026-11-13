@@ -24,6 +24,7 @@ Everything outside `site/focus/`:
   automation, short plain-text excerpts of each comment and review, and a summary of each thread's fortnight and a
   one-line gist of each comment and review, written by an AI model. They paraphrase those discussions and name
   participants by their GitHub usernames.
+- `site/update-log.json`: the record of each rebuild and each batch of AI-written text, with counts and costs.
 - `tools/practice.json`: the practice queries, which are built into `site/practice-queries.json`
 - `tools/*.py`: the build scripts
 - `Dockerfile`, `nginx.conf`, `README.md`, `NOTICE.md`
