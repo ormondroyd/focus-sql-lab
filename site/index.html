@@ -214,13 +214,27 @@
   .log-open { border: 0; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer;
     text-decoration: underline dotted; text-underline-offset: 3px; }
   .log-open:hover { color: var(--accent); }
-  #evidence .ev-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 10px; }
-  #evidence .ev-head p { margin: 0 0 4px; color: var(--muted); font-size: 13px; max-width: 80ch; flex-basis: 100%; }
-  #evidence .ev-filters { display: inline-flex; flex-wrap: wrap; gap: 4px; }
-  #evidence .ev-filters button { border: 1px solid var(--line); background: transparent; border-radius: 14px; padding: 3px 10px; font-size: 12.5px; }
-  #evidence .ev-filters button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
-  #evidence input[type=search] { max-width: 260px; }
-  #ev-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 10px; }
+  :is(#evidence, #ref) .ev-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 10px; }
+  :is(#evidence, #ref) .ev-head p { margin: 0 0 4px; color: var(--muted); font-size: 13px; max-width: 80ch; flex-basis: 100%; }
+  :is(#evidence, #ref) .ev-filters { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+  :is(#evidence, #ref) .ev-filters button { border: 1px solid var(--line); background: transparent; border-radius: 14px; padding: 3px 10px; font-size: 12.5px; }
+  :is(#evidence, #ref) .ev-filters button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  :is(#evidence, #ref) input[type=search] { max-width: 260px; }
+  #ev-list, #ref-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 10px; }
+  #ev-list.as-list, #ref-list.as-list { display: block; overflow-x: auto; }
+  .view-switch { display: inline-flex; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin-left: auto; }
+  .view-switch button { border: 0; background: transparent; padding: 3px 12px; font-size: 12.5px; }
+  .view-switch button[aria-pressed="true"] { background: var(--panel); color: var(--accent); font-weight: 600; }
+  table.slist { width: 100%; min-width: 0; font-size: 13px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  table.slist th, table.slist td { white-space: normal; max-width: none; overflow: visible; vertical-align: top; padding: 7px 12px; }
+  table.slist th { font-family: inherit; position: static; }
+  table.slist th button { border: 0; background: none; padding: 0; font: inherit; font-weight: 600; color: inherit; cursor: pointer; }
+  table.slist th[aria-sort="ascending"] button::after { content: " ▲"; font-size: 10px; }
+  table.slist th[aria-sort="descending"] button::after { content: " ▼"; font-size: 10px; }
+  table.slist td.nowrap { white-space: nowrap; }
+  table.slist .linkish { font-size: 13px; }
+  .ev-card .ref-name { margin: 6px 0 0; font-size: 14px; }
+  .ev-card .ref-name .linkish { font-size: 14px; font-weight: 600; text-decoration: none; }
   .ev-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
   .ev-card p { margin: 6px 0; line-height: 1.5; }
   .ev-card blockquote { margin: 6px 0; padding: 2px 0 2px 10px; border-left: 3px solid var(--line); font-style: italic; }
@@ -301,11 +315,7 @@
     border-radius: 999px; background: var(--panel); border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
   .pill.hl { border-color: var(--accent); color: var(--accent); font-weight: 600; }
   .erd.focus .pill:not(.hl) { opacity: 0.35; }
-  .model-bottom { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 16px; margin-top: 22px; align-items: start; }
-  #rel-list, #attr-list, #cond-list, #topic-list { list-style: none; margin: 0; padding: 0; }
-  #rel-list button, #attr-list button, #cond-list button, #topic-list button { width: 100%; text-align: left; border: 0; border-radius: 6px; padding: 6px 8px; background: transparent; font-size: 13px; }
-  #rel-list button[aria-pressed="true"], #attr-list button[aria-pressed="true"], #cond-list button[aria-pressed="true"], #topic-list button[aria-pressed="true"] { background: var(--panel); box-shadow: 0 0 0 1px var(--accent); }
-  #rel-list .opt { color: var(--muted); font-size: 11px; }
+  .model-bottom { margin-top: 22px; }
   .detail { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 13px; min-height: 140px; }
   .detail h3 { margin: 0 0 2px; font-size: 15px; }
   .detail .sub { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 8px; }
@@ -333,7 +343,6 @@
   .detail .note-box { border: 1px dashed var(--line); border-radius: 8px; padding: 4px 10px 8px; margin: 10px 0; }
   .detail .note-box h5 { margin: 8px 0 2px; font-size: 12.5px; }
   .detail .conv { margin: 8px 0 4px; line-height: 1.5; }
-  #topic-list .tgroup { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 10px 8px 2px; }
   .detail pre.schema { max-height: 360px; overflow: auto; font-size: 11.5px; }
   .detail .term { border-bottom: 1px dotted var(--muted); cursor: help; }
   .detail .plain { font-size: 13.5px; line-height: 1.55; margin: 8px 0; }
@@ -359,7 +368,6 @@
   @media (max-width: 1000px) {
     .erd { grid-template-columns: 1fr; grid-template-areas: "cau" "sku" "cc" "inv" "bp"; padding: 0; }
     .erd > svg, #erd-labels { display: none; }
-    .model-bottom { grid-template-columns: 1fr; }
   }
 
   @media (max-width: 760px) {
@@ -374,6 +382,7 @@
   <h1>FOCUS SQL Lab</h1>
   <nav class="apptabs" aria-label="Views">
     <button data-tab="model" aria-pressed="true">Data model</button>
+    <button data-tab="ref" aria-pressed="false">Reference</button>
     <button data-tab="query" aria-pressed="false">Query</button>
     <button data-tab="quiz" aria-pressed="false">Quiz</button>
     <button data-tab="evidence" aria-pressed="false">Evidence</button>
@@ -497,22 +506,22 @@
   </div>
   <div class="erd" id="erd"><p class="hint">Loading the data model…</p></div>
   <div class="model-bottom">
-    <div>
-      <h2 style="margin-top:0">Relationships <span class="tag lab" title="Names written by the lab">lab names</span></h2>
-      <ul id="rel-list"></ul>
-      <h2 style="margin-top:18px">Attributes</h2>
-      <p class="hint" style="margin:0 0 6px">Shared rule sets that the datasets' and columns' requirements point to.</p>
-      <ul id="attr-list"></ul>
-      <h2 style="margin-top:18px">Operating model conditions</h2>
-      <p class="hint" style="margin:0 0 6px">What makes a Conditional column or rule apply, such as Includes Payable Invoices.</p>
-      <ul id="cond-list"></ul>
-      <h2 style="margin-top:18px">Supporting material</h2>
-      <p class="hint" style="margin:0 0 6px">The appendix (worked examples and guidance), metadata (how a delivery of FOCUS data
-        describes itself) and the JSON schemas behind the JSON columns.</p>
-      <ul id="topic-list"></ul>
-    </div>
-    <div class="detail" id="model-detail"><p class="hint">Select a relationship, a table or a column to see its definition from the spec and how it looks in the loaded data.</p></div>
+    <div class="detail" id="model-detail"><p class="hint">Click a line, a table name or a column to see its definition
+      from the specification and how it looks in the loaded data. Conditions, attributes and the supporting material
+      are in the Reference tab.</p></div>
   </div>
+</section>
+<section id="ref" hidden>
+  <div class="ev-head">
+    <p>What the datasets' and columns' requirements point to: the operating model conditions that make a Conditional
+      column or rule apply, the attributes (rule sets shared across datasets and columns), and the supporting material
+      (the appendix, metadata, and the JSON schemas behind the JSON columns). Names and descriptions are the
+      specification's. Click a name to open it in the Data model.</p>
+    <div class="ev-filters" id="ref-filters" role="group" aria-label="Kind of entry"></div>
+    <input id="ref-search" type="search" placeholder="Search the reference" aria-label="Search the reference">
+    <div class="view-switch" data-for="ref" role="group" aria-label="Show as"></div>
+  </div>
+  <div id="ref-list"><p class="hint">Loading…</p></div>
 </section>
 <section id="evidence" hidden>
   <div class="ev-head">
@@ -520,6 +529,7 @@
       conversations behind each change. Each item links to its threads on GitHub and to the parts of the model it concerns.</p>
     <div class="ev-filters" id="ev-filters" role="group" aria-label="Kind of evidence"></div>
     <input id="ev-search" type="search" placeholder="Search the evidence" aria-label="Search the evidence">
+    <div class="view-switch" data-for="evidence" role="group" aria-label="Show as"></div>
   </div>
   <div id="ev-list"><p class="hint">Loading…</p></div>
 </section>
@@ -770,6 +780,7 @@ async function init() {
   setStatus(`Ready · ${total.toLocaleString()} rows in ${names.length} tables`, true);
   if (!saved) run();
   if (tab === 'model') renderModel();
+  if (tab === 'ref') renderRef();
   if (tab === 'ai') renderAi();
   if (tab === 'quiz') renderQuiz();
   if (tab === 'evidence') renderEvidence(); // again, now topic names are known
@@ -1162,6 +1173,7 @@ function showTab(t) {
   document.querySelector('.layout').hidden = t !== 'query';
   $('model').hidden = t !== 'model';
   $('evidence').hidden = t !== 'evidence';
+  $('ref').hidden = t !== 'ref';
   $('ai').hidden = t !== 'ai';
   $('quiz').hidden = t !== 'quiz';
   $('recent').hidden = t !== 'recent';
@@ -1169,6 +1181,7 @@ function showTab(t) {
   if ((location.hash === '#recent') !== (t === 'recent')) history.replaceState(null, '', t === 'recent' ? '#recent' : location.pathname + location.search);
   if (t === 'model') renderModel();
   if (t === 'evidence') renderEvidence();
+  if (t === 'ref') renderRef();
   if (t === 'ai') renderAi();
   if (t === 'quiz') renderQuiz();
   if (t === 'recent') renderRecent();
@@ -1453,6 +1466,16 @@ async function renderEvidence() {
     `<button data-kind="${k}" aria-pressed="${k === evKind}">${label} · ${counts[k] || 0}</button>`).join('');
   const items = ev.items.filter((i) => (evKind === 'all' || i.category === evKind)
     && (!q || [i.statement, i.quote, ...(i.who || []), ...(i.objects || []).map(objLabel)].join(' ').toLowerCase().includes(q)));
+  if (showList('evidence', 'ev-list')) {
+    $('ev-list').innerHTML = items.length ? sortList('evidence', [
+      { key: 'kind', label: 'Kind' }, { key: 'what', label: 'What' }, { key: 'date', label: 'Date', cls: 'nowrap' },
+      { key: 'threads', label: 'Threads' }, { key: 'model', label: 'In the model' }], items.map((i) => ({
+      cells: { kind: `<span class="tag">${EV_KINDS[i.category]}</span>`, what: linkRefs(i.statement), date: escapeHtml(i.date || ''),
+        threads: threadLinks(i.threads || []), model: (i.objects || []).map(objButton).join(', ') },
+      sort: { kind: EV_KINDS[i.category], what: i.statement, date: i.date || '', threads: (i.threads || [])[0] || 0,
+        model: (i.objects || []).map(objLabel).join(', ') } }))) : '<p class="hint">Nothing matches.</p>';
+    return;
+  }
   $('ev-list').innerHTML = items.map((i) => `<div class="ev-card">
       <div class="ev-top"><span class="tag">${EV_KINDS[i.category]}</span><span>${escapeHtml(i.date || '')}</span></div>
       <p>${linkRefs(i.statement)}</p>
@@ -1460,6 +1483,92 @@ async function renderEvidence() {
       <div class="ev-meta">${(i.who || []).length ? `Asked for or backed by: ${escapeHtml(i.who.join(', '))}<br>` : ''}Threads: ${threadLinks(i.threads || [])}${
         (i.objects || []).length ? `<br>In the model: ${i.objects.map(objButton).join(', ')}` : ''}</div>
     </div>`).join('') || '<p class="hint">Nothing matches.</p>';
+}
+
+// ---- Cards or a sortable list: the switch on the Evidence and Reference tabs, remembered per tab ----------------------
+const listSort = {};
+function showList(t, listId) {
+  const view = store.get(`view:${t}`) === 'list' ? 'list' : 'cards';
+  document.querySelector(`.view-switch[data-for="${t}"]`).innerHTML = [['cards', 'Cards'], ['list', 'List']].map(([v, label]) =>
+    `<button type="button" data-view="${v}" aria-pressed="${v === view}">${label}</button>`).join('');
+  $(listId).classList.toggle('as-list', view === 'list');
+  return view === 'list';
+}
+// cols: [{key, label, cls}]; rows: [{cells: {key: html}, sort: {key: text or number}}]. Clicking a heading sorts by it.
+function sortList(t, cols, rows) {
+  const s = (listSort[t] ??= { key: cols[0].key, dir: 1 });
+  const cmp = (x, y) => (typeof x === 'number' && typeof y === 'number' ? x - y
+    : String(x).localeCompare(String(y), undefined, { numeric: true, sensitivity: 'base' }));
+  const sorted = [...rows].sort((a, b) => cmp(a.sort[s.key], b.sort[s.key]) * s.dir);
+  return `<table class="slist"><thead><tr>${cols.map((c) => `<th aria-sort="${c.key === s.key ? (s.dir > 0 ? 'ascending' : 'descending') : 'none'}"><button type="button" data-sort="${c.key}">${c.label}</button></th>`).join('')}</tr></thead>
+    <tbody>${sorted.map((r) => `<tr>${cols.map((c) => `<td${c.cls ? ` class="${c.cls}"` : ''}>${r.cells[c.key]}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+function onListClick(t, render) {
+  return (e) => {
+    const v = e.target.closest('[data-view]');
+    if (v) { store.set(`view:${t}`, v.dataset.view); return render(); }
+    const h = e.target.closest('[data-sort]');
+    if (h) { const s = listSort[t]; if (s.key === h.dataset.sort) s.dir = -s.dir; else { s.key = h.dataset.sort; s.dir = 1; } return render(); }
+    const b = e.target.closest('[data-obj]');
+    if (b) openObject(b.dataset.obj);
+  };
+}
+
+// ---- Reference: operating model conditions, attributes and supporting material, from model.json -------------------
+const REF_KINDS = [['all', 'All'], ['condition', 'Conditions'], ['attribute', 'Attributes'], ['appendix', 'Appendix'],
+  ['metadata', 'Metadata'], ['schema', 'JSON schemas']];
+const REF_KIND = { condition: 'Condition', attribute: 'Attribute', appendix: 'Appendix', metadata: 'Metadata', schema: 'JSON schema' };
+let refKind = 'all';
+const dsName = (id) => (dsById(id) || {}).name || id;
+// Where an entry applies or is referenced from, grouped by dataset: "Cost and Usage: BillingCurrency, PricingCurrency".
+function appliesToHtml(pairs, max = 12) {
+  const byDs = new Map();
+  pairs.forEach(([ds, col]) => { if (!byDs.has(ds)) byDs.set(ds, []); if (col && !byDs.get(ds).includes(col)) byDs.get(ds).push(col); });
+  let left = max, hidden = 0;
+  const parts = [...byDs].map(([ds, cols]) => {
+    const shown = cols.slice(0, Math.max(left, 0)); hidden += cols.length - shown.length; left -= shown.length;
+    return `<button class="linkish" data-obj="dataset:${escapeHtml(ds)}">${escapeHtml(dsName(ds))}</button>${shown.length ? ': '
+      + shown.map((c) => `<button class="linkish" data-obj="column:${escapeHtml(ds)}.${escapeHtml(c)}">${escapeHtml(c)}</button>`).join(', ') : ''}`;
+  });
+  return parts.join(' · ') + (hidden ? ` and ${hidden} more` : '');
+}
+async function renderRef() {
+  if (!model) return; // init() calls this again once the model is loaded
+  const o = await loadObj();
+  const plain = (path, fallback) => (o && o.summaries[path]) || fallback || '';
+  const all = [
+    ...(model.conditions || []).map((x) => ({ kind: 'condition', key: `condition:${x.id}`, name: x.name, introduced: x.introduced,
+      text: plain(x.source, x.description), used: x.used_by || [] })),
+    ...(model.attributes || []).map((a) => ({ kind: 'attribute', key: `attribute:${a.id}`, name: a.name, introduced: a.introduced,
+      text: plain(a.source, a.description), used: a.used_by || [] })),
+    ...(model.topics || []).map((t) => ({ kind: t.kind, key: `topic:${t.id}`, name: t.name, introduced: '',
+      text: plain(`topic:${t.id}`, t.description), used: t.referenced_by || [] })),
+  ];
+  const counts = { all: all.length };
+  all.forEach((i) => { counts[i.kind] = (counts[i.kind] || 0) + 1; });
+  $('ref-filters').innerHTML = REF_KINDS.map(([k, label]) =>
+    `<button data-rkind="${k}" aria-pressed="${k === refKind}">${label} · ${counts[k] || 0}</button>`).join('');
+  const q = $('ref-search').value.trim().toLowerCase();
+  const items = all.filter((i) => (refKind === 'all' || i.kind === refKind)
+    && (!q || [i.name, i.text, REF_KIND[i.kind], ...i.used.flat()].join(' ').toLowerCase().includes(q)));
+  const nameBtn = (i) => `<button class="linkish" data-obj="${escapeHtml(i.key)}">${escapeHtml(i.name)}</button>`;
+  const usedLabel = (i) => (i.kind === 'condition' || i.kind === 'attribute' ? 'Applies to' : 'Referenced from');
+  if (!items.length) { $('ref-list').innerHTML = '<p class="hint">Nothing matches.</p>'; showList('ref', 'ref-list'); return; }
+  if (showList('ref', 'ref-list')) {
+    $('ref-list').innerHTML = sortList('ref', [{ key: 'name', label: 'Name' }, { key: 'kind', label: 'Kind', cls: 'nowrap' },
+      { key: 'introduced', label: 'Introduced', cls: 'nowrap' }, { key: 'used', label: 'Applies to or referenced from' }],
+    items.map((i) => ({
+      cells: { name: nameBtn(i), kind: escapeHtml(REF_KIND[i.kind]), introduced: escapeHtml(i.introduced || ''),
+        used: i.used.length ? appliesToHtml(i.used, 6) : '' },
+      sort: { name: i.name, kind: REF_KIND[i.kind], introduced: i.introduced || '', used: i.used.length } })));
+    return;
+  }
+  $('ref-list').innerHTML = items.map((i) => `<div class="ev-card">
+      <div class="ev-top"><span class="tag">${REF_KIND[i.kind]}</span><span>${i.introduced ? `Introduced in ${escapeHtml(i.introduced)}` : ''}</span></div>
+      <h3 class="ref-name">${nameBtn(i)}</h3>
+      ${i.text ? `<p>${escapeHtml(i.text)}</p>` : ''}
+      ${i.used.length ? `<div class="ev-meta">${usedLabel(i)}: ${appliesToHtml(i.used)}</div>` : ''}
+    </div>`).join('');
 }
 
 // ---- Recent: what the working group discussed on GitHub in the last two weeks (site/recent.json, rebuilt daily) ------
@@ -1639,20 +1748,7 @@ function buildModel() {
       <div class="allcols" hidden>${d.columns.map((c) => colRow(d.id, c, keys.includes(c.id))).join('')}</div>
     </div>`;
   }).join('') + '<svg id="erd-lines" aria-hidden="true"></svg><div id="erd-labels"></div>';
-  $('rel-list').innerHTML = model.relationships.map((r) =>
-    `<li><button data-rel="${r.id}" aria-pressed="false">${escapeHtml(r.name)}</button></li>`).join('');
   erd.addEventListener('click', onModelClick);
-  $('rel-list').addEventListener('click', onModelClick);
-  $('attr-list').innerHTML = (model.attributes || []).map((a) =>
-    `<li><button data-attr="${escapeHtml(a.anchor)}" aria-pressed="false">${escapeHtml(a.name)}</button></li>`).join('');
-  $('attr-list').addEventListener('click', onModelClick);
-  $('cond-list').innerHTML = (model.conditions || []).map((x) =>
-    `<li><button data-cond="${escapeHtml(x.anchor)}" aria-pressed="false">${escapeHtml(x.name)}</button></li>`).join('');
-  $('cond-list').addEventListener('click', onModelClick);
-  const groups = [['appendix', 'Appendix'], ['metadata', 'Metadata'], ['schema', 'JSON schemas']];
-  $('topic-list').innerHTML = groups.map(([kind, label]) => `<li class="tgroup">${label}</li>` + (model.topics || [])
-    .filter((t) => t.kind === kind).map((t) => `<li><button data-topic="${t.id}" aria-pressed="false">${escapeHtml(t.name)}</button></li>`).join('')).join('');
-  $('topic-list').addEventListener('click', onModelClick);
   $('model-detail').addEventListener('click', onDetailClick);
   new ResizeObserver(() => drawLines()).observe(erd);
   modelBuilt = true;
@@ -1800,13 +1896,6 @@ function applySelection() {
   }
   if (selection?.type === 'col') mark(selection.ds, selection.col, 'sel');
   if (selection?.type === 'table') erd.querySelector(`.card[data-ds="${selection.ds}"]`)?.classList.add('sel');
-  $('rel-list').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(rels.has(b.dataset.rel))));
-  $('attr-list').querySelectorAll('button').forEach((b) =>
-    b.setAttribute('aria-pressed', String(selection?.type === 'attr' && selection.id === b.dataset.attr)));
-  $('cond-list').querySelectorAll('button').forEach((b) =>
-    b.setAttribute('aria-pressed', String(selection?.type === 'cond' && selection.id === b.dataset.cond)));
-  $('topic-list').querySelectorAll('button').forEach((b) =>
-    b.setAttribute('aria-pressed', String(selection?.type === 'topic' && selection.id === b.dataset.topic)));
 }
 
 function openInQuery(sql) {
@@ -2194,7 +2283,12 @@ $('about').querySelector('.about-close').addEventListener('click', () => $('abou
 $('about').addEventListener('click', (e) => { if (e.target === $('about')) $('about').close(); }); // click outside to close
 $('ev-filters').addEventListener('click', (e) => { const b = e.target.closest('[data-kind]'); if (b) { evKind = b.dataset.kind; renderEvidence(); } });
 $('ev-search').addEventListener('input', () => renderEvidence());
-$('ev-list').addEventListener('click', (e) => { const b = e.target.closest('[data-obj]'); if (b) openObject(b.dataset.obj); });
+$('ev-list').addEventListener('click', onListClick('evidence', renderEvidence));
+document.querySelector('.view-switch[data-for="evidence"]').addEventListener('click', onListClick('evidence', renderEvidence));
+$('ref-filters').addEventListener('click', (e) => { const b = e.target.closest('[data-rkind]'); if (b) { refKind = b.dataset.rkind; renderRef(); } });
+$('ref-search').addEventListener('input', () => renderRef());
+$('ref-list').addEventListener('click', onListClick('ref', renderRef));
+document.querySelector('.view-switch[data-for="ref"]').addEventListener('click', onListClick('ref', renderRef));
 $('ai-body').addEventListener('click', onAiClick);
 $('recent-filters').addEventListener('click', (e) => { const b = e.target.closest('[data-rkind]'); if (b) { recentKind = b.dataset.rkind; renderRecent(); } });
 $('recent-search').addEventListener('input', () => renderRecent());
