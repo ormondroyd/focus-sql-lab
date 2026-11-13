@@ -18,7 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
+      # The latest main, not the commit the run was queued on: a run that waited behind another must build on
+      # what that one pushed, or the two clash on site/update-log.json.
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: actions/setup-python@v5
         with:

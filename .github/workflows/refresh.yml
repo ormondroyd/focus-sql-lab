@@ -42,7 +42,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180  # Haiku at high effort takes about 20 seconds a summary
     steps:
+      # The latest main, not the commit the run was queued on: a run that waited behind another must build on
+      # what that one pushed, or the two clash on site/update-log.json.
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Check out FOCUS_Spec working_draft, with full history
         uses: actions/checkout@v4
