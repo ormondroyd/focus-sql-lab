@@ -7,6 +7,15 @@ on:
   schedule:
     - cron: "30 19 * * *"  # 19:30 UTC, 05:30 in Brisbane
   workflow_dispatch:
+    inputs:
+      only:
+        description: "Rewrite only these threads (numbers, comma-separated), to try a change; blank: whatever is due"
+        type: string
+        default: ""
+      publish:
+        description: "Push the result to main. Untick for a trial run: the result is kept for download and nothing is pushed"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -34,9 +43,25 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python -I tools/recent.py site --write --model claude-haiku-5-5 --effort high
+          ONLY: ${{ inputs.only }}
+        run: |
+          args=(--write --model claude-haiku-5-5 --effort high)
+          if [ -n "$ONLY" ]; then args+=(--only "$ONLY"); fi
+          python -I tools/recent.py site "${args[@]}"
 
+      - name: Keep the result (trial run)
+        if: ${{ github.event_name == 'workflow_dispatch' && !inputs.publish }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: trial-run
+          path: |
+            site/recent.json
+            site/update-log.json
+          retention-days: 7
+
+      # A scheduled run has no inputs, so it always publishes.
       - name: Commit and push, if anything changed
+        if: ${{ github.event_name == 'schedule' || inputs.publish }}
         run: |
           git add site/recent.json site/update-log.json
           if git diff --cached --quiet; then echo "Nothing changed."; exit 0; fi

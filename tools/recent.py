@@ -23,7 +23,7 @@ import sys
 from collections import Counter, defaultdict
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))  # python -I leaves the script's folder off the path
-from common import Spend, cut, escalation, fallback_from, gh_all, is_bot, log_run, model_from, norm, problems  # noqa: E402
+from common import Spend, cut, escalation, fallback_from, gh, gh_all, is_bot, log_run, model_from, norm, problems  # noqa: E402
 
 SITE, FLAGS = pathlib.Path(sys.argv[1]), sys.argv[2:]
 DAYS = 14
@@ -32,7 +32,9 @@ SINCE = (NOW - datetime.timedelta(days=DAYS)).strftime("%Y-%m-%dT%H:%M:%SZ")
 OUT = SITE / "recent.json"
 MODEL, SETTINGS = model_from(FLAGS, default="claude-haiku-5-5")
 FALLBACK, FALLBACK_SETTINGS = fallback_from(FLAGS, MODEL)
-SUMMARY_WORDS, GIST_WORDS = 90, 30
+SUMMARY_WORDS, GIST_WORDS = 140, 30
+STYLE = 2  # the brief's version: a summary written to an earlier brief is written again
+ONLY = {int(n) for n in (FLAGS[FLAGS.index("--only") + 1] if "--only" in FLAGS else "").split(",") if n.strip()}
 
 model = json.loads((SITE / "focus" / "model.json").read_text())
 history = json.loads((SITE / "focus" / "history.json").read_text())
@@ -159,19 +161,49 @@ for n, evs in events.items():
 feed.sort(key=lambda t: t["last"], reverse=True)
 
 # ---- summaries ----------------------------------------------------------------------------------------------------
+# A thread keeps yesterday's summary if nothing new was said and it was written to the current brief. With --only (a
+# trial), just the named threads are written, and every other thread keeps what it had.
+SUMMARY_FIELDS = ("summary", "gists", "written_by", "style")
 for t in feed:
     old = kept.get(t["number"])
-    if old and old.get("basis") == t["basis"] and old.get("summary"):
-        t["summary"], t["gists"] = old["summary"], old.get("gists", {})
-due = [t for t in feed if "summary" not in t]
+    if not old or not old.get("summary") or t["number"] in ONLY:
+        continue
+    if (old.get("basis") == t["basis"] and old.get("style") == STYLE) or ONLY:
+        t.update({k: old[k] for k in SUMMARY_FIELDS if k in old})
+due = [t for t in feed if "summary" not in t and (not ONLY or t["number"] in ONLY)]
+whole = json.loads((SITE / "thread-summaries.json").read_text())["summaries"]  # earlier summaries of whole threads
+LINKED = re.compile(r"^\s*\[?[A-Za-z]+\]?\s*#(\d+)\b")  # the issue a pull request's title names: "AI #2735: ..."
+linked_cache = {}
+
+
+def linked_issue(t):
+    """The issue a pull request implements, from its title: the requirement behind it."""
+    m = LINKED.match(t["title"]) if t["kind"] == "pr" else None
+    if not m:
+        return None
+    n = int(m.group(1))
+    if n not in linked_cache:
+        try:
+            linked_cache[n] = threads.get(n) or gh(f"issues/{n}")
+        except Exception:
+            linked_cache[n] = None
+    return linked_cache[n]
 
 
 def source_text(t):
     i = threads[t["number"]]
     head = [f"Title: #{t['number']} {t['title']}",
             f"{'Pull request' if t['kind'] == 'pr' else 'Issue'} opened by {t['author']} on {t['opened']}. State: {t['state']}.",
-            "Description:\n" + cut(i.get("body"), 4000),
-            f"\nActivity in the last {DAYS} days, oldest first. Each item starts with its ID in brackets."]
+            "Description:\n" + cut(i.get("body"), 4000)]
+    issue = linked_issue(t)
+    if issue:
+        head.append(f"\nThe issue this pull request implements, #{issue['number']} {issue['title']}, opened by "
+                    f"{issue['user']['login']}:\n" + cut(issue.get("body"), 3000))
+    for n, what in ((t["number"], "this thread"), (issue and issue["number"], f"#{issue['number'] if issue else ''}")):
+        if n and str(n) in whole:
+            head.append(f"\nBackground: an earlier summary of {what} as a whole, written by an AI model (context only; it may "
+                        f"be out of date):\n{whole[str(n)]}")
+    head.append(f"\nActivity in the last {DAYS} days, oldest first. Each item starts with its ID in brackets.")
     lines = []
     for e in t["events"]:
         reply = f" (reply to {e['parent']})" if e.get("parent") else ""
@@ -199,19 +231,24 @@ for t in due[:20]:
 if "--write" not in FLAGS:
     sys.exit()
 
-RULES = """You summarise recent activity in GitHub threads from the FOCUS specification repository (FinOps Open Cost and Usage Specification) for a daily digest. The reader follows the working group and wants to know what happened in the last two weeks without opening the thread.
+RULES = """You write a daily digest of GitHub threads from the FOCUS specification repository (FinOps Open Cost and Usage Specification). The reader follows the working group closely and wants to understand each thread without opening it.
 
 Return:
-- summary: what this thread's activity in the last two weeks was about, in plain English and the past tense: what was proposed, asked or changed, who held which position (by GitHub username), anything agreed or decided, and what the thread says happens next. Use the description only as background for what is new.
-- gists: one entry for each item in the activity list except status changes, with its ID, saying in one sentence what that item said, asked or decided. A review that only approves can say so briefly.
+- summary: a plain-spoken paragraph of at most 140 words, written the way you'd explain the thread to a colleague over coffee rather than as a list of events. Get across:
+  - what is being proposed or asked, and why: the problem or need behind it, as the thread, its description and the issue it implements tell it;
+  - the nuance that matters: the real point of debate, the trade-off or the subtle distinction, and who is on which side (by GitHub username);
+  - how people feel about it, with the evidence: who backs it, who has doubts or pushes back, or that there has been little reaction so far;
+  - where it stands after the last two weeks, and what happens next if the thread says.
+  Lead with the substance, not the procedure. Mention routine steps (approvals, moving to member review, changing the target branch) only where they change where things stand.
+- gists: one entry for each item in the activity list except status changes, with its ID, saying in one plain sentence what that item argued, asked or decided, and why if the item says. A review that only approves can say so briefly.
 
 Rules:
-- State only what the thread says. Don't speculate, evaluate or add background knowledge.
+- Interpret, but ground everything in the thread, its description, the linked issue or the background summary. Don't add facts from outside them, and don't guess at motives or feelings the thread doesn't show. If the motivation or the mood isn't clear, say so.
 - Name people only by their GitHub username exactly as shown, with the same capital and small letters even at the start of a sentence. Never guess real names. Refer to people by username or with they/them, never he or she.
 - Refer to other issues and pull requests as #123. No URLs, no Markdown, no emoji.
 - Write dates as 29 October 2026, or as a month and year (October 2026).
 - Paraphrase. Quote at most 10 words, and only when the exact wording matters.
-- The summary is at most 90 words. Each gist is at most 30 words."""
+- The summary is at most 140 words. Each gist is at most 30 words."""
 
 SCHEMA = {"type": "object", "additionalProperties": False, "required": ["summary", "gists"], "properties": {
     "summary": {"type": "string"},
@@ -245,10 +282,10 @@ if "--no-ai" not in FLAGS and due:
                           + ". Rewrite it so every part passes, following the same rules."}]
 
     def review(data, src, ids):
-        """The checks' findings, and the parts that pass."""
+        """The checks' findings, and the parts that pass: the summary and the gists."""
         found, ok = [], {}
-        summary_problems = problems(data.get("summary", ""), SUMMARY_WORDS, src, thread=True)
-        found += [f"summary: {p}" for p in summary_problems]
+        summary_problems = [f"summary: {p}" for p in problems(data.get("summary", ""), SUMMARY_WORDS, src, thread=True)]
+        found += summary_problems
         got = {g["id"]: g["gist"].strip() for g in data.get("gists", [])}
         for i in ids:
             if i not in got:
@@ -258,7 +295,7 @@ if "--no-ai" not in FLAGS and due:
             found += [f"gist {i}: {p}" for p in gist_problems]
             if not gist_problems:
                 ok[i] = got[i]
-        return found, (data.get("summary", "").strip() if not summary_problems else None), ok
+        return found, ({"summary": data["summary"].strip()} if not summary_problems else None), ok
 
     for t in due:
         src = source_text(t)
@@ -285,13 +322,15 @@ if "--no-ai" not in FLAGS and due:
         escalated += up
         escalated_passed += up and not found
         if summary:
-            t["summary"], t["gists"], t["written_by"] = summary, gists, sorted(writers)
+            t.update(summary)
+            t["gists"], t["written_by"], t["style"] = gists, sorted(writers), STYLE
             written += not found
             partly += bool(found)
         else:
             failed += 1
-            if t["number"] in kept and kept[t["number"]].get("summary"):  # keep yesterday's rather than nothing
-                t["summary"], t["gists"] = kept[t["number"]]["summary"], kept[t["number"]].get("gists", {})
+            old = kept.get(t["number"])
+            if old and old.get("summary"):  # keep yesterday's rather than nothing; it's tried again tomorrow
+                t.update({k: old[k] for k in SUMMARY_FIELDS if k in old if k != "style"})
                 t["stale"] = True
             elif gists:  # no summary, but keep the gists that passed (it's tried again tomorrow)
                 t["gists"], t["written_by"] = gists, sorted(writers)
@@ -307,9 +346,10 @@ OUT.write_text(json.dumps({
     "generated_at": NOW.strftime("%Y-%m-%dT%H:%M:%SZ"), "since": SINCE, "days": DAYS,
     "model": MODEL if written or partly else before.get("model"),
     "about": ("FOCUS_Spec issues and pull requests that people opened, commented on or reviewed in the last "
-              f"{DAYS} days. Each summary and one-line gist is written by an AI model from the thread, and rewritten when "
-              "the thread gains comments or reviews: check the thread before relying on one. Status changes are posted by "
-              "the repository's own automation."),
+              f"{DAYS} days. Each summary (what is proposed and why, where the debate lies, how people feel and where it "
+              "stands) and each one-line gist is written by an AI model from the thread and the issue it implements, and "
+              "rewritten when the thread gains comments or reviews: they interpret, so check the thread before relying on "
+              "one. Status changes are posted by the repository's own automation."),
     "threads": feed,
 }, indent=1, ensure_ascii=False))
 counts_ = escalation(len(due), first_pass, escalated, escalated_passed, partly + failed)
