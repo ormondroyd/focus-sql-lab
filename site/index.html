@@ -232,8 +232,17 @@
   table.slist th[aria-sort="ascending"] button::after { content: " ▲"; font-size: 10px; }
   table.slist th[aria-sort="descending"] button::after { content: " ▼"; font-size: 10px; }
   table.slist td.nowrap { white-space: nowrap; }
-  table.slist .linkish { font-size: 13px; }
+  table.slist .linkish { border: 0; background: none; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font-size: 13px; }
+  table.slist .linkish { text-align: left; }
+  table.slist td:first-child { min-width: 170px; }
+  table.slist td:first-child .linkish { text-decoration: none; font-weight: 600; }
   .ev-card .ref-name { margin: 6px 0 0; font-size: 14px; }
+  .ref-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 44%); gap: 16px; align-items: start; }
+  .ref-side { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; border-radius: 10px; }
+  .ref-side .detail { min-height: 0; }
+  #ref-list .ev-card.sel { box-shadow: 0 0 0 1px var(--accent); border-color: var(--accent); }
+  #ref-list tr.sel td { background: color-mix(in srgb, var(--accent) 14%, var(--panel)); }
+  @media (max-width: 1000px) { .ref-body { grid-template-columns: 1fr; } .ref-side { position: static; max-height: none; } }
   .ev-card .ref-name .linkish { font-size: 14px; font-weight: 600; text-decoration: none; }
   .ev-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
   .ev-card p { margin: 6px 0; line-height: 1.5; }
@@ -516,12 +525,15 @@
     <p>What the datasets' and columns' requirements point to: the operating model conditions that make a Conditional
       column or rule apply, the attributes (rule sets shared across datasets and columns), and the supporting material
       (the appendix, metadata, and the JSON schemas behind the JSON columns). Names and descriptions are the
-      specification's. Click a name to open it in the Data model.</p>
+      specification's. Click a name to preview it alongside.</p>
     <div class="ev-filters" id="ref-filters" role="group" aria-label="Kind of entry"></div>
     <input id="ref-search" type="search" placeholder="Search the reference" aria-label="Search the reference">
     <div class="view-switch" data-for="ref" role="group" aria-label="Show as"></div>
   </div>
-  <div id="ref-list"><p class="hint">Loading…</p></div>
+  <div class="ref-body">
+    <div id="ref-list"><p class="hint">Loading…</p></div>
+    <div class="ref-side" id="ref-side"></div>
+  </div>
 </section>
 <section id="evidence" hidden>
   <div class="ev-head">
@@ -1166,8 +1178,22 @@ function keyColumns(dsId) {
   return out;
 }
 
+// The Data model and Reference tabs share one detail panel (#model-detail): it moves to the tab being shown, and
+// each tab keeps its own selection, so previewing on Reference leaves the Data model's choice as it was.
+let detailOwner = 'model';
+const tabSelection = { model: null, ref: null };
+function moveDetail(t) {
+  if ((t !== 'model' && t !== 'ref') || t === detailOwner) return;
+  tabSelection[detailOwner] = selection;
+  (t === 'ref' ? $('ref-side') : document.querySelector('#model .model-bottom')).appendChild($('model-detail'));
+  detailOwner = t;
+  selection = tabSelection[t];
+  if (model) { applySelection(); renderDetail(); }
+}
+
 function showTab(t) {
   tab = t;
+  moveDetail(t);
   store.set('tab', t);
   document.querySelectorAll('.apptabs button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tab === t)));
   document.querySelector('.layout').hidden = t !== 'query';
@@ -1501,7 +1527,7 @@ function sortList(t, cols, rows) {
     : String(x).localeCompare(String(y), undefined, { numeric: true, sensitivity: 'base' }));
   const sorted = [...rows].sort((a, b) => cmp(a.sort[s.key], b.sort[s.key]) * s.dir);
   return `<table class="slist"><thead><tr>${cols.map((c) => `<th aria-sort="${c.key === s.key ? (s.dir > 0 ? 'ascending' : 'descending') : 'none'}"><button type="button" data-sort="${c.key}">${c.label}</button></th>`).join('')}</tr></thead>
-    <tbody>${sorted.map((r) => `<tr>${cols.map((c) => `<td${c.cls ? ` class="${c.cls}"` : ''}>${r.cells[c.key]}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+    <tbody>${sorted.map((r) => `<tr${r.key ? ` data-key="${escapeHtml(r.key)}"` : ''}>${cols.map((c) => `<td${c.cls ? ` class="${c.cls}"` : ''}>${r.cells[c.key]}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
 function onListClick(t, render) {
   return (e) => {
@@ -1510,7 +1536,7 @@ function onListClick(t, render) {
     const h = e.target.closest('[data-sort]');
     if (h) { const s = listSort[t]; if (s.key === h.dataset.sort) s.dir = -s.dir; else { s.key = h.dataset.sort; s.dir = 1; } return render(); }
     const b = e.target.closest('[data-obj]');
-    if (b) openObject(b.dataset.obj);
+    if (b) openObject(b.dataset.obj, t === 'ref');
   };
 }
 
@@ -1519,6 +1545,19 @@ const REF_KINDS = [['all', 'All'], ['condition', 'Conditions'], ['attribute', 'A
   ['metadata', 'Metadata'], ['schema', 'JSON schemas']];
 const REF_KIND = { condition: 'Condition', attribute: 'Attribute', appendix: 'Appendix', metadata: 'Metadata', schema: 'JSON schema' };
 let refKind = 'all';
+// The Reference entry being previewed, as its card or row key (condition:Id, attribute:Id or topic:id).
+function refKeyOf(sel) {
+  if (!sel || !model) return null;
+  if (sel.type === 'cond') return `condition:${((model.conditions || []).find((c) => c.anchor === sel.id) || {}).id}`;
+  if (sel.type === 'attr') return `attribute:${((model.attributes || []).find((a) => a.anchor === sel.id) || {}).id}`;
+  if (sel.type === 'topic') return `topic:${sel.id}`;
+  return null;
+}
+function markRefSelection() {
+  if (detailOwner !== 'ref') return;
+  const key = refKeyOf(selection);
+  $('ref-list').querySelectorAll('[data-key]').forEach((el) => el.classList.toggle('sel', el.dataset.key === key));
+}
 const dsName = (id) => (dsById(id) || {}).name || id;
 // Where an entry applies or is referenced from, grouped by dataset: "Cost and Usage: BillingCurrency, PricingCurrency".
 function appliesToHtml(pairs, max = 12) {
@@ -1558,17 +1597,20 @@ async function renderRef() {
     $('ref-list').innerHTML = sortList('ref', [{ key: 'name', label: 'Name' }, { key: 'kind', label: 'Kind', cls: 'nowrap' },
       { key: 'introduced', label: 'Introduced', cls: 'nowrap' }, { key: 'used', label: 'Applies to or referenced from' }],
     items.map((i) => ({
+      key: i.key,
       cells: { name: nameBtn(i), kind: escapeHtml(REF_KIND[i.kind]), introduced: escapeHtml(i.introduced || ''),
         used: i.used.length ? appliesToHtml(i.used, 6) : '' },
       sort: { name: i.name, kind: REF_KIND[i.kind], introduced: i.introduced || '', used: i.used.length } })));
+    markRefSelection();
     return;
   }
-  $('ref-list').innerHTML = items.map((i) => `<div class="ev-card">
+  $('ref-list').innerHTML = items.map((i) => `<div class="ev-card" data-key="${escapeHtml(i.key)}">
       <div class="ev-top"><span class="tag">${REF_KIND[i.kind]}</span><span>${i.introduced ? `Introduced in ${escapeHtml(i.introduced)}` : ''}</span></div>
       <h3 class="ref-name">${nameBtn(i)}</h3>
       ${i.text ? `<p>${escapeHtml(i.text)}</p>` : ''}
       ${i.used.length ? `<div class="ev-meta">${usedLabel(i)}: ${appliesToHtml(i.used)}</div>` : ''}
     </div>`).join('');
+  markRefSelection();
 }
 
 // ---- Recent: what the working group discussed on GitHub in the last two weeks (site/recent.json, rebuilt daily) ------
@@ -1695,15 +1737,15 @@ async function jumpRecent(n) {
 }
 
 // Open a part of the model from anywhere: "column:CostAndUsage.InvoiceId", "dataset:InvoiceDetail", "attribute:…", "condition:…", "topic:…"
-function openObject(key) {
+function openObject(key, stay = false) {
   const [kind, rest] = [key.slice(0, key.indexOf(':')), key.slice(key.indexOf(':') + 1)];
-  showTab('model');
+  if (!stay) showTab('model');
   if (kind === 'column') { const [ds, col] = rest.split('.'); select({ type: 'col', ds, col }, true); }
   else if (kind === 'dataset') select({ type: 'table', ds: rest }, true);
   else if (kind === 'attribute') select({ type: 'attr', id: ((model.attributes || []).find((a) => a.id === rest) || {}).anchor }, true);
   else if (kind === 'condition') select({ type: 'cond', id: ((model.conditions || []).find((c) => c.id === rest) || {}).anchor }, true);
   else if (kind === 'topic') select({ type: 'topic', id: rest }, true);
-  $('model-detail').scrollIntoView({ block: 'start' });
+  $('model-detail').scrollIntoView({ block: stay ? 'nearest' : 'start' });
 }
 
 // In a dataset, column, attribute, condition or topic panel: the evidence items that concern it.
@@ -1749,7 +1791,6 @@ function buildModel() {
     </div>`;
   }).join('') + '<svg id="erd-lines" aria-hidden="true"></svg><div id="erd-labels"></div>';
   erd.addEventListener('click', onModelClick);
-  $('model-detail').addEventListener('click', onDetailClick);
   new ResizeObserver(() => drawLines()).observe(erd);
   modelBuilt = true;
   refreshModelData();
@@ -1918,9 +1959,12 @@ function renderDetail() {
   const token = ++detailToken;
   const el = $('model-detail');
   if (!selection) {
-    el.innerHTML = '<p class="hint">Select a relationship, a table or a column to see its definition from the spec and how it looks in the loaded data.</p>';
+    el.innerHTML = detailOwner === 'ref' ? '<p class="hint">Click a name to preview it here.</p>'
+      : '<p class="hint">Click a line, a table name or a column to see its definition from the specification and how it looks in the loaded data. Conditions, attributes and the supporting material are in the Reference tab.</p>';
+    markRefSelection();
     return;
   }
+  markRefSelection();
   if (selection.type === 'rel') return relDetail(relById(selection.id), el, token);
   if (selection.type === 'table') return tableDetail(dsById(selection.ds), el, token);
   if (selection.type === 'attr') return ruleDetail(attrByAnchor(selection.id), 'attribute', el, token);
@@ -2287,6 +2331,7 @@ $('ev-list').addEventListener('click', onListClick('evidence', renderEvidence));
 document.querySelector('.view-switch[data-for="evidence"]').addEventListener('click', onListClick('evidence', renderEvidence));
 $('ref-filters').addEventListener('click', (e) => { const b = e.target.closest('[data-rkind]'); if (b) { refKind = b.dataset.rkind; renderRef(); } });
 $('ref-search').addEventListener('input', () => renderRef());
+$('model-detail').addEventListener('click', onDetailClick); // registered once: the panel moves between tabs
 $('ref-list').addEventListener('click', onListClick('ref', renderRef));
 document.querySelector('.view-switch[data-for="ref"]').addEventListener('click', onListClick('ref', renderRef));
 $('ai-body').addEventListener('click', onAiClick);
