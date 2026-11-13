@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-12T23:43:00Z",
- "since": "2026-10-29T23:43:00Z",
+ "generated_at": "2026-11-13T00:10:45Z",
+ "since": "2026-10-30T00:10:45Z",
  "days": 14,
- "model": null,
+ "model": "claude-haiku-5-5",
  "about": "FOCUS_Spec issues and pull requests that people opened, commented on or reviewed in the last 14 days. Each summary and one-line gist is written by an AI model from the thread, and rewritten when the thread gains comments or reviews: check the thread before relying on one. Status changes are posted by the repository's own automation.",
  "threads": [
   {
@@ -43,6 +43,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2867",
      "excerpt": "Requester Information Problem Statement The specification is built and checked by Python scripts in this repository, but CI does not test the scripts themselves. On every push, the genpdf job in workingdraft.yml and…"
     }
+   ],
+   "summary": "In the last two weeks, finops-DaveMoreau opened #2867 on 12 November 2026, asking that unit tests for the repository's Python build and check scripts run in CI. The request notes that most such scripts have no tests in CI, and that the semantic tag tools from #2860 test only locally. Proposed criteria cover running tool tests on pull requests, a naming pattern, and separation from content checks. Open questions remain on test location, workflow and test_title_case.py. No comments or decisions appear; the issue remains open.",
+   "gists": {
+    "o2867": "Opened the issue asking that unit tests for the repository's Python build and check scripts run in CI, separately from the content checks."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -438,6 +445,38 @@
       "Review Bot updated PR Approvals: 2 → 3"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened this pull request on 6 November 2026 to add the v1.5 changelog section, built from the v1.4 to v1.5-cr diff. shawnalpay's 12 November review confirmed the counts and asked for classification and wording changes, which Matt-Cowsert applied. flanakin found no blockers and suggested one wording change. davidearney, flanakin and finops-DaveMoreau approved, so three approvals are recorded. The thread does not state a next step.",
+   "gists": {
+    "o2840": "Matt-Cowsert opened the pull request on 6 November 2026 adding the v1.5 section to CHANGELOG.md, built from the v1.4 to v1.5-cr diff, with the classifications flagged for review.",
+    "i4554759726": "shawnalpay asked that the changelog say tiered-pricing providers emit a distinct SkuPriceId per tier, since counting or grouping on it could change results, and offered a sentence.",
+    "i4554759739": "shawnalpay questioned whether ContractedUnitPrice presence should be Compatible, since providers with negotiated pricing but no unit pricing may now omit it, and suggested a note or Migration Compatible.",
+    "i4554759747": "shawnalpay noted the Allocated columns moved from data generator-calculated split cost allocation to operating model split cost allocation, a scope change that should be called out.",
+    "i4554759754": "shawnalpay said the Tags key-matching requirement is new in v1.5 because no published release from v1.0 to v1.4 has it, and suggested wording that says added rather than restored.",
+    "i4554759782": "shawnalpay repeated the Tags point for the Tags entry, suggesting it be worded as added user-defined tag key preservation requirements.",
+    "r5880060055": "shawnalpay's review said the counts hold up (27 new columns, 26 conditions, 16 glossary entries, 3 supported features) and the Changed columns list looks complete, then listed inline comments.",
+    "i4554759798": "shawnalpay pointed out the entry omits the removal of the two v1.4 valid-reference rules for SkuPriceId and suggested naming the replacement one-PricingUnit requirements.",
+    "i4554759807": "shawnalpay said the ApplicabilityCriteria to Conditions rename breaks tools reading the model JSON, so it should not sit under new features; suggested a Changed subsection or a Breaking label.",
+    "i4554759817": "shawnalpay said operating model conditions are a new entity the section does not explain, and proposed a short intro paragraph defining them and the presence-trigger changes.",
+    "i4554759826": "shawnalpay said the condition should be named Includes Billing and Payment Currency Differences rather than Billing-Payment, and suggested the exact name.",
+    "i4554882846": "Matt-Cowsert replied that the sentence on tiered SkuPriceId values was added in commit 30369f37.",
+    "i4554883698": "Matt-Cowsert agreed that ContractedUnitPrice was the only one of the six triggers that narrowed, and moved it to its own Migration Compatible entry using the flat-fee example.",
+    "i4554884348": "Matt-Cowsert added the scope note to the split cost allocation entry, listing the five Allocated columns that existed in v1.4 and leaving out AllocatedServiceName because it is new.",
+    "i4554885189": "Matt-Cowsert accepted the Tags wording as added, noting that v1.0 and v1.1 required key preservation and v1.2 dropped the key part.",
+    "i4554886205": "Matt-Cowsert reworded the Tags entry to added and noted the key preservation requirement from v1.0 and v1.1.",
+    "i4554887549": "Matt-Cowsert took shawnalpay's suggested wording for the SkuPriceId entry that now removes the valid-reference rules.",
+    "i4554888148": "Matt-Cowsert marked the Conditions rename as Breaking rather than adding a new subsection, since the v1.4 changelog has no Changed requirements model heading.",
+    "i4554888664": "Matt-Cowsert added the operating model conditions intro, using e.g. for party examples, noting triggers were generalized to the operating model, and pointing to supported features.",
+    "i4554889165": "Matt-Cowsert fixed the name of the currency differences condition to match the specification.",
+    "i4554942653": "Matt-Cowsert said the Tags suggestion was applied as described rather than accepted by click, and resolved the thread.",
+    "r5880633640": "davidearney approved the pull request with a one-word LGTM review.",
+    "i4555505708": "flanakin suggested dropping informative from the AI Model Billing supported feature entry, since the changelog says all supported features are informative and the adjective implies others are not.",
+    "r5881002028": "flanakin's review found no blockers, confirmed the links, presence trigger changes, consumption currency narrowing and attribute entries, and raised one wording suggestion.",
+    "r5881154314": "flanakin approved the pull request with no comment.",
+    "r5883669660": "finops-DaveMoreau approved the pull request with no comment."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -620,6 +659,21 @@
      "parent": "i4543779150",
      "excerpt": "I'd keep Dave's original wording: - \"SKU Price Pricing Currency\" is not a Display Name. editorial-guidelines.md: \"References to FOCUS entities in non-normative content (i.e., outside Requirements sections) MUST use…"
     }
+   ],
+   "summary": "finops-DaveMoreau opened this pull request on 10 November 2026 to make six SKU Price dataset and appendix lines name the record, closing #2735. ijurica approved it on 11 November 2026, flagging an unclear 1.5 or 1.6 release target. finops-DaveMoreau proposed renaming the dataset to Price List. kk09v's change request, about adding record to the glossary, was dismissed. flanakin approved with a currency wording suggestion that ijurica opposed. On 12 November 2026 Matt-Cowsert reported TF2 agreed it lands in 1.6, requesting a target branch change and ERRATA note update.",
+   "gists": {
+    "o2845": "finops-DaveMoreau opened the pull request to replace SKU Price with SKU Price record in six lines covering eligibility, timestamps and pricing currency, closing #2735.",
+    "c6757381548": "finops-DaveMoreau said the wording fits the #2725 rule but worried the dataset name shares the construct's name, proposing a rename, with Price List as one candidate.",
+    "r5861313526": "ijurica approved, saying the changes correctly apply the #2725 rule, asked whether the target is 1.5 or 1.6, and noted #2735 has wider scope via #2807.",
+    "r5865922059": "kk09v's review, since dismissed, noted that the glossary defines charge and row but not record, and suggested either adding record or using row.",
+    "i4543779150": "flanakin suggested a nit on dataset.md changing the Pricing Currency line to link SKU Price Pricing Currency, asking whether this is the pattern.",
+    "c6808327644": "kk09v replied that the glossary question was discussed and is out of scope for this PR.",
+    "r5865991143": "flanakin approved the pull request without a review comment.",
+    "c6811215370": "Matt-Cowsert reported that TF2 agreed on 11 November 2026 the PR lands in 1.6, asking for base branch to become working_draft_interim and ERRATA note to be updated, assigned finops-DaveMoreau.",
+    "i4555806842": "ijurica preferred keeping finops-DaveMoreau's original wording, arguing SKU Price Pricing Currency is not a Display Name and reads as a property of the SKU Price without record."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -782,6 +836,20 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2830#issuecomment-6833933562",
      "excerpt": "Wow, time flies. I had to remember when Beau joined FinOps Foundation."
     }
+   ],
+   "summary": "Between 5 and 12 November 2026, Matt-Cowsert opened a pull request updating the Credits section of contributors.md for FOCUS v1.5, without closing #2825. thecloudman approved it on 5 November. On 12 November, jpradocueva suggested adding one new entry, and davidearney, finops-DaveMoreau, jpradocueva and kk09v all approved, with the approval count reaching five. kk09v also commented on when a contributor joined the FinOps Foundation. The thread does not record a merge or any further decision, and the pull request remains open.",
+   "gists": {
+    "o2830": "Matt-Cowsert opened the pull request on 5 November 2026 to update the v1.5 Credits section of contributors.md, noting it does not close #2825.",
+    "r5793163596": "thecloudman approved the pull request on 5 November 2026 without leaving a written comment.",
+    "i4553094504": "jpradocueva proposed an inline change to contributors.md adding one new entry, on 12 November 2026.",
+    "r5880428799": "davidearney approved the pull request on 12 November 2026 with the comment LGTM.",
+    "r5880783779": "finops-DaveMoreau approved the pull request on 12 November 2026 without leaving a written comment.",
+    "r5880807149": "jpradocueva approved the pull request on 12 November 2026 with the comment LGTM.",
+    "r5880843786": "kk09v approved the pull request on 12 November 2026 without leaving a written comment.",
+    "c6833933562": "kk09v commented on 12 November 2026 that they had to recall when a contributor joined the FinOps Foundation."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -830,6 +898,13 @@
       "Initialized AI Status: Open"
      ]
     }
+   ],
+   "summary": "In the last two weeks, ijurica opened this issue on 12 November 2026 to align entity references, Display Names, first-occurrence links and link targets with the contributor guidelines in the SKU Price dataset, appendix and supported features. It continues #2772 and PR #2773, which aligned working_draft during the 1.5 cycle. The issue has AI status Open, with no comments, positions or decisions recorded. The thread says the next step is a draft PR, and some references may stay unaligned for further discussion.",
+   "gists": {
+    "o2866": "ijurica opened the issue asking to align entity references, Display Names, first-occurrence links and link targets in the SKU Price dataset, appendix and supported features with contributor guidelines."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -860,6 +935,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2865",
      "excerpt": "Description This is a placeholder task to group editorial alignment Action Items during 1.6 development, ahead of the Final Consistency Review v1.6 (2027-03-25 to 2027-04-15). It covers changes that bring existing…"
     }
+   ],
+   "summary": "Only the opening of this issue happened in the last two weeks. ijurica opened it on 12 November 2026 as a placeholder for editorial action items that bring specification content in line with the contributor guidelines without changing its meaning. The items are grouped ahead of the Final Consistency Review v1.6, which runs from 25 March 2027 to 15 April 2027. The definition of done is that all associated action items are completed or otherwise resolved. No other activity, agreement, decision or next step is recorded.",
+   "gists": {
+    "o2865": "ijurica opened this placeholder issue on 12 November 2026 to group editorial alignment action items for 1.6 development, aiming to bring content in line with contributor guidelines."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -941,6 +1023,13 @@
       "Initialized PR Change Requests: 0"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened draft pull request #2864 on 12 November 2026 to set out the scope of the 1.5 errata tracked in #2849. It adds a Version 1.5 section to ERRATA.md with one row per correction from candidates #2836, #2837 and #2783, none yet labelled errata. The description asks Maintainers to decide on row #3 (BCP-14 keyword change) and row #8 (anchor rename). The PR stays in draft until candidates are assessed and merges after 1.5 is published. No reviews or comments followed.",
+   "gists": {
+    "o2864": "Matt-Cowsert opened the draft PR with rows for three candidate errata, flagged rows #3 and #8 for Maintainer decision, and noted #2821 was removed from the sub-issues of #2849."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -992,6 +1081,13 @@
       "Initialized Task Force: TF-Supporting"
      ]
     }
+   ],
+   "summary": "On 12 November 2026 finops-DaveMoreau opened #2863, under #2779 and depending on #2862, to run the inference rules approved in #2861 over the files converted in #2862. Four rules were proposed: plain Display Names, values after a column reference, values of a file's own column, and file datasets. Each rule is to be reviewed by its own evidence, and every inferred dataset must be confirmed or removed. The status was initialised as open under task force TF-Supporting. Next, the change is to be merged into the 1.6 branch.",
+   "gists": {
+    "o2863": "finops-DaveMoreau opened the issue on 12 November 2026 to apply the approved inference rules to converted files, listing four rules and requiring reviewer confirmation of each inferred dataset."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1049,6 +1145,13 @@
       "Initialized Task Force: TF-Supporting"
      ]
     }
+   ],
+   "summary": "On 12 November 2026 finops-DaveMoreau opened this action item to run the translation rules from #2861 across the specification, recording each converted kind as mechanical in semantic front matter. It covers 332 of 341 files and 6,841 tags, and prefers one whole-specification PR, merged when maintainers agree, over one PR per area. The issue depends on #2861 and sits under #2779. The only other activity was a status change to Open under task force TF-Supporting. No agreement or decision is recorded.",
+   "gists": {
+    "o2862": "finops-DaveMoreau proposed converting existing references to semantic tags by running the approved translation rules from #2861 across the specification, in one PR merged when maintainers agree."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1117,6 +1220,13 @@
       "Initialized Task Force: TF-Supporting"
      ]
     }
+   ],
+   "summary": "finops-DaveMoreau opened this issue on 12 November 2026, proposing that the Working Group approve semantic tag conversion and rendering rules once each, instead of reviewing the 300-plus file conversion line by line. The issue sets out translation and inference rules with measured counts and known failure modes. Each rule would become a separate converter switch, and a later conversion pull request would be checked only against approved rules. Otherwise, a status change that day initialised the task force TF-Supporting. No replies, approvals or decisions are recorded.",
+   "gists": {
+    "o2861": "finops-DaveMoreau opened the issue on 12 November 2026 proposing that the Working Group approve each semantic tag rule once, with examples, counts and failure modes."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1182,6 +1292,13 @@
       "finops-DaveMoreau updated Critical Path: Yes"
      ]
     }
+   ],
+   "summary": "On 12 November 2026 finops-DaveMoreau opened this issue, linked to #2779, to bring semantic tag tooling into the specification build without changing specification content. The tooling covers an entity registry, a tag resolver with tests, Makefile and linter changes, and conversion tools for later steps. Output stays unchanged when no tags are present. Two decisions were proposed: the tools' location and whether tags resolve to Markdown before Pandoc or in a panflute filter. finops-DaveMoreau also marked the issue Critical Path: Yes. No comments, agreements or decisions are recorded yet.",
+   "gists": {
+    "o2860": "finops-DaveMoreau opened the issue to bring semantic tag tooling from the demo branch into the build without content changes, proposing tool location and tag resolution as open decisions."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1327,6 +1444,20 @@
       "Matt-Cowsert updated Task Force: Maintainers"
      ]
     }
+   ],
+   "summary": "On 12 November 2026, qquigley opened #2859 to separate Champion scope entry from PR approval. It adds a Champion Scope Entry section to development-processes.md with readiness criteria, non-author Maintainer sponsorship, and a seven-day objection window. qquigley asked whether existing approvals on in-flight PRs such as #2444 should stay. Matt-Cowsert questioned whether triage should exclude closed items, whether the opt-out matches the 9 November interim practice, whether must should be uppercase, what happens when an objection is upheld, and whether Scope should change when a champion commits.",
+   "gists": {
+    "o2859": "qquigley opened the PR adding a Champion Scope Entry section with readiness criteria, sponsorship and a seven-day objection window, and asked whether existing approvals on in-flight PRs should stay.",
+    "i4545194889": "Matt-Cowsert suggested the readiness check say the Feature Request is open, triaged and not in Needs More Info, since a closed Feature Request would currently qualify.",
+    "i4545194903": "Matt-Cowsert asked whether the seven-day opt-out is intended as part of the 9 November practice, under which Champion items waited for Maintainers to say they were ready.",
+    "i4545194908": "Matt-Cowsert asked whether the lowercase must on lines 188 and 190 are meant as requirements, and suggested uppercase MUST and MUST NOT to make that clear.",
+    "i4545194914": "Matt-Cowsert asked what happens when an objection is upheld, since Scope is set before the window opens and the list covers only outcomes where the item proceeds.",
+    "i4545194917": "Matt-Cowsert asked whether the line on approvals applies to every PR or only Champion entry, noting early approvals on #2606 and #2640 showed PRs were ready to discuss.",
+    "r5867695726": "Matt-Cowsert commented that the seven-day opt-out on lines 187 to 193 differs from the 9 November interim practice, and posted line-level notes on the other points.",
+    "i4545472823": "Matt-Cowsert asked whether Scope should change when the champion commits, since Champion scope is defined as chosen lead work but Scope is only set after sponsorship, leaving a gap."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1465,6 +1596,16 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2807#issuecomment-6811474831",
      "excerpt": "Status Update - TF2 - November 11, 2026 FR 2807 - Promote the SKU Price dataset to general availability Task Force 2 (TF2) worked on the path to general availability for the SKU Price dataset. It covered pull requests…"
     }
+   ],
+   "summary": "Matt-Cowsert opened it on 31 October 2026 to move the SKU Price dataset out of preview. On 4 November 2026 flanakin reported Azure size tests: the dataset is 0.27 times the toolkit size only when deliveries carry changed prices. TF2 decided spot pricing is not needed for GA and made commitment discounts a priority. On 11 November 2026 TF2 kept PR #2845 for 1.6 and discussed a changed-since option in PR #2826. SkuMeter, primary keys, and the dataset name remain open. flanakin owns follow-up actions on the changed-since option.",
+   "gists": {
+    "o2807": "Matt-Cowsert opened the issue asking to make the SKU Price dataset generally available, because its preview leaves its requirements outside conformance and lets it change without deprecation notice.",
+    "c6642864158": "flanakin posted size comparisons from 14 months of Azure data: the SKU Price preview was 0.27 times the toolkit's size, and one row per SkuPriceId was 0.14 times.",
+    "c6647189623": "Matt-Cowsert posted TF2's 4 November 2026 update: spot pricing is not needed for GA, commitment discounts are a priority, size stays open, and five questions remain open.",
+    "c6811474831": "Matt-Cowsert's TF2 update of 11 November 2026 kept PR #2845 as written for 1.6, discussed changed-since pulls in PR #2826, and open questions cover SkuMeter, primary keys, and dataset name."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1520,6 +1661,14 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2358#issuecomment-6811446573",
      "excerpt": "Status Update - TF2 - November 11, 2026 FR 2358 / PR 2473 - Add Actor dimensions to Cost and Usage Pull request (PR) 2473, for action item 2415, adds scoped detail configuration. It carries over from 1.5 and stays open…"
     }
+   ],
+   "summary": "Between 5 and 12 November 2026, Matt-Cowsert posted two TF2 status updates. Scoped detail work in PR #2473, which lets practitioners choose when columns are populated, stays open for the 1.6 cycle as agreed on 4 November. flanakin posted draft PR #2828 simplifying it to user-set column rules. On 11 November flanakin was fine either way on keeping #2473 open, while finops-DaveMoreau asked that its branch be kept. Next, both will review the changes together and bring a joint proposal back to the group.",
+   "gists": {
+    "c6647191252": "Matt-Cowsert's 4 November update recorded that PR #2473 stays open in 1.6 with flanakin and finops-DaveMoreau, and assigned flanakin draft PR #2828 simplifying scoped detail to user-defined column rules.",
+    "c6811446573": "Matt-Cowsert's 11 November update noted flanakin was fine keeping PR #2473 open but had more work, while finops-DaveMoreau asked that its branch be kept; both are to review changes together."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1601,6 +1750,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/1974#issuecomment-6811446177",
      "excerpt": "Status Update - TF2 - November 11, 2026 FR 1974 / PR 2558 - Ensure specification examples pass FOCUS Validator Pull request (PR) 2558 adds a way to check the commitment discount flexibility examples. It skips rules…"
     }
+   ],
+   "summary": "On 12 November 2026 Matt-Cowsert posted the TF2 status update covering PR #2558, which adds a check for the commitment discount flexibility examples, skipping rules known to fail by mistake. Decision: PR #2558 stays open for 1.6. Open question: whether PRs #2661 and #2662, which update the SaaS and commitment discount examples to the FOCUS 1.3 schema, stay open. One participant offered to close them; another asked that nothing be closed while authors are still being asked. Next step: qquigley finishes PR #2558 if it stalls.",
+   "gists": {
+    "c6811446177": "Matt-Cowsert's TF2 update recorded that PR #2558 stays open for 1.6, asked whether PRs #2661 and #2662 stay open, and named qquigley to finish #2558 if it stalls."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1645,6 +1801,13 @@
       "Initialized Due Date: 2027-05-20"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened this issue on 12 November 2026 proposing a FOCUS 1.5 to 1.6 section in the migration guidance, above 1.4 to 1.5 and modelled on #2841. It would draw on the v1.6 changelog and the diff between published v1.5 and the v1.6 release candidate. Timing: build starts once the changelog is content complete on 25 March 2027, draft PR by 15 April 2027, Member Review by 22 April 2027. Members are to approve by 20 May 2027, before WG approval of v1.6 on 27 May.",
+   "gists": {
+    "o2858": "Matt-Cowsert asked for a 1.5 to 1.6 migration section in version_migration_guidance.md, based on the v1.6 changelog and release candidate diff, with a draft PR by 15 April 2027."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1689,6 +1852,13 @@
       "Matt-Cowsert updated Due Date: 2027-04-15"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened this issue on 12 November 2026 asking for a v1.6 changelog section covering every change from the published v1.5 specification to the v1.6 release candidate. Planned dates are a draft PR seeded from the v1.6 milestone by 25 February 2027, a first full diff against the v1.5 tag by 11 March 2027, content completeness when Final Consistency Review starts on 25 March 2027, and a merged PR by 15 April 2027. No other activity appears.",
+   "gists": {
+    "o2857": "Matt-Cowsert opened the issue asking for a v1.6 changelog section covering all changes from v1.5 to the v1.6 release candidate, merged by 15 April 2027."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1738,6 +1908,14 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/1027#issuecomment-6808476345",
      "excerpt": "Technically, \"row\" is also a verb, but I don't anticipate us referring to the action of rowing in the specification, which is not the case for the action recording something or charging someone."
     }
+   ],
+   "summary": "In the last two weeks, one participant, kk09v, commented twice on issue #1027 on 11 November 2026. kk09v first noted that the SKU Price dataset introduced a third term, record, with the same meaning as row and charge, arguing that charge is both a verb and a noun, as record is. kk09v then acknowledged that row is also a verb but said it is not expected to appear in the specification in that sense, unlike recording or charging. No decision or next step was recorded in this activity.",
+   "gists": {
+    "c6808415167": "kk09v noted the SKU Price dataset adds a third term, record, with the same meaning, and said charge is both a verb and a noun, as record is.",
+    "c6808476345": "kk09v replied that row is also a verb, but it is not expected to be used for rowing in the specification, unlike the actions of recording and charging."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1799,6 +1977,13 @@
       "Initialized AI Status: Open"
      ]
     }
+   ],
+   "summary": "On 11 November 2026 ijurica opened issue #2856 to separate the SKU Price construct from SKU Price records. ijurica argued that the dataset name suggests one row per SKU Price, though one SKU Price ID spans several records, and that record-level requirements need a qualifier. The issue cites earlier confusion and related work (#2725, #2735, #2845). It offered three options: keep the name, rename the dataset only, or also rename record-level columns. It noted the preview dataset may change before promotion (#2807). No decision was recorded.",
+   "gists": {
+    "o2856": "ijurica opened the issue proposing to separate the SKU Price construct from SKU Price records, listing three naming options."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1853,6 +2038,13 @@
       "Initialized Task Force: TF-Core 2"
      ]
     }
+   ],
+   "summary": "ijurica opened this AI on 11 November 2026, initialised as Open under TF-Core 2, following a TF-2 status update on #2807 that listed several meanings of rate to sort out. It asks for pricing terms such as rate, rate card, price and fee to be aligned across the SKU Price dataset, its appendix and supported features, proposing unit price, SKU Price, SKU Price record and price list. Changes beyond editorial alignment should be called out in the pull request, and lines covered by open #2845 should be avoided.",
+   "gists": {
+    "o2855": "ijurica asked for pricing terms in the SKU Price dataset, its appendix and supported features to match the glossary, and flagged the overlap with open #2845."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1890,6 +2082,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2698#issuecomment-6805264259",
      "excerpt": "Two inputs for the 1.6 work on Version Updated, from the files 2780 touches: 2766 merged on October 29 with new queries in Cost Comparison and Effective Cost Analysis. Both files still say Version Updated 1.4, so the…"
     }
+   ],
+   "summary": "Matt-Cowsert commented on 11 November 2026 with two inputs for the 1.6 Version Updated work, drawn from files that #2780 touches. First, #2766 merged in October 2026 with new queries in Cost Comparison and Effective Cost Analysis, yet both still list Version Updated 1.4, so the field trails their content. Second, Participating Entity Identification lists Version Introduced 1.1 although it first appears in 1.3; once #2780 removes Version Updated 1.3, its only version marker is 1.1. No decision or next step was recorded in the thread.",
+   "gists": {
+    "c6805264259": "Matt-Cowsert noted Cost Comparison and Effective Cost Analysis still show Version Updated 1.4 after #2766 added queries, and Participating Entity Identification's Version Introduced 1.1 conflicts with 1.3 first appearance."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -1964,6 +2163,15 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2828#pullrequestreview-5864263303",
      "excerpt": "One targeted change, in the record minimization paragraph of the supporting content. It says \"summable metrics\" where the requirement it explains says summable numeric values in any FOCUS dataset column, custom columns…"
     }
+   ],
+   "summary": "On 4 November 2026 flanakin opened draft pull request #2828, stacked on #2473, replacing detail scope, variant, representation and companion artifact with user-defined column rules. Conditions select matching records and list columns to populate inline. Open items: attestations, requirements JSON deferred per #2460, and no TF-2 review yet. On 11 November 2026 Matt-Cowsert reviewed and asked for one change: the record minimization paragraph should say summable numeric values in any FOCUS dataset column, custom columns included, not just summable metrics. Nothing was decided.",
+   "gists": {
+    "o2828": "flanakin opened draft #2828 on 4 November 2026, stacked on #2473, to replace detail scope, variant, representation and companion artifact with user-defined column rules and always-inline delivery.",
+    "i4542313040": "Matt-Cowsert suggested on 11 November 2026 rewording the record minimization paragraph so summable numeric values in any FOCUS dataset column, custom included, are preserved.",
+    "r5864263303": "Matt-Cowsert reviewed on 11 November 2026 requesting one targeted change to the minimization paragraph, since it says summable metrics where the requirement covers any summable numeric FOCUS dataset column."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2034,6 +2242,13 @@
      "parent": null,
      "excerpt": "FinOps-Open-Cost-and-Usage-Spec/foundation38 merged on October 22 and added section 5.3 to the Operating Procedures. 015ec29d now cites section 5.3 in the introduction and in Stage 3, and drops the requirement that…"
     }
+   ],
+   "summary": "Matt-Cowsert changed the task force label from TF-Core 2 to TF-Supporting on 10 November 2026. On 11 November 2026, Matt-Cowsert commented on the guidelines file, reporting that foundation #38 had merged on 22 October and added section 5.3 to the Operating Procedures. Commit 015ec29d now cites section 5.3 in the introduction and in Stage 3, and it drops the requirement that waited for Steering Committee ratification. Matt-Cowsert asked for another review. No other comments, approvals, or decisions appear in the last 14 days.",
+   "gists": {
+    "i4542100872": "Matt-Cowsert said foundation #38 merged on 22 October, adding section 5.3 to the Operating Procedures, and asked for another review of commit 015ec29d, which now cites it."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2083,6 +2298,13 @@
       "Initialized Task Force: TF-Core 2"
      ]
     }
+   ],
+   "summary": "ijurica opened issue #2854 on 11 November 2026, saying the introduction and Description section of the SKU Price Description column conflict on whether it describes the SKU Price construct or a SKU Price record. The issue asks which option applies and, if the construct is chosen, whether records under one SKU Price ID must share a description and whether descriptions must differ across IDs of one provider. No replies or decisions are recorded. The thread says next steps are agreement, recorded decisions, then a pull request.",
+   "gists": {
+    "o2854": "ijurica opened the issue asking whether SKU Price Description describes the SKU Price construct or a SKU Price record, citing conflicting wording and examples, plus two follow-up questions."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2150,6 +2372,13 @@
       "Review Bot updated PR Approvals: 2 → 3"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert changed Task Force to TF-2 on 2 November 2026. On 11 November 2026 jerrysr99 approved PR #2748, which adds the QuantityTierCategory column to the SKU Price dataset, saying the Graduated and Retroactive values are clear. jerrysr99 also gave a non-blocking suggestion, discussed at TF-1 on 10 November 2026: a first tier with minimum 0 leaves quantity exactly 0 in no tier, which has no billing effect, so a short note making that explicit was proposed. Review Bot raised approvals from 2 to 3. No further step is stated.",
+   "gists": {
+    "r5863321803": "jerrysr99 approved, calling the Graduated and Retroactive values clear, and suggested a non-blocking note that zero quantity falls in no tier, with no billing effect."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2329,6 +2558,24 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2827#pullrequestreview-5862899684",
      "excerpt": "The Entry to RequesterDetailsObject[] change reads well, and it lines up with how the other JSON Object Format columns and the requirements model refer to array items. On the open binding question, I'd support Irena's…"
     }
+   ],
+   "summary": "Matt-Cowsert opened draft PR #2827 on 4 November 2026 to replace undefined Entry references in requesterdetails.md with RequesterDetailsObject paths, closing #2821. Per the 5 November Members meeting, it targets working_draft as an editorial change. finops-DaveMoreau agreed with the fix and path syntax, advised against [0], and proposed ending back-references on .key with 'in the same entry'. kk09v queried the wildcard reading, then withdrew a comment. ijurica preferred 'element' and offered options for the same binding in other columns. jerrysr99 backed deferring the binding to #2838. Nothing was decided.",
+   "gists": {
+    "o2827": "Matt-Cowsert opened the draft PR on 4 November 2026 to replace Entry with RequesterDetailsObject paths in seven bullets of requesterdetails.md, closing #2821, with no change to constraints.",
+    "i4485360343": "kk09v explained that * means all, so the current line says all Type values must describe all objects in the array.",
+    "i4485624942": "finops-DaveMoreau said Type sits under value so the .value segment must stay, that [0] would cover only the first entry, and that the bare path needs a back-reference fix.",
+    "i4486381776": "kk09v said the @ current-element operator in JSONPath probably cannot be used meaningfully here.",
+    "i4486410001": "kk09v apologised for the initial comment, which was based on the wrong JSON schema, and said the original wording was correct against the right one.",
+    "i4486444872": "finops-DaveMoreau said each [*] is an independent wildcard, so the trailing key path could mean any entry, and suggested adding 'in the same entry' to the Value line.",
+    "i4486444891": "finops-DaveMoreau said a bare RequesterDetailsObject[*] selects every element, not the single entry, and suggested ending the Name and Email back-references on key with 'in the same entry'.",
+    "r5792587756": "finops-DaveMoreau approved the Object ID paths, found lines 35, 36 and 38 correct, and asked that lines 39 to 42 state the binding as 'in the same entry'.",
+    "c6670959136": "finops-DaveMoreau pointed Matt-Cowsert to a maintenance issue, #2838, covering other JSONPath items, if people agree with the suggested handling.",
+    "i4494266612": "ijurica preferred 'element' over 'entry', citing RFC 8259's use of element for array values, and offered two options for the same binding in four other columns, defer or fix.",
+    "i4494280573": "ijurica suggested 'in the same element' wording for the four requesterdetails lines and plain-text edits for matching lines in contractapplied.md as part of Option 2.",
+    "r5862899684": "jerrysr99 supported ijurica's Option 1 for this PR, ending back-references on key without qualifier and deferring the binding for all columns to #2838, and preferred 'element' if stated later."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2392,6 +2639,13 @@
       "Review Bot updated PR Approvals: 2 → 3"
      ]
     }
+   ],
+   "summary": "The pull request by shawnalpay, opened 7 October 2026, adds a SkuMeter column to the SKU Price dataset, reusing the Cost and Usage definition. On 2 November 2026 Matt-Cowsert updated the Task Force to TF-2. On 11 November 2026 jerrysr99 approved it, with one non-blocking point: the introduction calls the column a native meter identifier, while the Cost and Usage definition and examples describe metered functionality, so aligning the wording was suggested. jerrysr99 also noted merge conflicts with working_draft_interim. No decision or next step is recorded.",
+   "gists": {
+    "r5862802139": "jerrysr99 approved it and suggested one non-blocking wording fix, aligning the introduction's description of the column with the Cost and Usage definition, and noted merge conflicts with working_draft_interim."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2460,6 +2714,13 @@
       "Initialized PR Change Requests: 0"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened draft pull request #2853 on 11 November 2026 to correct examples and query listed in #2833, changing only informative text and example data. Changes cover commitment discount normalization factors, the CrestNode no upfront fee, ServiceSubcategory values in 14 CSVs, the split cost origin row, and the Allocated Service Name query. The origin row is removed rather than exempted, to avoid changing a requirement during IP review; the exemption question stays open in #2515. No reviews or change requests are recorded, and no next steps are named.",
+   "gists": {
+    "o2853": "Matt-Cowsert opened draft pull request #2853 on 11 November 2026 to fix normalization factors, the CrestNode fee, ServiceSubcategory values, the origin row and a query from #2833."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2522,6 +2783,13 @@
       "Initialized Task Force: TF-Supporting"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened this issue on 11 November 2026 after review of #2773. It asked whether the Columns table and the Requirements column list count as a first occurrence for entity links, whether a later Relationships link stays, and whether the guideline should record existing practice as an exception. Members agreed on 29 October 2026 to follow the guidelines as written for now. Next, the group is to decide and record the reason here, with a draft PR updating the Linking section and AGENTS.md.",
+   "gists": {
+    "o2852": "Matt-Cowsert opened the issue on how the Columns table and Requirements list count for first-occurrence linking, listing four questions and related #2796, #2806 and #2703."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2572,6 +2840,13 @@
       "Initialized AI Status: Open"
      ]
     }
+   ],
+   "summary": "The last fourteen days brought one item: Matt-Cowsert opened this issue on 11 November 2026 to reconsider the word \"term\" in the Commitment Discount Quantity requirement, keeping it as plain English or rewording it to \"period\". Rewording changes requirement text, so it cannot merge into working_draft during the 1.5 IP Review and goes to the 1.6 cycle. Next, the group searches specification for other duration uses of \"term\", then decides and records the reason, before a PR is merged.",
+   "gists": {
+    "o2851": "Matt-Cowsert opened the issue asking whether to keep \"term\" or reword it to \"period\" in the Commitment Discount Quantity requirement, moving it to 1.6 as rewording changes requirement text."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2625,6 +2900,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2777#issuecomment-6799236959",
      "excerpt": "Closing this in favor of"
     }
+   ],
+   "summary": "Over the last two weeks this pull request, which slimmed AGENTS.md to defer to the contributor guidelines and moved a few rules into the Editorial Guidelines, was closed. On 2 November 2026 Matt-Cowsert updated the Task Force field to TF-2. On 11 November 2026 ljadvey commented that the pull request was being closed in favor of #2848. The activity contains no reviews, discussion or other positions. The thread does not say anything further about what happens next beyond that replacement.",
+   "gists": {
+    "c6799236959": "On 11 November 2026 ljadvey said this pull request was being closed in favor of #2848."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2707,6 +2989,14 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2847#issuecomment-6781992927",
      "excerpt": "Initial draft is complete, though we expect some rebase as we align on other inflight guideline improvements."
     }
+   ],
+   "summary": "On 10 November 2026 ijurica opened #2847 to restructure the Editorial Guidelines: remove the overview table, add a title and table of contents, and group sections under a general part with area sections. AGENTS.md summaries would be regrouped under the same group names, and open structural questions went to a draft PR. ijurica set the item In Progress. Matt-Cowsert marked it Completed, moved the due date to 17 November 2026, and commented that the initial draft is complete but expects some rebase.",
+   "gists": {
+    "o2847": "ijurica opened the issue to restructure the Editorial Guidelines, remove the overview table, and regroup AGENTS.md summaries, with questions to decide on a draft PR.",
+    "c6781992927": "Matt-Cowsert said the initial draft is complete but expects some rebase as the team aligns with other in-flight guideline improvements."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2762,6 +3052,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2751#issuecomment-6781970208",
      "excerpt": "The work is done, but we're waiting until the 2026-11-18 to review with the group."
     }
+   ],
+   "summary": "Matt-Cowsert was the only participant in the last two weeks. On 31 October 2026 Matt-Cowsert set the scope to Core and the task force to TF-2. On 10 November 2026 Matt-Cowsert set the due date to 18 November 2026 and changed the AI status to Completed. Matt-Cowsert also commented that the work is done, but the review with the group is waiting until 18 November 2026, which is the next step the thread records.",
+   "gists": {
+    "c6781970208": "Matt-Cowsert said the work is done but the review with the group is waiting until 18 November 2026."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2790,6 +3087,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2240#issuecomment-6781739341",
      "excerpt": "closing this as no action needed at this time. There may be overlapping surface area covered within the editorial or normative guideline changes for 1.6."
     }
+   ],
+   "summary": "In the last two weeks, the only recorded activity was a comment on 10 November 2026 by Matt-Cowsert closing this issue as no action needed. Matt-Cowsert said there may be overlapping surface area with the editorial or normative guideline changes for 1.6. The issue, opened by shawnalpay on 13 April 2026 to replace double-quotes with backticks for string column values, is marked completed. The thread does not say anything about further steps.",
+   "gists": {
+    "c6781739341": "Matt-Cowsert closed the issue as no action needed, noting it may overlap with editorial or normative guideline changes for 1.6."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2893,6 +3197,14 @@
       "Matt-Cowsert updated Due Date: 2026-11-13 → 2026-11-17"
      ]
     }
+   ],
+   "summary": "On 10 November 2026 ijurica posted drafts of follow-up Action Item candidates for review, not yet created as issues. The first draft covers how column values are written, given conflicting forms in the Editorial Guidelines and AGENTS.md. It assumes the structure proposed in #2847 and asks which form to use, whether Consistent Formatting moves or is removed, and whether the rule is MUST or SHOULD. On 9 November 2026 ijurica moved the issue to In Progress, and Matt-Cowsert moved the due date to 17 November 2026.",
+   "gists": {
+    "o2806": "Opened the issue to consolidate findings on gaps and conflicts in AGENTS.md and the two contributor guideline documents before creating individual Action Items.",
+    "c6781597424": "Posted draft Action Item candidates for review, the first on column value formatting, with questions on the form used, the Consistent Formatting rule and MUST versus SHOULD."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -2977,6 +3289,15 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2818#issuecomment-6780663851",
      "excerpt": "closing as complete"
     }
+   ],
+   "summary": "Matt-Cowsert's issue #2818 was opened on 3 November 2026 to track a feature request for review artifacts in the 1.6 Champion scope. On 3 November, Matt-Cowsert commented that the work had been added to #2798 instead of a standalone feature request, because review artifact application will come from guidelines. The issue was marked Completed on 4 November, and on 10 November Matt-Cowsert closed it as complete. No other participants commented, and the thread does not say whether a Champion scope feature request was ever opened.",
+   "gists": {
+    "o2818": "Matt-Cowsert opened the issue asking for a feature request for review artifacts in the 1.6 Champion scope, linking PR #2770 and action item #2769 under parent #2798.",
+    "c6616305604": "Matt-Cowsert said the work was added to #2798 rather than a standalone feature request, because review artifact application will come from guidelines.",
+    "c6780663851": "Matt-Cowsert closed the issue as complete on 10 November 2026."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -3057,6 +3378,14 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2795#issuecomment-6780651073",
      "excerpt": "closing as complete"
     }
+   ],
+   "summary": "In the last two weeks, Matt-Cowsert moved this item from open to in progress and then to completed on 3 November 2026. On that date Matt-Cowsert commented that the feature request was captured in #2816. On 10 November 2026 Matt-Cowsert commented that the item was closing as complete. The activity contains no other comments, so it records no new positions, agreements or decisions on Version Introduced or Version Updated, and it says nothing about what happens next.",
+   "gists": {
+    "c6615737942": "On 3 November 2026 Matt-Cowsert said the feature request was captured in #2816.",
+    "c6780651073": "On 10 November 2026 Matt-Cowsert said the item was closing as complete."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -3094,6 +3423,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/1545#issuecomment-6780647721",
      "excerpt": "closing as complete"
     }
+   ],
+   "summary": "In the last two weeks, Matt-Cowsert changed the AI status of #1545 from In Progress to Completed on 3 November 2026. On 10 November 2026, Matt-Cowsert commented that the issue was being closed as complete. The thread records no other discussion, no further positions from other participants, and no next steps after closure.",
+   "gists": {
+    "c6780647721": "Matt-Cowsert commented on 10 November 2026 that the issue was being closed as complete."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -3145,6 +3481,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2767#issuecomment-6780643825",
      "excerpt": "closing as complete"
     }
+   ],
+   "summary": "Over the last two weeks the thread recorded only two entries, both by Matt-Cowsert. On 4 November 2026 Matt-Cowsert changed the due date to 28 October 2026 and moved the AI status from In Progress to Completed. On 10 November 2026 Matt-Cowsert commented that the issue was being closed as complete. The thread records no other discussion, decisions or next steps in this period; the follow-up AI #2774 is named only in the description.",
+   "gists": {
+    "c6780643825": "Matt-Cowsert commented on 10 November 2026 that the issue was being closed as complete."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -3301,6 +3644,16 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2782#issuecomment-6780500417",
      "excerpt": "Status Update - TF1 - November 10, 2026 FR 2782 / PR 2843 - Define the preview lifecycle for whole datasets Matt Cowsert walked Task Force 1 (TF1) through the open questions in draft pull request (PR) 2843. The PR…"
     }
+   ],
+   "summary": "Between 30 October and 10 November 2026, Matt-Cowsert moved this request through scoping. On 1 November it was marked needs scoping and placed in Needs More Info. On 3 November it returned to Accepted in Scope with Core scope, and two questions moved to #960 and #2770. Task Force 1 then placed it in the 1.6 Core scope. On 10 November Matt-Cowsert walked the task force through draft PR #2843, and four open questions were listed. A fuller version returns to TF1 on 17 November 2026.",
+   "gists": {
+    "c6561177649": "Matt-Cowsert set the outcome to needs scoping, citing four ambiguity factors, named two questions to settle first, and moved the request to Needs More Info.",
+    "c6592977525": "Matt-Cowsert recorded that needs scoping was resolved and returned the request to Accepted in Scope with Core scope, moved question 1 to #960 and question 12 to #2770.",
+    "c6616230844": "TF1 placed this request, #2811, #960 and #2770 in 1.6 Core scope, and a participant wants normative rules that keep preview content out of conformance checks.",
+    "c6780500417": "TF1 agreed to keep this FR, and Matt-Cowsert walked through draft PR #2843; four open questions cover the glossary, requirement status, GA dependence on preview content and Version Introduced."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -3462,6 +3815,17 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2521#issuecomment-6780497157",
      "excerpt": "Status Update - TF1 - November 10, 2026 FR 2521 - Distinguish AI model costs by context window size Jerry Lambert walked Task Force 1 (TF1) through a draft model of context window pricing for this feature request (FR),…"
     }
+   ],
+   "summary": "FR #2521 moved into 1.6 Core scope and Task Force 1 in November 2026, with jerrysr99 taking it on. On 3 November jerrysr99 posted coverage of 24 models across six providers that bill by prompt size and asked whether FOCUS should represent bands explicitly. On 9 November maintainers discussed whether the property belongs to the SKU ID or SKU Price ID. On 10 November jerrysr99 presented a draft adding context window bound columns to the SKU Price dataset; no objections were raised. Maintainers are to add estimation ratings next.",
+   "gists": {
+    "c6611147187": "jerrysr99 reported 24 models across six providers billing by prompt size, mostly in two bands with thresholds from 100K to 512K tokens, and asked whether FOCUS should represent bands explicitly.",
+    "c6616230209": "Matt-Cowsert recorded that the FR is in 1.6 Core scope and TF1, with #2437 and #2371 to follow, and jerrysr99 will bring a model to TF1 on 10 November.",
+    "c6633163337": "jerrysr99 compared how providers word band boundaries, noting thresholds measure input tokens and whole-request repricing, and listed open questions on boundary values, counted tokens and repricing scope.",
+    "c6758415040": "Maintainers reviewed the FR for estimation, saw it as a SKU price attribute, and debated whether it belongs to the SKU ID or SKU Price ID; Matt-Cowsert proposed SkuPriceDetails first.",
+    "c6780497157": "jerrysr99's draft adds ContextWindowMinimum and ContextWindowMaximum columns and an IncludesContextWindowPricing condition, recommends carrying bounds in SKU Price and SkuPriceDetails, and drew no objections."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -3534,6 +3898,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2335#issuecomment-6779653074",
      "excerpt": "Status Update - TF1 - November 10, 2026 FR 2335 - Revise Feature Levels to make FOCUS more globally applicable Decisions Made This feature request (FR) moves back to Seeking Champion, the 1.6 scope for work that needs…"
     }
+   ],
+   "summary": "The request was reset and parked. On 30 October Matt-Cowsert cleared the task force and set candidate release 1.6, and on 31 October the scope became Seeking Champion. On 10 November Matt-Cowsert moved it to TF-Supporting, then a status update recorded a return to Seeking Champion until work resumes. Another participant agreed it is not pressing until a task force needs it, and that TF2 work on the SKU Price dataset may be the trigger. Matt-Cowsert still plans to progress open pull request #2604 in 1.6 once basic work closes.",
+   "gists": {
+    "c6779653074": "Matt-Cowsert recorded the request returning to Seeking Champion for 1.6 under TF-Supporting; another participant agreed it is not pressing until a task force needs it."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -3581,6 +3952,13 @@
       "Initialized AI Status: Open"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened issue #2850 on 10 November 2026 to compare SKU Price dataset columns with SkuPriceDetails properties in both directions and assess each gap, assigned to jerrysr99. At TF1 that day, Matt-Cowsert said the group was not opposed to adding price dimensions such as quantity tiers to the SKU Price dataset. An action item was set to list missing columns, with results due at TF1 on 17 November 2026. A feature request would be raised for each column the group adds as a property.",
+   "gists": {
+    "o2850": "Matt-Cowsert opened the issue to compare SKU Price dataset columns with SkuPriceDetails properties in both directions, assess each gap, and send results to TF1 on 17 November 2026."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -3638,6 +4016,13 @@
       "Matt-Cowsert updated Task Force: TF-Supporting"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened this Action Item on 10 November 2026 to track 1.5 errata candidates from Maintainer assessment to one errata PR. Three candidates, #2836, #2837 and #2783, are listed as needing Maintainer assessment. Approved errata would go into one PR against working_draft adding a Version 1.5 section to ERRATA.md, merged only after 1.5 is published. An open item asks whether to add SkuPrice rules to the 1.5 model through errata. No other comments or decisions appear yet.",
+   "gists": {
+    "o2849": "Matt-Cowsert opened the issue on 10 November 2026 to track three 1.5 errata candidates, #2836, #2837 and #2783, from Maintainer assessment to a single errata PR."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -3694,6 +4079,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2765#issuecomment-6778576668",
      "excerpt": "Closing in favor of 2848"
     }
+   ],
+   "summary": "Over the last two weeks the thread saw one status change and one closing comment. Matt-Cowsert updated the Task Force to TF-RM on 2 November 2026. On 10 November 2026 ijurica commented that the pull request is closed in favour of #2848. The pull request, opened 12 October 2026 as a draft for discussion with jpradocueva, proposed one set of entity reference and linking rules across EG, AGENTS.md and NRG, to compare with #2514; nothing was decided. The thread names no next steps.",
+   "gists": {
+    "c6778576668": "On 10 November 2026 ijurica commented that the pull request is closed in favour of #2848."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -3745,6 +4137,13 @@
       "Initialized PR Change Requests: 0"
      ]
     }
+   ],
+   "summary": "In the last two weeks the only activity was the opening of draft pull request #2848 by ijurica on 10 November 2026. It resolves #2847 by restructuring the Editorial Guidelines under a general part called Core Editorial Rules, and aligning AGENTS.md grouping with it. The description recorded assumed answers to #2847's questions and said the pull request would be updated if another option were preferred. A same-day status change recorded zero approvals and zero change requests. No reviews or comments were recorded.",
+   "gists": {
+    "o2848": "Opened draft pull request resolving #2847 by restructuring the Editorial Guidelines under a general part, Core Editorial Rules, and aligning AGENTS.md grouping with it."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -3811,6 +4210,14 @@
      "parent": "i4452008245",
      "excerpt": "Thanks, @flanakin, I am resolving the comment without action."
     }
+   ],
+   "summary": "Draft pull request #2776 by flanakin, stacked on #2762 and adding the GA: label to Version Introduced values, had three events in November 2026. On 2 November Matt-Cowsert changed the Task Force to TF-RM. On 3 November flanakin replied to an inline comment from jpradocueva, explaining that the extractor never reads Version Introduced lines, so extraction input is unchanged, and that validation passes and extraction runs cleanly on the branch head. On 10 November jpradocueva resolved the comment without action. No further decision or next step was recorded.",
+   "gists": {
+    "i4452008245": "flanakin replied that the extractor never reads Version Introduced lines, so the edit leaves extraction input unchanged; validation passes and extraction runs cleanly on head 0cb6d5d.",
+    "i4523060892": "jpradocueva resolved the comment without action, thanking flanakin for the reply."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -3882,6 +4289,14 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2603#issuecomment-6758416195",
      "excerpt": "Status Update - Maintainers - November 9, 2026 FR 2603 - Add specification-level privacy and data protection statement The Maintainers closed this feature request (FR) during the November 9 call. Decisions Made Close…"
     }
+   ],
+   "summary": "On 9 November 2026 Matt-Cowsert reported that the Maintainers call acknowledged the privacy topic as important but outside FOCUS's scope. On 10 November 2026 Matt-Cowsert posted the Maintainers' status update: the request was closed, leaving protection of sensitive data to providers and customers, with reopening possible later. Maintainers said security rules belong to vendors and that any user-filled field can hold personal data. Others preferred the specification stay out of personal data guidance, since omitted columns would read as a promise. No further action is recorded.",
+   "gists": {
+    "c6752804455": "Matt-Cowsert reported that the Maintainers call on 9 November 2026 treated the topic as important but outside the boundaries of FOCUS to define.",
+    "c6758416195": "Matt-Cowsert posted the Maintainers' status update closing the request, leaving sensitive data protection to providers and customers, with possible later reopening, and summarising mixed views."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -3951,6 +4366,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2174#issuecomment-6758412957",
      "excerpt": "Status Update - Maintainers - November 9, 2026 FR 2174 - Distinguish data originators, processors, and intermediaries The Maintainers asked whether this feature request (FR) frames the problem the right way, as a first…"
     }
+   ],
+   "summary": "On 10 November 2026 Matt-Cowsert posted a status update from the Maintainers' meeting of 9 November 2026. The Maintainers asked whether the request frames the problem correctly. Participants said practitioners need to know who changed a row and how much, not just who created it, and disagreed on whether the work depends on metadata requests #1060 and #1131. Matt-Cowsert marked this request as blocked by those two. Open questions cover roles, data starting outside FOCUS, and change history. Maintainers will add ratings to the estimation workbook before the next triage.",
+   "gists": {
+    "c6758412957": "Matt-Cowsert posted the Maintainers' status update asking whether the request frames the problem correctly before rating it, and recording discussion, open questions and next steps."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4011,6 +4433,13 @@
       "Initialized PR Change Requests: 0"
      ]
     }
+   ],
+   "summary": "On 10 November 2026 Matt-Cowsert opened draft pull request #2846 to correct examples and descriptions in the Contract Commitment and Commitment Program Eligibility Details text that conflict with requirements or allowed values, closing #2832. Changes cover allowed service values, commitment filters, the discount percentage formula, capacity reservation wording, contract period examples and merging Monthly and Annual Interval Spend Commitment into one program type. No requirement lines change. #2661 edits the same saas_spend_agreements rows, so whichever merges second must reconcile them. No approvals or change requests are recorded.",
+   "gists": {
+    "o2846": "Matt-Cowsert opened draft PR #2846 to fix examples and descriptions that conflict with requirements or allowed values, closing #2832; it changes informative text only."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4076,6 +4505,13 @@
       "Matt-Cowsert updated AI Status: Open → In Progress"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened this issue on 9 November 2026 to track the FOCUS 1.5 Data Model spreadsheet from the v1.5-cr release candidate. Changes cover adding the SKU Price dataset as preview, four Cost and Usage columns, operating model conditions replacing applicability criteria, updated allowed values and spec links. The assignee holds a first draft to be rebuilt from the release tag after ratification, and Maintainers will settle choices before publishing. On 10 November 2026 Matt-Cowsert set a due date of 17 November 2026 and moved the status to In Progress.",
+   "gists": {
+    "o2844": "Matt-Cowsert opened the issue setting out 1.5 spreadsheet changes and Definition of Done items: Maintainer review, rebuild from the release tag, publishing, site links, and a 1.6 follow-up."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4150,6 +4586,16 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2820#issuecomment-6746841369",
      "excerpt": "Replying to triage comment. @Matt-Cowsert, thanks for the feedback. Scope. By \"reusable\" I meant reuse across supported features, not across columns: one complete evaluation per column, which every supported feature…"
     }
+   ],
+   "summary": "ijurica opened a request on 4 November 2026 for reusable evaluation of scope rules in SKU Price Eligibility and Contract Commitment Applicability. Matt-Cowsert confirmed the gaps, asked two scoping questions and set Needs More Info. The TF2 status update recorded no full discussion and said the request is not a gate for SKU Price general availability (#2807). On 9 November 2026 ijurica replied that reuse means one complete evaluation per column, and aligning the two definitions is out of scope. Triage waits for revised use case and success criteria.",
+   "gists": {
+    "o2820": "ijurica opened the request asking for supported features to demonstrate a reusable evaluation of scope rules in SKU Price Eligibility and Contract Commitment Applicability, which no feature currently shows.",
+    "c6642736843": "Matt-Cowsert confirmed the gaps, asked two scoping questions and changes to the use case and success criteria, and set the status to Needs More Info.",
+    "c6647191913": "The TF2 status update recorded that the request was not fully discussed, is not a gate for SKU Price general availability, and awaits triage; thecloudman is listed for guided examples.",
+    "c6746841369": "ijurica replied that reuse means one complete evaluation per column, that aligning the two definitions is out of scope, and that the Commitment Applicability column from #2753 is optional."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4215,6 +4661,14 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2564#issuecomment-6730698476",
      "excerpt": "Closing after our 1.6 open-PR outreach. Irena said we can close this for now; happy to reopen if FR 2839 makes 1.6. Branch left in place."
     }
+   ],
+   "summary": "In the last two weeks ijurica commented on 6 November 2026 that the linked issues #2492, #2563 and #2570 are closed but the problem remains, and opened #2839 to track it. ijurica planned to assess #2839 by 13 November 2026 as a 1.6 candidate, suggested closing this PR, and asked Matt-Cowsert which approach they prefer. On 9 November 2026 Matt-Cowsert closed the PR after the 1.6 outreach, agreeing it can be closed and reopened if #2839 makes 1.6. Next, a new PR would follow if ijurica takes on #2839.",
+   "gists": {
+    "c6691930250": "ijurica said the linked issues are closed but the problem remains, opened #2839 to track it, and suggested closing this PR, with a new one if they take #2839 on.",
+    "c6730698476": "Matt-Cowsert closed the PR after the 1.6 outreach, agreeing it can be closed and reopened if #2839 makes 1.6, and noted the branch was left in place."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4266,6 +4720,14 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2357#issuecomment-6730697930",
      "excerpt": "Closing after our 1.6 open-PR outreach. Irena requested we close this (Candidate Release already cleared). Branch left in place. Happy to reopen anytime."
     }
+   ],
+   "summary": "On 30 October 2026 Matt-Cowsert cleared Candidate Release on this pull request. On 5 November 2026 ijurica proposed closing it ahead of 1.6, noting the branch is backed up, and moving parent action item #2183 back to the backlog; udam-stitcher and SanjnaSrivatsaVMware were asked to agree, and Matt-Cowsert was asked how to handle #2183 administratively. On 9 November 2026 Matt-Cowsert closed the pull request after open-PR outreach, leaving the branch in place and saying it can be reopened.",
+   "gists": {
+    "c6668868355": "ijurica proposed clearing Candidate Release (1.6) and closing this pull request, as its branch is backed up, and moving parent #2183 back to the backlog.",
+    "c6730697930": "Matt-Cowsert closed the pull request after 1.6 open-PR outreach, at ijurica's request, leaving the branch in place so it can be reopened."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4364,6 +4826,13 @@
       "Matt-Cowsert updated Task Force: TF-Core 1"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened draft pull request #2843 on 9 November 2026 as a starting point for feature request #2782, the preview lifecycle for whole datasets. It changes only the Preview Process in the spec change guidelines, adding markers rather than specification text. Proposed answers cover what counts as a supporting entity, how the scope list treats requirements outside the dataset, and moving Version Introduced after promotion to #2816. Open decisions and four TODO markers remain for Task Force 1. No approvals or change requests were recorded.",
+   "gists": {
+    "o2843": "Matt-Cowsert opened this draft for #2782, adding Proposed and TODO markers to the Preview Process and asking TF-1 to confirm answers and draft four TODO items."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4462,6 +4931,13 @@
       "Initialized PR Change Requests: 0"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened pull request #2842 on 6 November 2026 to add a FOCUS 1.4 to 1.5 migration section to the version migration guidance, closing #2841. It was built from the v1.4 and v1.5-cr tags, using the changelog in #2840 as inventory. Its main point is that no columns are removed, renamed or retyped, so impact falls on values. Matt-Cowsert noted the changelog link fails until #2840 merges, and asked for it to merge first or together. Erratum #2832 touches a related formula; no statement here changes.",
+   "gists": {
+    "o2842": "Matt-Cowsert opened pull request adding a FOCUS 1.4 to 1.5 migration section, stating that values rather than columns change, and noting the changelog link depends on merging #2840."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4505,6 +4981,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2841",
      "excerpt": "Detailed Description The version migration guidance needs a section for the v1.5 release, as it got for v1.3 (1548) and v1.4 (1597). supportingcontent/appendix/versionmigrationguidance.md: add a \"Migrating from FOCUS…"
     }
+   ],
+   "summary": "Matt-Cowsert opened this issue on 6 November 2026 requesting a 1.4 to 1.5 section in the version migration guidance, following the 1.3 to 1.4 structure. It would be based on the v1.5 changelog (#2840) and the specification diff, covering Migration Compatible changes, operating model conditions for column presence, and anchor and requirements renames. It would state that the SKU Price preview is excluded from conformance. Done means a pull request approved by Members before WG approval of v1.5 on 3 December 2026. No other activity was recorded.",
+   "gists": {
+    "o2841": "Matt-Cowsert requested a 1.4 to 1.5 migration section modelled on the 1.3 to 1.4 section, covering Migration Compatible changes and stating the SKU Price preview is excluded from conformance."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4596,6 +5079,13 @@
      "parent": null,
      "excerpt": "@Matt-Cowsert , just adding a note on the tier terminology work: Action Items 2563 and 2570 were closed once PR 2564 was opened, but PR 2564 has not been merged, so the ambiguous use of \"tier\" and \"tiered\" in the…"
     }
+   ],
+   "summary": "In the last two weeks, the only activity was a comment on 6 November 2026 by ijurica, addressed to Matt-Cowsert, about the tier terminology work. The comment said action items #2563 and #2570 were closed when PR #2564 was opened, but #2564 has not been merged, so the ambiguous use of tier and tiered in the specification remains. ijurica created #2839 to track that remaining problem. The thread records no agreement or decision and no stated next step beyond that tracking issue.",
+   "gists": {
+    "c6691626597": "ijurica told Matt-Cowsert that #2563 and #2570 were closed when #2564 was opened, but #2564 is unmerged, so ambiguous tier and tiered wording remains, and created #2839 to track it."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4650,6 +5140,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2839",
      "excerpt": "Problem Statement The specification uses \"tier\" and \"tiered\" inconsistently, for several distinct concepts: tiered pricing based on quantity, spend, or duration thresholds, tiered commitment discounts, storage tiers,…"
     }
+   ],
+   "summary": "In the last two weeks, ijurica opened issue #2839 on 5 November 2026 asking the specification to clarify its inconsistent use of tier and tiered terminology. The proposed minimum scope is to add glossary terms for tiered pricing concepts and reword ambiguous mentions to use and link those terms, with an appendix on tiered pricing as a possible follow-up. The issue cites unmerged earlier work in #2564 and related items #2739 and #2748. No other participants, positions or decisions appear, and the thread does not say what happens next.",
+   "gists": {
+    "o2839": "ijurica opened the request asking for tier and tiered terminology to be clarified, with glossary terms for tiered pricing concepts and rewording of ambiguous mentions."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4697,6 +5194,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2838",
      "excerpt": "Description Several JSON Object Format requirements use more than one [] path in a single requirement, or combine a [] subject with a quantifier, without saying how the paths relate to each other. The \"Singular Form for…"
     }
+   ],
+   "summary": "During the last two weeks the only activity was this issue's opening by finops-DaveMoreau on 5 November 2026. The issue asks for the JSON Object Format requirements to state how repeated [*] paths relate, since the guidelines do not say whether a second [*] path refers to the same element. It cites the review of #2827 as the trigger and lists affected requirements in several dataset files. No replies, decisions or next steps are recorded.",
+   "gists": {
+    "o2838": "finops-DaveMoreau opened the issue on 5 November 2026, asking that repeated [*] paths in JSON object requirements state whether they refer to the same array element, citing affected requirements."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4736,6 +5240,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2652#issuecomment-6668222161",
      "excerpt": "Closing after our 1.6 open-PR outreach. Joaquin signaled we can close 2652 (work continues elsewhere); Ernesto noted he can't contribute regularly until end of Dec and offered async help. Happy to reopen anytime."
     }
+   ],
+   "summary": "On 5 November 2026 Matt-Cowsert commented that the pull request was being closed after the 1.6 open-PR outreach, with work continuing elsewhere. Another participant had signalled that it could be closed. jernestosuarez noted limited availability until the end of December and offered asynchronous help. The thread records the pull request as closed, and Matt-Cowsert said it could be reopened at any time.",
+   "gists": {
+    "c6668222161": "Matt-Cowsert closed the pull request after 1.6 open-PR outreach; another participant signalled it could close as work continues elsewhere, and jernestosuarez, with limited availability until December, offered async help."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4788,6 +5299,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2374#issuecomment-6668220736",
      "excerpt": "Closing after our 1.6 open-PR outreach. Shawn confirmed these can close (and reopen if needed). Happy to reopen anytime."
     }
+   ],
+   "summary": "Over the last two weeks the thread recorded two events. On 30 October 2026 Matt-Cowsert cleared the Candidate Release status. On 5 November 2026 Matt-Cowsert commented that the pull request was closing after the 1.6 open-PR outreach, noting that shawnalpay had confirmed it could close. Matt-Cowsert said it could be reopened at any time. The pull request had proposed downgrading eight Cost and Usage columns from Mandatory to Conditional. No further next steps were stated.",
+   "gists": {
+    "c6668220736": "Matt-Cowsert commented that the pull request was closing after the 1.6 open-PR outreach, as shawnalpay confirmed it could close and reopen if needed."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4835,6 +5353,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2375#issuecomment-6668219495",
      "excerpt": "Closing after our 1.6 open-PR outreach. Shawn confirmed these can close (and reopen if needed). Happy to reopen anytime."
     }
+   ],
+   "summary": "On 30 October 2026, Matt-Cowsert cleared the Candidate Release status on this pull request. On 5 November 2026, Matt-Cowsert commented that the pull request was being closed after the 1.6 open-PR outreach. The comment says shawnalpay confirmed these pull requests can close, and that they can be reopened if needed. No other discussion, positions or decisions appear in the thread during this period.",
+   "gists": {
+    "c6668219495": "Matt-Cowsert commented on 5 November 2026 that the pull request was closing after the 1.6 open-PR outreach, noting shawnalpay confirmed it can close and reopen if needed."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4884,6 +5409,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2430#issuecomment-6668218209",
      "excerpt": "Closing after our 1.6 open-PR outreach. Shawn confirmed these can close (and reopen if needed). Happy to reopen anytime."
     }
+   ],
+   "summary": "Over the last two weeks this pull request saw two items. On 30 October 2026 Matt-Cowsert cleared the Candidate Release status. On 5 November 2026 Matt-Cowsert commented that it was being closed as part of outreach on open 1.6 pull requests, saying shawnalpay had confirmed these could close and reopen if needed. The pull request proposed replacing the Data Generator concept in the Cost and Usage dataset with DataOriginatorName and DataProviderName columns. It is now closed and can be reopened on request.",
+   "gists": {
+    "c6668218209": "Matt-Cowsert said the pull request is closing after outreach on open 1.6 pull requests, that shawnalpay confirmed they can close, and offered to reopen anytime."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4938,6 +5470,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2837",
      "excerpt": "Submitting Organization (Optional) FOCUS Working Group Feedback Summary Shawn Alpay's November 4, 2026 review of the full 1.5 specification found three requirement lines that do not match the rest of their definitions.…"
     }
+   ],
+   "summary": "Matt-Cowsert opened this issue on 5 November 2026 to correct three requirement lines in the 1.5 specification, found in a 4 November 2026 review. The proposed changes add a Currency Format requirement to PaymentCurrency, remove an always-met ContractId condition, and change lowercase must to MUST in TimeSectorEnd. Maintainers must decide for each row whether it is an erratum or a feature request. Related fixes in #2832 to #2835 merge during the 1.5 IP Review. No comments or decisions are recorded yet, and the issue remains open.",
+   "gists": {
+    "o2837": "Matt-Cowsert opened the issue on 5 November 2026 proposing three requirement-line corrections for the 1.5 specification, for Maintainers to classify as errata or feature requests."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -4992,6 +5531,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2836",
      "excerpt": "Submitting Organization (Optional) FOCUS Working Group Feedback Summary Shawn Alpay's November 4, 2026 review of the full 1.5 specification found casing, ID, and link errors inside requirement text. Each fix below…"
     }
+   ],
+   "summary": "Matt-Cowsert opened this issue on 5 November 2026 with feedback from a review of the 1.5 specification. It proposes nine corrections to casing, identifiers and link targets in requirement text, none changing what a requirement asks for. The fixes wait for the 1.5 release and go in as errata. One row renames an anchor and may be dropped if the Maintainers prefer. Related informative fixes are in #2832 to #2835. No other activity occurred.",
+   "gists": {
+    "o2836": "Matt-Cowsert opened the issue on 5 November 2026, listing nine casing, ID and link corrections to 1.5 requirement text to be applied as errata after the release."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5065,6 +5611,15 @@
       "Review Bot updated PR Approvals: 1 → 2"
      ]
     }
+   ],
+   "summary": "In the last two weeks, mike-finopsorg opened this pull request on 4 November 2026 to add spec.md to the candidate_release and main builds, so it can be included in releases for AI and agent use. The change is marked as repository maintenance. shawnalpay approved it on 4 November 2026, and jpradocueva approved it on 5 November 2026 with a short comment calling it a nice addition. The thread records two approvals and no change requests, and it does not state any next steps.",
+   "gists": {
+    "o2823": "mike-finopsorg opened the pull request on 4 November 2026 to add spec.md to the candidate_release and main builds for AI and agent use, linked to #2822.",
+    "r5776507748": "shawnalpay approved the pull request on 4 November 2026 without leaving any comment.",
+    "r5784689416": "jpradocueva approved the pull request on 5 November 2026 and commented that it was a nice addition."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5100,6 +5655,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2514#issuecomment-6654500698",
      "excerpt": "Close it as we are planning a re-review of the editorial guidelines"
     }
+   ],
+   "summary": "In the last two weeks, the only activity was a comment by jpradocueva on 5 November 2026 asking for #2514 to be closed, because the working group is planning a re-review of the editorial guidelines. The thread records no replies or other positions. The pull request, which had proposed operational AGENTS.md guidance based on the approved assessment in #2486, is recorded as closed. The thread does not say anything further about what happens next.",
+   "gists": {
+    "c6654500698": "jpradocueva asked for the pull request to be closed, because the working group is planning a re-review of the editorial guidelines."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5169,6 +5731,13 @@
       "Matt-Cowsert cleared AI Status"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened issue #2835 on 5 November 2026 to collect editorial corrections for the 1.5 specification, from a full review on 4 November 2026 and similar cases. Proposed fixes cover dataset summary tables, a link, preview labels, a note, glossary order and a missing word, property order, relationship lists, and section and row order. The changes are informative text only and can merge into working_draft during the 1.5 IP Review, joining the release when it ends on 1 December 2026. The thread has no replies or decisions yet.",
+   "gists": {
+    "o2835": "Matt-Cowsert opened the issue to collect editorial fixes for 1.5 found in a full review on 4 November 2026, plus similar cases, covering tables, labels, glossary, relationships, and section order."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5231,6 +5800,13 @@
       "Matt-Cowsert cleared AI Status"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened issue #2834 on 5 November 2026 to collect editorial fixes from a review of the full 1.5 specification held on 4 November 2026. The fixes, which change only informative text, cover wrong example links, dataset names and IDs, recency and tag key names, and schema IDs in the Metadata section and appendix examples. An AI status was initialized, then cleared by Matt-Cowsert. The thread says these fixes can merge into working_draft during the 1.5 IP Review and join the release when it ends on 1 December 2026.",
+   "gists": {
+    "o2834": "Matt-Cowsert opened the issue on 5 November 2026 to collect informative-text fixes from a 1.5 specification review: example links, key names, dataset names and schema IDs."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5302,6 +5878,13 @@
       "Matt-Cowsert cleared AI Status"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened this issue on 5 November 2026 to collect editorial fixes from a review of the 1.5 specification on 4 November 2026. It lists wrong numbers in commitment discount flexibility examples, a CrestNode monthly fee derived from the annual amount, an invalid ServiceSubcategory value in 14 files, and a retained origin row breaking the AllocatedServiceName requirement from #2655. Only informative text and example data change, so the fixes can merge into working_draft during the 1.5 IP Review, joining the release when it ends on 1 December 2026.",
+   "gists": {
+    "o2833": "Matt-Cowsert opened the issue on 5 November 2026 listing four groups of example errors for the 1.5 release, with fixes limited to informative text and example data."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5359,6 +5942,13 @@
       "Matt-Cowsert cleared AI Status"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened issue #2832 on 5 November 2026 to correct examples, descriptions and calculations in the 1.5 specification that do not match requirements or allowed values. It collects findings from a 4 November 2026 review, plus similar cases. Proposed fixes cover invalid ServiceCategory and ServiceSubcategory values, a non-FOCUS UsageType dimension, a discount percentage formula, and capacity reservation wording. The fixes are editorial and could merge into working_draft before the IP Review ends on 1 December 2026. Only status changes followed; no comments or decisions are recorded.",
+   "gists": {
+    "o2832": "Matt-Cowsert opened the issue listing 1.5 examples, descriptions and calculations that conflict with requirements or allowed values, with proposed editorial fixes for the IP Review."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5459,6 +6049,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2706#issuecomment-6647190592",
      "excerpt": "Status Update - TF2 - November 4, 2026 FR 2706 - Expose the unit price a commitment discount buys on covered usage Task Force 2 (TF2) checked whether this feature request (FR) is still in scope for SKU Price general…"
     }
+   ],
+   "summary": "Matt-Cowsert posted the only comment in the last two weeks, on 5 November 2026, reporting a Task Force 2 check on 4 November 2026 of whether this request stays in scope under #2807. The task force decided it stays open while #2753 develops. It asked whether #2753 resolves the request and which dataset carries the rate. Next, ijurica will compare the problem statement with #2753, and Matt-Cowsert and flanakin will discuss how the requests under #2807 fit together.",
+   "gists": {
+    "c6647190592": "Matt-Cowsert reported that Task Force 2 decided this request stays open under #2807 while #2753 develops, raised two open questions, and assigned two next steps to ijurica, Matt-Cowsert and flanakin."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5563,6 +6160,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2742#issuecomment-6647190069",
      "excerpt": "Status Update - TF2 - November 4, 2026 FR 2742 / PR 2753 - Enable comparing commitment discounts with on-demand rates Irena Jurica's draft pull request (PR) 2753 adds a CommitmentApplicability column to the SKU Price…"
     }
+   ],
+   "summary": "Matt-Cowsert posted a status update on 5 November 2026 on draft pull request #2753 from ijurica, which adds a CommitmentApplicability column to the SKU Price dataset stating the usage each commitment discount covers. ijurica will lead commitment discount work for SKU Price general availability under #2807. A new column was chosen over extending SkuPriceEligibility, with its size impact to be shown. An open question is whether the three UnitPriceType values cover every price type. ijurica is to present the approach at Task Force 2 around 18 November 2026.",
+   "gists": {
+    "c6647190069": "Matt-Cowsert's status update covered draft #2753 from ijurica, which adds a CommitmentApplicability column to SKU Price, and noted ijurica leads work under #2807 and will present on 18 November 2026."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5618,6 +6222,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2753#issuecomment-6646819310",
      "excerpt": "TF2 Action Item - November 4, 2026 Irena Jurica aims to present the CommitmentApplicability approach in this draft at Task Force 2 (TF2) in about two weeks (November 18). Commitment discount coverage is a priority open…"
     }
+   ],
+   "summary": "In the last two weeks, Matt-Cowsert moved the thread to Task Force TF-2 on 2 November 2026. On 5 November 2026 Matt-Cowsert posted a TF2 action item. It says ijurica aims to present the CommitmentApplicability approach at TF2 on 18 November 2026, because commitment discount coverage is a priority open question for SKU Price general availability (#2807). Coverage data changes dataset size, so ijurica will also bring the size impact. Open scope items are refreshing the draft, finishing stress-testing, and estimating the size added. No decisions are recorded.",
+   "gists": {
+    "c6646819310": "Matt-Cowsert posted a TF2 action item: ijurica will present the CommitmentApplicability approach at TF2 on 18 November 2026 with its dataset size impact, after refreshing the draft and stress-testing it."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5685,6 +6296,13 @@
       "Matt-Cowsert updated Due Date: 2026-11-11 → 2026-11-25"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened issue #2831 on 5 November 2026 to find SKU Price sample data reviewers. Task Force 2 agreed on 4 November that practitioners give best feedback once sample data exists, so outreach should start now. Questions cover whether the dataset's shape helps or hinders their work, which missing details matter, and whether they would use spot prices. The group agreed spot pricing is not needed for general availability. Due date is now 25 November 2026. Next steps are listing reviewers and posting a summary here.",
+   "gists": {
+    "o2831": "Matt-Cowsert opened the issue to line up practitioners for SKU Price sample data, with tasks to list volunteers, ask about spot prices, and post a summary."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5726,6 +6344,13 @@
       "mike-finopsorg updated Task Force: F2"
      ]
     }
+   ],
+   "summary": "mike-finopsorg opened this issue on 4 November 2026. It reports that the generated Markdown targets Pandoc rather than CommonMark or GFM, so some patterns break in other renderers. Problems include anchors after tables becoming extra rows, invalid HTML in table-of-contents lists, percent signs in anchor IDs, Pandoc-style front matter and obsolete name attributes. The proposed fix is a blank line before each anchor; the definition of done is fewer or no formatting issues. Status was initialised with a 31 December 2026 due date. No replies are recorded.",
+   "gists": {
+    "o2829": "mike-finopsorg reported Markdown targeting Pandoc rather than CommonMark or GFM, listing anchors absorbed into tables, invalid TOC HTML, percent signs in IDs, Pandoc front matter and obsolete name attributes."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5768,6 +6393,13 @@
       "Initialized PR Change Requests: 0"
      ]
     }
+   ],
+   "summary": "On 4 November 2026 flanakin opened draft pull request #2826 proposing a changed-since configuration for the SKU Price dataset. When configured, delivery filters on SkuPriceLastUpdated, includes changed records, supersedes earlier records with the same key and carries retired prices with SkuPriceEffectiveEnd; overwrite delivery still applies otherwise. The stated reason is size: without it the one-row-per-price-type layout would be about 3x today's monthly price sheets. No reviews or comments followed; the pull request remains a draft and the thread states no next steps.",
+   "gists": {
+    "o2826": "flanakin opened draft #2826 on 4 November 2026, proposing SKU Price filter on SkuPriceLastUpdated so only prices created or modified since a chosen time are delivered."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5816,6 +6448,13 @@
       "Matt-Cowsert updated AI Status: Open → In Progress"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened issue #2825 on 4 November 2026 asking for changelog and contributors updates for v1.5. It asked for a v1.5 CHANGELOG.md section covering changes from v1.4 to the release candidate, and for updated contributor lists stating the Contributor selection basis in the PR. Matt-Cowsert moved the item to In Progress on 10 November 2026. The thread said both changes needed Member approval before WG approval of v1.5 on 3 December 2026; no pull requests appeared yet.",
+   "gists": {
+    "o2825": "Matt-Cowsert opened the issue asking for a v1.5 changelog section covering changes since v1.4 and updated contributors lists, with the Contributor selection basis to be stated in the PR."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5902,6 +6541,13 @@
       "Initialized AI Status: Open"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened #2824 on 4 November 2026, the thread's only activity. It says the guidelines assume every request concerns FOCUS data, leaving no bar for twelve open contributor-serving requests: ten under consideration, #2406 and #2779 at Needs More Info. It proposes a guideline update giving these requests a bar and revising Gate 3's Problem clarity and Data generator readiness checks. No replies, positions or decisions appear. Backlog grooming will take the ten through Gate 2; the change reaches 1.6 only if approved by 28 January 2027, otherwise 1.7.",
+   "gists": {
+    "o2824": "Matt-Cowsert opened #2824 noting the guidelines assume every request concerns FOCUS data, and proposing a bar for contributor-serving requests, with changes to Gate 3."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -5963,6 +6609,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2012#issuecomment-6643570678",
      "excerpt": "The spec build now checks most internal links. PR 2510, under 2239, added specification/tests/testspeclinks.py. It runs with every make and fails the build when an anchor link in spec.html has no target, which covers…"
     }
+   ],
+   "summary": "Matt-Cowsert was the only participant. On 30 October 2026 they cleared Candidate Release status. On 4 November 2026 they commented that the spec build now checks most internal links via #2510, under #2239, which adds a test failing on anchors with no target. Three gaps remain: links to example data files pass because URLs are skipped, checks run on branch pushes not pull requests so fork pull requests are not covered, and errors name the line and target in spec.html, not the source file. It stays open for those gaps.",
+   "gists": {
+    "c6643570678": "Matt-Cowsert said #2510 under #2239 now checks most internal links, listing three gaps: example data file links, fork pull requests, and errors naming spec.html rather than source files."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6012,6 +6665,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/1556#issuecomment-6643497411",
      "excerpt": "Closing this as completed. No supported feature uses ProviderName or PublisherName. PR 1567 switched the queries to ServiceProviderName in November 2025, which meets all three success criteria. Irena also flagged two…"
     }
+   ],
+   "summary": "Matt-Cowsert closed the feature request as completed on 4 November 2026, saying no supported feature uses ProviderName or PublisherName. PR #1567 had switched the queries to ServiceProviderName in November 2025, which Matt-Cowsert said met all three success criteria. A reviewer flagged two wording points, which PR #1632 addressed by changing the Contract Commitments description to \"service provider\", and PR #2766 addressed by renaming the Marketplace Purchases heading under #2573. The request is now closed; no further steps are recorded.",
+   "gists": {
+    "c6643497411": "Matt-Cowsert closed the request as completed, saying no supported feature uses ProviderName or PublisherName because #1567 moved the queries to ServiceProviderName, and noted edits in #1632 and #2766."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6056,6 +6716,14 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2822#issuecomment-6643234895",
      "excerpt": "Closing out this AI as the PR is now open 2823"
     }
+   ],
+   "summary": "In the last 14 days, mike-finopsorg opened this issue on 4 November 2026. They said the markdown version of the spec is only provided in pre-release branches and asked for spec.md to be included in all builds so published releases contain it. The same day, mike-finopsorg commented that the issue was being closed because the pull request is now open as #2823. The issue is marked completed. The thread records no further discussion or decisions.",
+   "gists": {
+    "o2822": "mike-finopsorg opened the issue on 4 November 2026, noting that the markdown spec is only in pre-release branches and asking for it to be included in all builds for releases.",
+    "c6643234895": "mike-finopsorg commented on 4 November 2026 that the issue was being closed because the pull request is now open as #2823."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6176,6 +6844,14 @@
       "Matt-Cowsert updated Candidate Release: 1.6"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert edited the issue body on 4 November 2026 to move #2779 through triage, adding Coinbase and the FinOps Foundation as requesting organizations and revising three passages. Matt-Cowsert asked finops-DaveMoreau to confirm or undo each change, then said the Maintainer Assessment would follow and the request would move to Under Consideration. The same day, Matt-Cowsert corrected the #2012 note, since the link test skips file links. On 12 November 2026 the Task Force was set to TF-Supporting, Scope to Champion and Candidate Release to 1.6.",
+   "gists": {
+    "c6620027100": "Matt-Cowsert edited the issue body to start triage, listing four content changes and three wording changes, and asked finops-DaveMoreau to confirm or undo each one.",
+    "c6641985852": "Matt-Cowsert corrected the #2012 note: the existing link test checks anchor links but skips file links, which the build converts to GitHub URLs first, and the body was fixed."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6220,6 +6896,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2821",
      "excerpt": "Submitting Organization (Optional) FOCUS Working Group Feedback Summary The Requester Details object requirements use Entry to point at items in the array. The specification never defines Entry. The other JSON Object…"
     }
+   ],
+   "summary": "Matt-Cowsert opened issue #2821 on 4 November 2026 as Working Group feedback. It says the Requester Details object requirements use an undefined term, Entry, where other JSON Object Format columns use paths from the Object ID. The proposed fix replaces seven Entry references with paths from RequesterDetailsObject, leaving data shape, schema and constraints unchanged. It adds that the change would let key checks be Static rather than Dynamic in the requirements model. Top-level shape and property names are excluded. The issue is open with no replies.",
+   "gists": {
+    "o2821": "Matt-Cowsert opened the issue on 4 November 2026 asking to replace undefined Entry references with RequesterDetailsObject paths in seven lines of the Requester Details object requirements."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6275,6 +6958,15 @@
       "Matt-Cowsert updated Due Date: 2026-11-09 → 2026-11-23"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert posted a revised proposal on 2 November 2026 with four yes or no choices on the 1.6 measures: count work by date, count only approvals with a comment, allow declared leave, and keep the 20% score instead of three new checks. Matt-Cowsert proposed yes on all four, keeping 20% for now. ijurica suggested milestone history could also limit counting, and asked how stacked PRs would count. On 4 November Matt-Cowsert moved the vote from 9 November to 23 November to allow travel and more feedback.",
+   "gists": {
+    "c6588180408": "Matt-Cowsert posted four yes or no choices for the 1.6 measures, proposed yes on each, kept the 20% bar for now, and noted 1.5 results stay as published.",
+    "c6590597866": "ijurica suggested adding milestone history to choice 1 so PRs moved from 1.5 to 1.6 still count for 1.5, and asked how stacked PRs on feature branches count.",
+    "c6638006723": "Matt-Cowsert moved the vote from 9 November 2026 to 23 November 2026 to allow for scheduled travel and more feedback before proposing further adjustments."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6337,6 +7029,13 @@
       "Initialized PR Change Requests: 0"
      ]
     }
+   ],
+   "summary": "On 3 November 2026 finops-DaveMoreau opened draft pull request #2819, resolving #2779, to tag entity references semantically across the specification instead of relying on hand-typed links and italics. The source now states what each reference is, and the build applies the links and formatting. The PR adds a generated registry of 506 entities, resolver checks, and a whole-specification conversion with a separate semantic review commit. It is not ready to merge; open questions, including the invoice issuer link choice, need Working Group decisions. Nothing else followed.",
+   "gists": {
+    "o2819": "On 3 November 2026 finops-DaveMoreau opened draft PR #2819, resolving #2779, describing a whole-specification move to semantic entity tags resolved by the build, marked not ready to merge."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6445,6 +7144,15 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/960#issuecomment-6616179948",
      "excerpt": "Status Update - TF1 - November 3, 2026 FR 960 - Enable preview status for content smaller than a dataset Discussion Matt Cowsert expects this feature request (FR) to be harder than previews of whole datasets.…"
     }
+   ],
+   "summary": "On 3 November 2026 Matt-Cowsert widened this request to cover preview status for any single new column, attribute, column value or requirement on a stable dataset, moving questions 1 and 2 here from #2782. Matt-Cowsert listed the FinOps Foundation as a Nice to Have requesting organization, placed the request in 1.6 Core scope, and asked Microsoft, Thavaron, Workday, StitcherAI and AWS whether it is a blocker. A status update says the SKU Price preview covers only one rule, and that work starts after #2782 and #2811.",
+   "gists": {
+    "c6592971986": "Matt-Cowsert widened the request to preview status for any single new column, attribute, value or requirement on a stable dataset, and moved questions 1 and 2 here from #2782.",
+    "c6612257451": "Matt-Cowsert added the FinOps Foundation as a Nice to Have requesting organization and set Core scope for 1.6, with work to start after #2782 and #2811.",
+    "c6616179948": "Matt-Cowsert's TF1 status update says this is expected to be harder than whole-dataset previews, and that the SKU Price preview covers only the ChargeCategory rule, not single columns."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6544,6 +7252,14 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2811#issuecomment-6616179054",
      "excerpt": "Status Update - TF1 - November 3, 2026 FR 2811 - Clarify preview status changes for whole datasets Task Force 1 (TF1) discussed this feature request (FR) as the requirements model side of whole-dataset previews. FR 2782…"
     }
+   ],
+   "summary": "Matt-Cowsert opened the request on 1 November 2026 to clarify which parts of a preview dataset count toward conformance and what happens to scope-list items when Members promote or remove it. On 3 November 2026 Matt-Cowsert posted a Task Force 1 status update saying the requirements model must accept Preview as a status by the end of the 1.6 cycle. Next steps: ask whether model changes need Requirements Model task force time, and take up this request with FR #2782. No decisions were recorded.",
+   "gists": {
+    "o2811": "Matt-Cowsert opened the request, saying the Preview Process leaves unclear what happens to scope-list items outside a preview on promotion or removal, and the requirements model lacks a Preview status.",
+    "c6616179054": "Matt-Cowsert's Task Force 1 update says the requirements model must accept Preview as a status by the end of the 1.6 cycle, with follow-up planned on task force time."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6599,6 +7315,13 @@
       "Initialized Task Force: TF-1"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened this issue on 3 November 2026 to draft a first model of context window pricing for FR #2521, assigned to jerrysr99. It asks for a check of FR #2521 against current provider pricing, a first model of how context window size fits the Cost and Usage dataset, and an optional look at a SKU Price column, shared before the TF1 meeting on 10 November 2026. The issue was set to open and to task force TF-1 the same day. Nothing else has happened in the thread yet.",
+   "gists": {
+    "o2817": "Matt-Cowsert opened the issue, assigned to jerrysr99, asking for a first context window pricing model for FR #2521 before TF1 on 10 November 2026."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6632,6 +7355,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2581#issuecomment-6615713650",
      "excerpt": "recommend moving this into the 1.6 guideline issue 2798"
     }
+   ],
+   "summary": "Over the last two weeks this thread had one comment. On 3 November 2026 Matt-Cowsert recommended moving this work into the 1.6 guideline issue, #2798. No other proposals, questions, positions or decisions appear in the activity, so nothing was agreed here. The thread does not record whether the move has happened.",
+   "gists": {
+    "c6615713650": "Matt-Cowsert recommended moving this conditionality wording work into the 1.6 guideline issue, #2798."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6728,6 +7458,13 @@
       "Initialized Request Type: Feature"
      ]
     }
+   ],
+   "summary": "In the last two weeks, Matt-Cowsert opened this feature request on 3 November 2026 asking the working group to define what the Version Introduced and Version Updated sections record. It says no guideline covers either section beyond the Preview Process rule, so readers cannot tell what a version value means. It cites inconsistent values across datasets, a changelog mismatch, and Version Updated on only four supported features. The status was then set to Feature type. The thread records no replies, positions, or decisions yet.",
+   "gists": {
+    "o2816": "Matt-Cowsert opened the request asking that Version Introduced and Version Updated sections define what they record and when they apply, citing inconsistent values and changelog mismatches."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6774,6 +7511,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2554#issuecomment-6592349852",
      "excerpt": "closing this PR as it's superseded by PR 2710. @thecloudman please re-open if you disagree with this approach."
     }
+   ],
+   "summary": "In the last two weeks, Matt-Cowsert closed this pull request on 3 November 2026, saying it was superseded by #2710. Matt-Cowsert asked thecloudman to reopen it if thecloudman disagreed with that approach. No other activity was recorded in the window, so the thread does not discuss the AllocatedServiceName requirements model rules further.",
+   "gists": {
+    "c6592349852": "Matt-Cowsert closed the pull request as superseded by #2710 and asked thecloudman to reopen it if thecloudman disagreed with the approach."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6817,6 +7561,13 @@
       "Initialized PR Change Requests: 0"
      ]
     }
+   ],
+   "summary": "Activity was limited to jpradocueva opening draft pull request #2815 on 3 November 2026. It proposes merging the temporary working_draft_interim branch into working_draft at the end of the FOCUS 1.5 IPR Review so FOCUS 1.6 work can continue without affecting Release 1.5. Agreed 1.6 features would then be incorporated while preserving editorial 1.5 changes made in working_draft, establishing it as the 1.6 baseline. The PR is marked editorial/formatting and started with no approvals or change requests. No positions, decisions, or further steps beyond the IPR Review completion are recorded.",
+   "gists": {
+    "o2815": "jpradocueva opened draft PR #2815 on 3 November 2026 proposing merging working_draft_interim into working_draft after the FOCUS 1.5 IPR Review, keeping agreed 1.6 features and 1.5 editorial changes."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6873,6 +7624,14 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/pull/2814#issuecomment-6592227506",
      "excerpt": "This PR is classified as repository maintenance. It updates the copyright and release information to establish the next development baseline, allowing existing PRs to be redirected to the temporary workingdraftinterim…"
     }
+   ],
+   "summary": "On 2 November 2026 jpradocueva opened #2814 to change the candidate release version from v1.5 to v1.6 and the copyright year to 2027, as an editorial change linked to #2754. No approvals or change requests were recorded. On 3 November jpradocueva described it as repository maintenance setting the next development baseline, letting existing PRs move to a temporary working_draft_interim branch for FOCUS 1.6 features during the FOCUS 1.5 Consistency Review. The Program Manager merged it, and the merge will be reported at the Members meeting on 5 November 2026.",
+   "gists": {
+    "o2814": "jpradocueva opened #2814 to change the candidate release version from v1.5 to v1.6 and set the copyright year to 2027 in three files, as an editorial change.",
+    "c6592227506": "jpradocueva said on 3 November 2026 the PR is repository maintenance setting the next development baseline, allowing existing PRs to be redirected to a temporary branch."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -6927,6 +7686,13 @@
       "Review Bot updated PR Approvals: 0 → 1"
      ]
     }
+   ],
+   "summary": "Over the last 14 days, mike-finopsorg submitted an approving review on 2 November 2026, and Review Bot then updated the approval count from 0 to 1. No other comments or reviews appear in the period. The description says the pull request stays in draft until Consistency Review ends and that reviews should wait until it is taken out of draft. It merges with a merge commit rather than a squash merge, per #2754. The thread does not say what happens next.",
+   "gists": {
+    "r5742726071": "mike-finopsorg submitted an approving review on 2 November 2026 with no written comment."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -7024,6 +7790,13 @@
       "Matt-Cowsert updated Task Force: Members"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened draft pull request #2813 on 2 November 2026. It adds a workflow that writes each pull request's linked issues into a new PR Linked Issues board field, runs on open, reopen, edit, every four hours and on demand, and makes track-project-changes skip that field. Matt-Cowsert set PR Type to Maintenance and Task Force to Members. The description reports a dry run across 35 open pull requests. Next, before merge, a value is entered by hand to check the logger comment, then the workflow runs across open pull requests.",
+   "gists": {
+    "o2813": "Matt-Cowsert opened draft pull request #2813 to add a workflow that writes linked issues to a new board field, skip it in track-project-changes, and add a template line."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -7067,6 +7840,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2812",
      "excerpt": "Description The project board has no way to show, on a pull request's row, which Feature Request or Action Item the pull request belongs to. GitHub Projects has no field type for it: the built-in Linked pull requests…"
     }
+   ],
+   "summary": "Matt-Cowsert opened #2812 on 2 November 2026, the thread's only recorded activity. It proposes a PR Linked Issues text field on the project board, filled by a workflow for opened, reopened and edited pull requests, fork pull requests and a regular sweep. It also asks for a manual sync with dry-run, no Project Update comments, a PR template question about linked issues, and an All PRs column. Nine of 35 open pull requests lacked links. Nothing was agreed or decided, and no next step is recorded.",
+   "gists": {
+    "o2812": "Matt-Cowsert opened the issue proposing a PR Linked Issues board field, a sync workflow for opened, edited and swept pull requests, a template question and an All PRs column."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -7121,6 +7901,14 @@
       "Review Bot updated PR Approvals: 1 → 2"
      ]
     }
+   ],
+   "summary": "Over the last two weeks of this merged pull request, which tracks the 1.5 release requirements model updates, mike-finopsorg commented on 2 November 2026 about the skupriceid column rules. They said the validations work for now because they assume a single provider dataset, and suggested discussing later whether the rules should cover multi-provider datasets. On the same day jpradocueva approved the pull request, and the Review Bot recorded approvals rising from 1 to 2. The thread records no decision on the multi-provider question.",
+   "gists": {
+    "i4446663622": "mike-finopsorg said the skupriceid rules work for now because validations cover a single provider dataset, and proposed discussing multi-provider support later.",
+    "r5742562491": "jpradocueva approved the pull request on 2 November 2026 with a brief approval and no further comments."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -7200,6 +7988,13 @@
      "parent": null,
      "excerpt": "@shawnalpay, this request needs four changes before it can go back to Under Consideration. Each one below comes from the feature request triage guidelines. Title: I changed it to sentence case and used the dataset's…"
     }
+   ],
+   "summary": "Matt-Cowsert set Candidate Release to 1.6 and Scope to Champion on 30 October 2026, then cleared Scope on 2 November 2026. That day Matt-Cowsert commented that four changes are needed before the request returns to Under Consideration: one practitioner-focused title, two to four yes-or-no success criteria, a priority for the FinOps Foundation entry (Metrecept Limited registered Nice to Have), and a stated FOCUS working group scope. CPU utilization and rightsizing should move to #2654, whose scope remains open. Revisions are requested from shawnalpay.",
+   "gists": {
+    "c6583426668": "Matt-Cowsert asked shawnalpay for four changes before the request returns to Under Consideration: one title, practitioner-focused criteria, an organization priority, and a defined working group scope."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -7280,6 +8075,16 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2805#issuecomment-6583065346",
      "excerpt": "Reasoning level is in a weird grey area. It’s true that it’s a request setting, but it’s also a behavioral difference post-trained into the model that causes very different outputs, even though it’s technically a…"
     }
+   ],
+   "summary": "Between 31 October and 2 November 2026, Matt-Cowsert triaged #2805 as needing revised use case and success criteria, plus scoping. Matt-Cowsert found that providers rarely record reasoning level in billing data, proposed keeping it in FOCUS data, and proposed removing performance as not cost data. The same revised draft was posted twice on 31 October. On 2 November MasonSalisbury said reasoning level works like a model choice and drives cost, so it belongs in FOCUS data wherever known. The activity shows no agreed wording yet.",
+   "gists": {
+    "c6538417663": "Matt-Cowsert triaged the request as revise use case, revise success criteria and needs scoping, and asked whether Kion needs the level in FOCUS data or a join to request records.",
+    "c6539249482": "Matt-Cowsert posted a revised problem statement, use case and success criteria, noting that billing data rarely records reasoning level and proposing to keep it in FOCUS data while dropping performance.",
+    "c6539272741": "Matt-Cowsert reposted the same revised problem statement, use case and criteria on 31 October, with identical wording to the earlier comment.",
+    "c6583065346": "MasonSalisbury said reasoning level works like a model choice and drives cost, gave a GPT-6 Luna example, and said it belongs in FOCUS data wherever known."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -7318,6 +8123,13 @@
      "parent": null,
      "excerpt": "@beau-finopsorg, the Definition of Done here asks for the published insights article's link on this issue. Can you add it? Once the link is here, this issue and 2629 can close."
     }
+   ],
+   "summary": "In the last two weeks this issue saw one comment. On 31 October 2026 Matt-Cowsert asked beau-finopsorg to add the link to the published insights article, as the Definition of Done requires. Matt-Cowsert said that once the link is posted, this issue and #2629 can close. The thread records no reply or other activity in this period.",
+   "gists": {
+    "c6545723276": "Matt-Cowsert asked beau-finopsorg to add the published insights article's link to this issue, noting that this issue and #2629 can close once it is posted."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -7399,6 +8211,13 @@
       "Matt-Cowsert updated PR Type: Maintenance"
      ]
     }
+   ],
+   "summary": "Matt-Cowsert opened draft pull request #2810 on 31 October 2026 to add a workflow, sync-pr-status.yml, that sets a pull request's board Status from its draft state, and to link the board from CONTRIBUTING.md. It closes #2809. The description reports a dry run across 36 open pull requests and says the write step was not run locally, so a manual run on #2713 after merge is meant to confirm it. On 2 November 2026 Matt-Cowsert updated the Task Force Members and PR Type fields. No other comments were recorded.",
+   "gists": {
+    "o2810": "Matt-Cowsert opened the pull request, which adds a workflow to set board Status from draft state and links the board from CONTRIBUTING.md, with dry-run checks described."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -7442,6 +8261,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2809",
      "excerpt": "Description No workflow moves a pull request between PR In Draft and PR Open on the project board, so each move is a manual board edit. A new pull request starts at Submitted, set by the board's \"Item added to project\"…"
     }
+   ],
+   "summary": "Matt-Cowsert opened this issue on 31 October 2026 proposing a workflow that sets pull request Status on the project board from draft state, moving between PR In Draft and PR Open while leaving later stages, Blocked and Postponed alone. It also asks that the workflow run for fork pull requests, offer a manual sync with dry-run, and that CONTRIBUTING.md link the board and its README. Three draft pull requests, #2713, #2759 and #2765, currently sit at Submitted. No replies or decisions followed.",
+   "gists": {
+    "o2809": "Matt-Cowsert opened the issue on 31 October 2026 asking for a draft-state Status workflow, fork support, a manual sync with dry-run, and a CONTRIBUTING.md board link."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -7488,6 +8314,13 @@
       "Initialized AI Status: Open"
      ]
     }
+   ],
+   "summary": "On 31 October 2026 Matt-Cowsert opened #2808 proposing to remove Provisional Scope from the Status list in development-processes.md, as the release milestone and Scope field now record that, and to decide whether Accepted in Scope is kept (option A) or retired (option B). The issue also proposes adding PR Open and describing the milestone and Scope field, with matching changes to the scope phase diagram. No position or decision is recorded yet. Approval by 28 January 2027 would apply the change to 1.6, otherwise 1.7.",
+   "gists": {
+    "o2808": "Matt-Cowsert proposed removing Provisional Scope, adding PR Open, and deciding whether Accepted in Scope is kept (A) or retired (B), with a checklist of required follow-up."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -7571,6 +8404,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2489#issuecomment-6538415270",
      "excerpt": "Yes, please update this issue to match the October 5 triage outcomes: the title, use case, and success criteria need to describe the outcome rather than the mechanism. The replacements in the October 5 triage comment…"
     }
+   ],
+   "summary": "Matt-Cowsert moved this request to Candidate Release 1.6 on 30 October 2026. On 31 October 2026 Matt-Cowsert asked for the title, use case and success criteria to describe the outcome, not the mechanism, starting from the 5 October triage replacements. SkuMeter values and SkuPriceDetails stay in the Proposed Solution. Once those sections and the Maintainer Assessment meet the bar, it can move to Under Consideration. Similar edits are requested for #2487 and #2488, all candidates for the AI dimensions theme in #2705, whose AI short list is not chosen.",
+   "gists": {
+    "c6538415270": "Matt-Cowsert asked for the title, use case and success criteria to describe outcomes rather than mechanism, keeping SkuMeter values and SkuPriceDetails in the Proposed Solution."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -7608,6 +8448,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2772#issuecomment-6526073291",
      "excerpt": "PR 2773 was issued, approved and merged. Various follow-up AIs were also added to the backlog under Issue 2798. Closing this AI."
     }
+   ],
+   "summary": "In the last two weeks this thread had one comment. On 30 October 2026 ijurica reported that pull request #2773 had been issued, approved and merged, that various follow-up items were added to the backlog under #2798, and closed this item. No other activity was recorded, and no further steps were stated in the thread.",
+   "gists": {
+    "c6526073291": "ijurica reported that pull request #2773 was issued, approved and merged, that follow-up items were added to the backlog under #2798, and closed this item."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   },
   {
@@ -7657,6 +8504,13 @@
      "url": "https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec/issues/2660#issuecomment-6524589223",
      "excerpt": "PR 2797 issued, approved and merged. Closing this AI"
     }
+   ],
+   "summary": "In the last two weeks, the only activity on this thread was a comment by ijurica on 30 October 2026 reporting that PR #2797 had been issued, approved and merged, and closing this item. The item is now marked completed. The thread records no other positions, discussion or decisions, and says nothing about further work.",
+   "gists": {
+    "c6524589223": "ijurica reported that PR #2797 had been issued, approved and merged, and closed this item."
+   },
+   "written_by": [
+    "claude-haiku-5-5"
    ]
   }
  ]
