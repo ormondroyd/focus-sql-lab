@@ -2,6 +2,25 @@
  "about": "Every rebuild of the site from the FOCUS specification and every batch of AI-written text since 12 November 2026, newest first, with what each did and what it cost at list price. A summary that the first model fails the checks on twice is escalated to the fallback model (Claude Sonnet 5.5) for two more tries; each entry shows how many were. Summaries written before 12 November aren't listed.",
  "runs": [
   {
+   "at": "2026-11-14T00:25:42Z",
+   "task": "recent",
+   "model": "claude-haiku-5-5",
+   "effort": "high",
+   "fallback": "claude-sonnet-5-5",
+   "threads": 109,
+   "kept": 109,
+   "attempted": 0,
+   "first_pass": 0,
+   "escalated": 0,
+   "escalated_passed": 0,
+   "failed": 0,
+   "escalated_pct": 0.0,
+   "partly": 0,
+   "spend": {},
+   "cost": 0,
+   "run": "https://github.com/jonstevenshall/focus-sql-lab/actions/runs/43533988499"
+  },
+  {
    "at": "2026-11-13T23:04:42Z",
    "task": "recent",
    "model": "claude-haiku-5-5",

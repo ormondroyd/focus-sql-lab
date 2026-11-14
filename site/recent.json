@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-13T22:35:33Z",
- "since": "2026-10-30T22:35:33Z",
+ "generated_at": "2026-11-14T00:24:55Z",
+ "since": "2026-10-31T00:24:55Z",
  "days": 14,
  "model": "claude-haiku-5-5",
  "about": "FOCUS_Spec issues and pull requests that people opened, commented on or reviewed in the last 14 days. Each summary (what is proposed and why, where the debate lies, how people feel and where it stands) and each one-line gist is written by an AI model from the thread and the issue it implements, and rewritten when the thread gains comments or reviews: they interpret, so check the thread before relying on one. Status changes are posted by the repository's own automation.",
